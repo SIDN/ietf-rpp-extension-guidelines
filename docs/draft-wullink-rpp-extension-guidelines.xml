@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
+<rfc version="3" ipr="trust200902" docName="draft-wullink-rpp-extension-guidelines-00" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
+
+<front>
+<title abbrev="RPP Extension Guidelines">Extension Guidelines for RESTful Provisioning Protocol (RPP)</title><seriesInfo value="draft-wullink-rpp-extension-guidelines-00" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
+<author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
+</postal><email>maarten.wullink@sidn.nl</email>
+<uri>https://sidn.nl/</uri>
+</address></author><author initials="P." surname="Kowalik" fullname="Pawel Kowalik"><organization>DENIC</organization><address><postal><street></street>
+</postal><email>pawel.kowalik@denic.de</email>
+<uri>https://denic.de/</uri>
+</address></author><date year="2026" month="November" day="14"></date>
+<area>Internet</area>
+<workgroup>Network Working Group</workgroup>
+
+<abstract>
+<t>Extension guidelines for the RESTful Provisioning Protocol (RPP) ...</t>
+<t><strong>TODO</strong></t>
+</abstract>
+
+</front>
+
+<middle>
+
+<section anchor="introduction"><name>Introduction</name>
+<t><strong>TODO</strong></t>
+</section>
+
+<section anchor="terminology"><name>Terminology</name>
+<t>In this document the following terminology is used.</t>
+<t>URL - A Uniform Resource Locator as defined in <xref target="RFC3986"></xref>.</t>
+<t>Resource - An object having a type, data, and possible relationship to other resources, identified by a URL.</t>
+<t>Base specification - The RPP specification, such as <xref target="I-D.ietf-rpp-data-objects"></xref>, <xref target="I-D.ietf-rpp-json"></xref> or <xref target="I-D.ietf-rpp-core"></xref>, that originally defines a data object, component object, or operation.</t>
+<t>Extension specification - A specification that adds new data elements, associations, or operations to an object or operation defined in a base specification, without modifying the base specification itself.</t>
+<t>Combined schema - The JSON Schema produced by composing the JSON Schema definition of a base object with the JSON Schema contributed by every extension specification supported by a given deployment or profile, as defined in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+</section>
+
+<section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
+<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
+<t>In examples, indentation and white space are provided only to illustrate element relationships and are not REQUIRED features of the protocol.</t>
+</section>
+
+<section anchor="restrictions-on-extensions"><name>Restrictions on Extensions</name>
+<t>An extension MUST NOT remove, redefine, or otherwise alter the semantics of a property defined by the RPP base specification.
+An extension MUST only add new properties or associations, and MUST ensure that any new elements do not conflict with existing ones in the base specification.</t>
+</section>
+
+<section anchor="rpp-extension-points"><name>RPP Extension Points</name>
+<t>An extension specification MAY extend RPP along one or more of the following independent extension points. Each extension point has its own registration requirements and, where applicable, its own schema-composition method.</t>
+
+<section anchor="new-data-objects"><name>New Data Objects</name>
+<t>Extensions MAY define entirely new resource, component, or process objects, as described in <xref target="I-D.ietf-rpp-data-objects"></xref>. New objects MUST be registered in the RPP Data Object Registry <xref target="I-D.ietf-rpp-data-objects"></xref> and MUST define their own JSON Schema <tt>$defs</tt> entry with its own <tt>$id</tt>. Because no base object definition exists to compose with, the Additive Schema Composition method described below does not apply to this extension point.</t>
+</section>
+
+<section anchor="new-data-elements-on-existing-objects"><name>New Data Elements on Existing Objects</name>
+<t>Extensions MAY add new data elements (properties) to a data object, component object, or process object defined in a base specification. This is the extension point covered in detail in the &quot;Extending Data Objects Defined in Other Specifications&quot; section below: the extension MUST compose its new properties onto the base object's JSON Schema definition using <tt>allOf</tt>, and MUST register the addition in the Object and Operation Extension registry defined in <xref target="I-D.ietf-rpp-data-objects"></xref>.</t>
+</section>
+
+<section anchor="new-associations"><name>New Associations</name>
+<t>Extensions MAY introduce new associations (Aggregation, Composition, or their Labelled/Dictionary variants) between existing or new objects, as described in <xref target="I-D.ietf-rpp-data-objects"></xref>. An association is represented as a data element whose Data Type references another object; it MUST follow the same additive schema composition and registration rules as any other new data element.</t>
+</section>
+
+<section anchor="new-operations"><name>New Operations</name>
+<t>Extensions MAY define entirely new operations on existing or new data objects. New operations MUST define their own request and response JSON Schema <tt>$defs</tt>, following <xref target="I-D.ietf-rpp-json"></xref>, and MUST be registered in the Object and Operation Extension registry defined in <xref target="I-D.ietf-rpp-data-objects"></xref>.</t>
+</section>
+
+<section anchor="url-endpoints-are-derived-not-a-separate-extension-point"><name>URL Endpoints Are Derived, Not a Separate Extension Point</name>
+<t>RPP endpoint URLs are not an independent extension point. As defined in <xref target="I-D.ietf-rpp-core"></xref>, every endpoint URL and HTTP method is derived mechanically from a Data Object's <tt>&quot;Identifier&quot;</tt>, from its operations, and from the Direct Access flag on its data elements; no endpoint is defined independently of a corresponding Data Object. Consequently:</t>
+
+<ul spacing="compact">
+<li>A new Data Object automatically obtains a collection endpoint once its <tt>&quot;Identifier&quot;</tt> is registered, by applying the <tt>plural()</tt> derivation rule.</li>
+<li>A new association with Direct Access set to <tt>true</tt> automatically obtains a sub-resource path, derived recursively from the parent resource's path.</li>
+<li>A new operation automatically obtains its HTTP method and URL path once its <tt>&quot;Identifier&quot;</tt> is registered.</li>
+</ul>
+<t>An extension specification MUST NOT define ad-hoc endpoint URLs or HTTP methods. It MUST instead register the underlying data object, association, or operation as described in the corresponding extension point above, and rely on the derivation rules in <xref target="I-D.ietf-rpp-core"></xref> to determine the resulting endpoint.</t>
+</section>
+
+<section anchor="extended-operation-inputs-and-outputs"><name>Extended Operation Inputs and Outputs</name>
+<t>Extensions MAY add transient data elements to the input or output of an existing operation (e.g. an additional field in a Create request or Read response) without adding a persistent property to the underlying data object. Such additions MUST follow the same Additive Schema Composition method described below, applied to the operation's request or response <tt>$defs</tt> entry, as defined in <xref target="I-D.ietf-rpp-json"></xref>, rather than to the object's own canonical schema.</t>
+</section>
+
+<section anchor="external-data-types"><name>External Data Types</name>
+<t>Instead of adding properties to an object, an extension MAY reference a type defined entirely in an external specification (e.g. <tt>External:RPP-JSContact-Profile:Card</tt>), as described in <xref target="I-D.ietf-rpp-data-objects"></xref>. This is the appropriate mechanism when substituting or supplying a whole, independently versioned data type, rather than adding fields to an existing RPP-defined object.</t>
+</section>
+
+<section anchor="new-rpp-result-codes"><name>New RPP Result Codes</name>
+<t>Extensions MAY define new RPP result codes within the reserved result code classes, registered in the RPP Result Codes registry defined in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+</section>
+
+<section anchor="error-object-extension-fields"><name>Error Object Extension Fields</name>
+<t>Extensions MAY add extension fields to the Problem Detail error object to convey additional, extension-specific information about the cause of an error, as described in <xref target="I-D.ietf-rpp-core"></xref>. These fields MUST follow the same additive JSON Schema composition rules as any other new data element.</t>
+</section>
+
+<section anchor="additional-query-parameters"><name>Additional Query Parameters</name>
+<t>Extensions MAY define additional HTTP query parameters for existing operations, for example to further qualify a check or read request, as described in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+</section>
+
+<section anchor="new-authentication-and-authorization-methods"><name>New Authentication and Authorization Methods</name>
+<t>Extensions MAY define additional authentication or authorization methods for use with RPP. Such methods MUST be registered in the RPP Extension registry defined in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+</section>
+
+<section anchor="discovery-and-profile-advertisement"><name>Discovery and Profile Advertisement</name>
+<t>Regardless of which of the above extension points it uses, a server MUST advertise support for an extension in the RPP Discovery document's <tt>extensions</tt> array (<tt>name</tt>, <tt>id</tt>, <tt>version</tt>, <tt>url</tt>), as defined in <xref target="I-D.ietf-rpp-core"></xref>, and the extension MAY be included in one or more RPP Profiles that bundle a set of supported extensions for a given deployment.</t>
+</section>
+</section>
+
+<section anchor="extending-data-objects-defined-in-other-specifications"><name>Extending Data Objects Defined in Other Specifications</name>
+<t>RPP is designed so that extension specifications can add new data elements to data objects, component objects, and operations without modifying the specification that originally defines them, as described in <xref target="I-D.ietf-rpp-data-objects"></xref>. This section defines the normative method an extension specification MUST follow when it adds properties to an object defined in a base specification, so that JSON Schema validation, as defined in <xref target="I-D.ietf-rpp-json"></xref>, keeps functioning correctly across specifications.</t>
+
+<section anchor="json-schema-composition"><name>JSON Schema Composition</name>
+<t>For every data object which is modified by an extension specification, the extension specification MUST define a new JSON Schema document that composes the base object's schema with the new properties using <tt>allOf</tt>. The extension specification MUST NOT copy, redefine, or otherwise restate the JSON Schema definition of the base object. Instead, it MUST reference the base object's definition by its fully qualified <tt>$id</tt>-relative pointer (e.g. <tt>https://www.iana.org/.../domainName.json#/$defs/domainName</tt>) in an <tt>allOf</tt> branch, and add its own new properties in a separate branch.</t>
+<t>The extension specification MUST include a JSON schema for every operation that is modified by the extension.</t>
+</section>
+
+<section anchor="schema-identification"><name>Schema Identification</name>
+<t>A specification that defines JSON Schema for RPP objects MUST assign a stable, dereferenceable <tt>$id</tt> to its schema document(s), and MUST NOT change the <tt>$id</tt> of a published <tt>$defs</tt> entry. Extension specifications MUST reference a base object's definition by its fully qualified <tt>$id</tt>-relative pointer (e.g. <tt>https://www.iana.org/.../domainName.json#/$defs/domainName</tt>) rather than copying the base definition into their own schema.</t>
+</section>
+
+<section anchor="client-implementation"><name>Client Implementation</name>
+<t>A client does not need to generate a distinct set of code classes for every base object and extension combination offered by a particular server. Because extension schemas are additive, self-contained, and independent of one another, a client implementation SHOULD instead maintain one set of code classes for each base object and a separate set of code classes for each extension it supports, keeping an extension's classes distinct from the base object's classes rather than flattening their properties together. Composing a base object with whichever extensions apply then becomes a runtime decision, rather than something fixed by code generation for every individual server.</t>
+<t>A client learns at runtime which extensions a given server supports from the <tt>extensions</tt> list in that server's RPP Discovery response, as defined in <xref target="I-D.ietf-rpp-core"></xref>. It SHOULD attach, populate, and validate extension class instances only for the extensions the server has advertised as supported, and SHOULD ignore any properties in a response that belong to an extension it does not recognize or does not support.</t>
+<t>Because an extension that is not attached to a given base object instance contributes no properties at all, a client naturally serializes only the base object together with the properties of whichever extensions are actually in use, without needing to distinguish this case from a property that is merely absent or <tt>null</tt> within a supported extension. Attached extensions are merged flat with the base object on the wire, consistent with the schema composition described in &quot;JSON Schema Composition&quot;. Within an attached extension, an optional property without a value continues to follow Rule 2 and is omitted from the output rather than represented as <tt>null</tt>.</t>
+
+<section anchor="java"><name>Java</name>
+<t>For Java clients, common JSON serialization frameworks such as Jackson support this attach-then-merge model directly: extension instances can be merged into the base object's serialized tree at runtime (e.g. <tt>ObjectNode.setAll()</tt>), inlined via a nullable field annotated <tt>@JsonUnwrapped</tt>, or flattened through <tt>@JsonAnyGetter</tt>/<tt>@JsonAnySetter</tt>-backed property maps. In all three cases, an extension that is not attached contributes no properties, and <tt>@JsonInclude(Include.NON_NULL)</tt> on each extension class independently omits its own unset optional properties. A property that an extension's schema defines as required can be annotated <tt>@JsonProperty(required = true)</tt>, causing Jackson to reject an incoming JSON instance during deserialization if the property is missing; because this check only applies when the extension class itself is being deserialized, it naturally does not apply to servers or requests where that extension is not in use. Required-property validation for an extension is otherwise typically out of scope for the JSON library itself and is instead enforced with a Bean Validation framework (e.g. <tt>jakarta.validation</tt>) or a JSON Schema validator, applied only to attached extension instances.</t>
+</section>
+</section>
+
+<section anchor="registration"><name>Registration</name>
+<t>An extension specification that adds properties to an existing object MUST register the added data elements in the Object and Operation Extension registry defined in <xref target="I-D.ietf-rpp-data-objects"></xref>. The registration MUST additionally include a dereferenceable URL to the JSON Schema document defining the <tt>$defs</tt> entry described in the Additive Schema Composition section above, and MUST identify the base object type(s) being extended by their registered identifier.</t>
+</section>
+
+<section anchor="validation"><name>Validation</name>
+<t>A deployment that supports a specific combination of extensions (a profile, as defined in <xref target="I-D.ietf-rpp-core"></xref>) MUST build, for every extended object type, a combined schema consisting of the base object's definition and the <tt>allOf</tt> branch contributed by every supported extension registered for that object type.</t>
+<t>Before using a combined schema to validate a JSON instance, implementations MUST inject <tt>&quot;unevaluatedProperties&quot;: false</tt> at every object-schema node of the combined schema, following the algorithm described in <xref target="I-D.ietf-rpp-json"></xref>. This injection MUST be performed only on the combined, per-deployment schema, and MUST NOT be present in the schema document published by any individual base or extension specification. This ensures undeclared properties are rejected while any supported combination of registered extensions validates successfully.</t>
+</section>
+</section>
+
+<section anchor="iana-considerations"><name>IANA Considerations</name>
+<t><strong>TODO</strong></t>
+</section>
+
+<section anchor="internationalization-considerations"><name>Internationalization Considerations</name>
+<t><strong>TODO</strong></t>
+</section>
+
+<section anchor="privacy-considerations"><name>Privacy Considerations</name>
+<t><strong>TODO</strong></t>
+</section>
+
+<section anchor="change-history"><name>Change History</name>
+<t><strong>TODO</strong></t>
+</section>
+
+</middle>
+
+<back>
+<references><name>Normative References</name>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rpp-core.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rpp-data-objects.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rpp-json.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
+</references>
+
+<section anchor="java-example"><name>Java Example</name>
+<t>This appendix is informative and illustrates one possible way to implement the attach-then-merge model described in &quot;Client Implementation&quot; using Java and the Jackson library. The base object and each extension are modeled as separate classes; an extension contributes properties to the serialized output only when an instance of it has been attached, and only for extensions the target server has advertised support for. The code below compiles against <tt>jackson-databind</tt> and <tt>jackson-annotations</tt>.</t>
+
+<sourcecode type="java"><![CDATA[import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.util.List;
+
+// Base object class, one per RPP object type.
+public class DomainName {
+
+    @JsonProperty("@type")
+    private final String type = "domainName";
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// Extension class, independent of the base object and of other extensions.
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class LaunchExtension {
+
+    @JsonProperty(required = true)
+    private String phase;
+
+    private String applicationId;
+
+    public String getPhase() {
+        return phase;
+    }
+
+    public void setPhase(String phase) {
+        this.phase = phase;
+    }
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
+}
+
+// Serializes the base object merged with only the attached extension instances.
+public final class RppSerializer {
+
+    private RppSerializer() {
+    }
+
+    public static JsonNode serialize(ObjectMapper mapper, Object base, List<Object> attachedExtensions) {
+        ObjectNode node = (ObjectNode) mapper.valueToTree(base);
+        for (Object extension : attachedExtensions) {
+            node.setAll((ObjectNode) mapper.valueToTree(extension));
+        }
+        return node;
+    }
+}
+]]>
+</sourcecode>
+<t>Example usage, attaching an extension only when the target server has advertised support for it:</t>
+
+<sourcecode type="java"><![CDATA[ObjectMapper mapper = new ObjectMapper();
+mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+DomainName domainName = new DomainName();
+domainName.setName("example.example");
+
+List<Object> attached = new ArrayList<>();
+if (serverSupportedExtensions.contains("launch")) {
+    LaunchExtension launch = new LaunchExtension();
+    launch.setPhase("sunrise");
+    attached.add(launch);
+}
+
+JsonNode json = RppSerializer.serialize(mapper, domainName, attached);
+]]>
+</sourcecode>
+<t>Because <tt>LaunchExtension</tt> is only added to <tt>attached</tt> when the server supports it, its properties never appear in the output for a server that does not; <tt>JsonInclude.Include.NON_NULL</tt> independently ensures that any of its own unset optional properties are omitted rather than serialized as <tt>null</tt>, consistent with Rule 2 in <xref target="I-D.ietf-rpp-json"></xref>. The <tt>@JsonProperty(required = true)</tt> annotation on <tt>phase</tt> causes Jackson to reject an incoming <tt>LaunchExtension</tt> JSON instance during deserialization if <tt>phase</tt> is missing; this check only runs when a <tt>LaunchExtension</tt> instance is being deserialized, so it has no effect on servers or requests that do not use the extension.</t>
+<t>Keeping the extension in its own Java class does not imply that it is serialized as a nested JSON object. When the set of extensions is known at compile time, <tt>@JsonUnwrapped</tt> achieves the same flat, on-the-wire composition without manual tree merging: the <tt>LaunchExtension</tt> instance remains a distinct, independently validated class, but its properties are inlined directly into the enclosing object at the same level as <tt>name</tt>, exactly as required by the JSON Schema <tt>allOf</tt> composition:</t>
+
+<sourcecode type="java"><![CDATA[import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
+public class DomainNameWithLaunch {
+
+    @JsonProperty("@type")
+    private final String type = "domainName";
+
+    private String name;
+
+    // Null when the target server does not support, or the client does
+    // not use, the "launch" extension; its properties are then omitted
+    // entirely rather than nested under a "launch" object.
+    @JsonUnwrapped
+    private LaunchExtension launch;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LaunchExtension getLaunch() {
+        return launch;
+    }
+
+    public void setLaunch(LaunchExtension launch) {
+        this.launch = launch;
+    }
+}
+]]>
+</sourcecode>
+<t>The following JUnit 5 test verifies that an unattached extension contributes no properties, that an attached extension is merged flatly and omits its own unset properties, and that the <tt>@JsonUnwrapped</tt> form produces the same flat composition:</t>
+
+<sourcecode type="java"><![CDATA[import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+class RppSerializerTest {
+
+    private final ObjectMapper mapper = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+    @Test
+    void unattachedExtensionContributesNoProperties() {
+        DomainName domainName = new DomainName();
+        domainName.setName("example.example");
+
+        JsonNode json = RppSerializer.serialize(mapper, domainName, Collections.emptyList());
+
+        assertEquals("example.example", json.get("name").asText());
+        assertFalse(json.has("phase"));
+        assertFalse(json.has("applicationId"));
+    }
+
+    @Test
+    void attachedExtensionIsMergedFlatAndOmitsUnsetProperties() {
+        DomainName domainName = new DomainName();
+        domainName.setName("example.example");
+
+        LaunchExtension launch = new LaunchExtension();
+        launch.setPhase("sunrise");
+        // applicationId intentionally left unset (null) and MUST be omitted.
+
+        List<Object> attached = new ArrayList<>();
+        attached.add(launch);
+
+        JsonNode json = RppSerializer.serialize(mapper, domainName, attached);
+
+        assertEquals("example.example", json.get("name").asText());
+        assertEquals("sunrise", json.get("phase").asText());
+        assertFalse(json.has("applicationId"));
+    }
+
+    @Test
+    void jsonUnwrappedProducesTheSameFlatComposition() {
+        DomainNameWithLaunch domainName = new DomainNameWithLaunch();
+        domainName.setName("example.example");
+        domainName.setLaunch(null);
+
+        JsonNode json = mapper.valueToTree(domainName);
+
+        assertTrue(json.has("name"));
+        assertFalse(json.has("launch"));
+        assertFalse(json.has("phase"));
+    }
+
+    @Test
+    void deserializationFailsWhenRequiredExtensionPropertyIsMissing() {
+        String json = "{\"applicationId\":\"abc123\"}";
+
+        assertThrows(MismatchedInputException.class,
+                () -> mapper.readValue(json, LaunchExtension.class));
+    }
+}
+]]>
+</sourcecode>
+<t>```</t>
+</section>
+
+<section anchor="acknowledgements" numbered="false"><name>Acknowledgements</name>
+<t><strong>TODO</strong></t>
+</section>
+
+</back>
+
+</rfc>
