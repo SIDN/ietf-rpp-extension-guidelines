@@ -66,7 +66,33 @@ Base specification - The RPP specification, such as [@!I-D.ietf-rpp-data-objects
 
 Extension specification - A specification that adds new data elements, associations, or operations to an object or operation defined in a base specification, without modifying the base specification itself.
 
-Combined schema - The JSON Schema produced by composing the JSON Schema definition of a base object with the JSON Schema contributed by every extension specification supported by a given deployment or profile, as defined in [@!I-D.ietf-rpp-core].
+Data object - A top-level provisioned resource object that has an independent lifecycle and identity, and defines the operations that can be performed on it, as defined in [@!I-D.ietf-rpp-data-objects].
+
+Component object - A reusable data structure that carries data only, has no operations of its own, and is embedded within data objects or other objects, as defined in [@!I-D.ietf-rpp-data-objects].
+
+Process object - An object that represents a long-running or multi-step operation initiated on a data object, and whose lifecycle is bound to that data object, as defined in [@!I-D.ietf-rpp-data-objects].
+
+Data element - A logical unit of information of an object, identified by a stable name and defined by its cardinality, mutability, data type and constraints, as defined in [@!I-D.ietf-rpp-data-objects]. In the JSON representation, a data element is represented as a property.
+
+Transient data element - A data element that is part of the input or output of an operation but is not persisted as part of the state of an object.
+
+Base object - A data object, component object or process object defined in a base specification, that is changed by one or more extension specifications.
+
+Consumer - A server or client that generates, processes or validates RPP messages.
+
+Deployment - A server together with the set of extensions it supports.
+
+Profile - A named set of protocol features, versions and extensions that defines the capabilities of an RPP server, as defined in [@!I-D.ietf-rpp-core].
+
+Discovery document - The JSON document, published by an RPP server at a well-known location, that describes the capabilities of the server, including the extensions it supports, as defined in [@!I-D.ietf-rpp-core].
+
+JSON Schema - A vocabulary for describing and validating JSON documents, as defined in [@JSON-SCHEMA]. This document uses JSON Schema draft 2020-12.
+
+`rpp:extends` - The property of an extension JSON Schema that maps the reference of each base object definition to the local definition in the extension schema that contributes the new properties, as defined in [@!I-D.ietf-rpp-json].
+
+Effective schema - The JSON Schema that is composed, for one base object definition, from that definition and the definitions of all extensions that a deployment supports, using the `rpp:extends` mappings of the extension schemas. The effective schema has its own `$id`. The effective schema is also referred to as the combined schema.
+
+Combined schema - The JSON Schema produced by composing the JSON Schema definition of a base object with the JSON Schema contributed by every extension specification supported by a given deployment or profile, as defined in [@!I-D.ietf-rpp-core]. See effective schema.
 
 # Conventions Used in This Document
 
@@ -157,6 +183,8 @@ A specification that defines JSON Schema for RPP objects MUST assign a stable `$
 
 ## Consumer Implementation
 
+**TODO: this section should probably be moved to the rpp-json document**
+
 A consumer, which can be a server or client, does not need to generate a distinct set of code classes for every base object and extension combination offered by a particular server. Because extension schemas are additive, self-contained, and independent of one another, a consumer implementation SHOULD instead maintain one set of code classes for each base object and a separate set of code classes for each extension it supports, keeping an extension's classes distinct from the base object's classes rather than flattening their properties together. Composing a base object with whichever extensions apply then becomes a runtime decision, rather than something fixed by code generation for every individual server.
 
 A consumer learns at runtime which extensions a given server supports from the `extensions` list in that server's RPP Discovery response, as defined in [@!I-D.ietf-rpp-core]. It SHOULD attach, populate, and validate extension class instances only for the extensions the server has advertised as supported, and SHOULD ignore any properties in a response that belong to an extension it does not recognize or does not support.
@@ -165,17 +193,41 @@ Because an extension that is not attached to a given base object instance contri
 
 ### Java
 
-For Java clients, a generic library can implement the schema handling described in this document without any code that is specific to a particular extension. The library loads the RPP base schema and the extension schemas supported by a server, uses the `rpp:extends` mappings to compose the effective schema of a base object with `allOf`, applies the `unevaluatedProperties` injection described in "Validation" to the composed schema only, and validates JSON instances against the result. Adding support for a new extension then consists of adding its schema document to the library; no new classes are required. The library in (#java-example) is one possible implementation, its source is available in the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB].
+For Java clients, a generic library [@RPP-JSON-JAVA-LIB] can implement the schema handling described in this document without any code that is specific to a particular extension. The library loads the RPP base schema and the extension schemas supported by a server, uses the `rpp:extends` mappings to compose the effective schema of a base object with `allOf`, applies the `unevaluatedProperties` injection described in "Validation" to the composed schema only, and validates JSON instances against the result. Adding support for a new extension then consists of adding its schema document to the library; no new classes are required.
 
 ## Registration
 
 An extension specification that adds properties to an existing object MUST register the added data elements in the Object and Operation Extension registry defined in [@!I-D.ietf-rpp-data-objects]. The registration MUST additionally include a dereferenceable URL to the JSON Schema document defining the `$defs` entry described in the Additive Schema Composition section above, and MUST identify the base object type(s) being extended by their registered identifier.
 
-## Validation
+## Validation {#validation}
 
 A deployment that supports a specific combination of extensions (a profile, as defined in [@!I-D.ietf-rpp-core]) MUST build, for every extended object type, a combined schema consisting of the base object's definition and the `allOf` branch contributed by every supported extension registered for that object type.
 
 Before using a combined schema to validate a JSON instance, implementations MUST inject `"unevaluatedProperties": false` at every object-schema node of the combined schema, following the algorithm described in [@!I-D.ietf-rpp-json]. This injection MUST be performed only on the combined, per-deployment schema, and MUST NOT be present in the schema document published by any individual base or extension specification. This ensures undeclared properties are rejected while any supported combination of registered extensions validates successfully.
+
+# Extension Specification Format {#extension-format}
+
+An extension specification SHOULD follow the structure defined in this section, so that all extension specifications are uniform and can be read, reviewed and processed in the same way.
+
+An extension specification SHOULD contain at least the following sections, in this order:
+
+1. Introduction: the purpose of the extension, the base specifications it builds upon, and its motivation.
+2. Terminology and Conventions.
+3. Extension Overview: the name, the identifier, the version, the RPP version the extension is compatible with, the `$id` of the JSON Schema document, and the list of base objects that the extension changes.
+4. Changed Data Objects: for every base data object, component object, process object or operation that the extension changes, the added data elements, associations and transient operation elements. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
+5. New Data Objects: every data object, component object or process object that the extension introduces, including its object description, data elements and operations.
+6. JSON Schema: the single JSON Schema document of the extension.
+7. Examples.
+8. IANA Considerations.
+9. Security Considerations.
+10. Privacy Considerations
+11. Internationalization Considerations.
+
+The sections "Changed Data Objects" and "New Data Objects" MUST both be present. An extension that changes no existing object, or introduces no new object, MUST state "None" in the corresponding section. At least one of the two sections MUST define content.
+
+The extension specification MUST define exactly one JSON Schema document, which contains the definitions for all changed and all new objects of the extension. The document MUST have a top-level `$id`, MUST declare the changed base objects using `rpp:extends` as described in "JSON Schema Composition", and MUST NOT contain `unevaluatedProperties` or `additionalProperties` set to `false`, see "Validation". An extension specification MUST NOT split its schema over multiple documents.
+
+The extension specification MUST include examples. For every operation that the extension adds or changes, and for every changed or new object, the specification MUST include at least one valid JSON example of the request or response representation. Every valid example MUST validate successfully against the effective schema that is composed from the base schema and the JSON Schema document of the extension, as described in (#validation).
 
 # IANA Considerations
 
@@ -195,11 +247,49 @@ Before using a combined schema to validate a JSON instance, implementations MUST
 
 {backmatter}
 
-# Java Example {#java-example}
+# Example Extension {#extension-example}
 
-This appendix is informative. It describes a generic Java library that reads the RPP base schema and a set of extension schemas, composes them into the effective schema of a base object as described in "JSON Schema Composition" and "Validation", and validates JSON instances against it. The library contains no code specific to any extension: supporting an additional extension only requires adding its schema document. The complete, buildable source, including unit tests, is available in the `java` directory of the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB]. All paths in this appendix are relative to the root of that repository. It uses the Jackson and networknt `json-schema-validator` libraries.
+This appendix is informative. It shows an extension specification that follows the structure defined in "Extension Specification Format", and it shows how the extension can be validated with a generic Java library. The example extension adds the property `extProperty1` to the Domain Name data object.
 
-The example extension adds the property `extProperty1` to the Domain Name data object. The extension schema declares, using `rpp:extends`, that it extends the create and read definitions of the base object, and contributes the new property in a separate definition:
+## Extension Overview
+
+| Field | Value |
+|---|---|
+| Name | RPP Example Extension Property |
+| Identifier | urn:ietf:params:rpp:extension:example-ext-property |
+| Version | 1.0 |
+| RPP version | 1.0 |
+| Schema `$id` | https://rpp.example/schemas/ext-domain-extproperty1.json |
+| Changed base objects | domainName |
+| New objects | None |
+
+## Changed Data Objects
+
+### Domain Name Data Object
+
+* Identifier: domainName
+
+The following data element is added to the Domain Name Data Object.
+
+* Extension Property 1
+  * Identifier: extProperty1
+  * Cardinality: 0-1
+  * Mutability: create-only
+  * Data Type: String
+  * Description: An example property that is added to the Domain Name Data Object by the extension.
+  * Constraints:
+    * The value MUST contain between 1 and 64 characters.
+    * The value MUST be provided in the Create operation.
+
+The Read operation returns `extProperty1` when the domain name was created with a value for it. No other operations are changed.
+
+## New Data Objects
+
+None.
+
+## JSON Schema
+
+The extension defines a single JSON Schema document. The document declares, using `rpp:extends`, that it extends the create and read definitions of the base object, and contributes the new property in a separate definition:
 
 ```json
 {
@@ -229,59 +319,7 @@ The example extension adds the property `extProperty1` to the Domain Name data o
 }
 ```
 
-The library builds the following effective schema for `domainObject.create`. It references the base definition and the extension definition by their absolute `$id`-relative references, and has its own `$id`:
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rpp.example/rpp/effective/domain.create.json",
-  "$ref": "#/$defs/effective.domainObject.create",
-  "$defs": {
-    "effective.domainObject.create": {
-      "allOf": [
-        { "$ref": "https://rpp.example/rpp/schema.json#/$defs/domainObject.create" },
-        { "$ref": "https://rpp.example/schemas/ext-domain-extproperty1.json#/$defs/ext.domain.create" }
-      ]
-    }
-  }
-}
-```
-
-The library consists of the following classes in the package `nl.sidn.rpp.schema`:
-
-* `RppSchemaLibrary` is the entry point. Schema documents are registered by their top-level `$id`, either individually (`addSchema`) or by loading every `*.json` file in a directory (`addSchemasFrom`). A deployment registers the base schema and the extension schemas it supports; the registered set corresponds to the profile of that deployment. The method `effectiveSchema` takes the absolute reference of a base object definition and the `$id` for the effective schema. It finds the extensions of that base object through their `rpp:extends` mappings, resolves each local extension reference against the `$id` of the extension schema, and builds the effective schema document shown above. It then enriches every registered schema and the effective schema with the injected keyword, and creates a validator that resolves all references from the registered set, so nothing is fetched from the network. The method rejects a base schema that has not been loaded and an effective `$id` that equals the `$id` of a loaded schema.
-* `EffectiveSchema` is the result of `effectiveSchema`. It provides the effective schema document without injected keywords (`toJson`), the list of validation errors for a JSON instance (`validate`), and a boolean check (`isValid`). An empty error list means the instance conforms to the base object and to every supported extension.
-* `UnevaluatedPropertiesInjector` implements the injection of `"unevaluatedProperties": false` described in [@!I-D.ietf-rpp-json]. It works on a copy of each schema, so the published schema documents are never modified. The keyword is added to every object-schema node that is a use site: the root, the schemas inside `properties`, `patternProperties` and `items`, and any node carrying a `$ref` or a combining keyword. It is not added to the branches inside `allOf`, `anyOf` and `oneOf`, or to the entries of `$defs`, because there it would reject the properties contributed by the other branches. Nodes that already declare `additionalProperties` or `unevaluatedProperties` are left unchanged.
-* `Main` is a command line example. It loads the schemas from `java/schemas/base` and `java/schemas/extensions`, builds the effective schema for the Domain Name create definition, prints it, and validates every instance in `java/examples`.
-
-The unit tests in `RppSchemaLibraryTest` exercise the composition of the effective schema, verify that the published schemas contain no injected keyword, and validate the example instances below, with and without the extension loaded.
-
-The example requires a Java 17 or later JDK and Apache Maven. The schema and example directories are resolved relative to the working directory, so the commands MUST be run from the `java` directory of the repository:
-
-```sh
-git clone https://github.com/SIDN/rpp-json-java-lib.git
-cd rpp-json-java-lib/java
-
-# Run the unit tests
-mvn test
-
-# Run Main: prints the effective schema and validates each instance in examples/
-mvn compile exec:java
-
-# Run the unit tests, then Main
-mvn test exec:java
-```
-
-Running `Main` prints the effective schema, followed by the validation result for every instance in `java/examples`, for example:
-
-```
-domain-create-invalid-undeclared.json: invalid
-  $: property 'extProperty2' is not evaluated and the schema does not allow unevaluated properties
-
-domain-create-valid.json: valid
-```
-
-The text of the validation messages depends on the default locale of the JVM. To obtain English messages, set the locale for the Maven JVM, for example `MAVEN_OPTS="-Duser.language=en" mvn compile exec:java`.
+## Examples
 
 The following instance is valid, because `extProperty1` is declared by the supported extension:
 
@@ -316,7 +354,45 @@ The following instances are invalid. The first omits the required `extProperty1`
 }
 ```
 
-The same base schema and the same instance that uses `extProperty1` are rejected by a library instance that has not loaded the extension schema, since in that deployment `extProperty1` is an undeclared property. This is the behavior required by "Validation": the set of accepted properties is determined only by the extensions that the deployment supports.
+The same base schema and the same instance that uses `extProperty1` are rejected by a deployment that does not support the extension, since in that deployment `extProperty1` is an undeclared property. This is the behavior required by "Validation": the set of accepted properties is determined only by the extensions that the deployment supports.
+
+## Composition and Validation
+
+For a deployment that supports the example extension, the effective schema for `domainObject.create` references the base definition and the extension definition, and has its own `$id`:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rpp.example/rpp/effective/domain.create.json",
+  "$ref": "#/$defs/effective.domainObject.create",
+  "$defs": {
+    "effective.domainObject.create": {
+      "allOf": [
+        { "$ref": "https://rpp.example/rpp/schema.json#/$defs/domainObject.create" },
+        { "$ref": "https://rpp.example/schemas/ext-domain-extproperty1.json#/$defs/ext.domain.create" }
+      ]
+    }
+  }
+}
+```
+
+## IANA Considerations
+
+**TODO:**
+
+## Security Considerations
+
+**TODO:**
+    
+## Privacy Considerations
+
+**TODO:**
+
+## Internationalization Considerations
+
+**TODO:**
+
+This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB]. The library loads the base schema and the extension schemas supported by a deployment, builds effective schemas from the `rpp:extends` mappings, applies the injection of `unevaluatedProperties` described in "Validation", and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.
 
 {numbered="false"}
 # Acknowledgements

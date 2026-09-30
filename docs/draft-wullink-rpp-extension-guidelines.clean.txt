@@ -14,9 +14,17 @@ Expires: 18 May 2027                                               DENIC
 
 Abstract
 
-   Extension guidelines for the RESTful Provisioning Protocol (RPP) ...
-
-   *TODO*
+   The RESTful Provisioning Protocol (RPP) defines a base set of data
+   objects, component objects, and operations for provisioning registry
+   data.  This document defines guidelines and a normative mechanism for
+   extension specifications that add data elements, associations,
+   operations, result codes, or other functionality to objects and
+   operations defined in a base RPP specification, without modifying the
+   base specification itself.  It specifies the recognized RPP extension
+   points, the JSON Schema composition method extensions MUST use to
+   remain independently combinable, the corresponding registration
+   requirements, and considerations for client and server
+   implementations that support one or more extensions.
 
 Status of This Memo
 
@@ -58,35 +66,83 @@ Table of Contents
    5.  RPP Extension Points
      5.1.  New Data Objects
      5.2.  New Data Elements on Existing Objects
-     5.3.  New Associations
-     5.4.  New Operations
-     5.5.  URL Endpoints Are Derived, Not a Separate Extension Point
-     5.6.  Extended Operation Inputs and Outputs
-     5.7.  External Data Types
-     5.8.  New RPP Result Codes
-     5.9.  Error Object Extension Fields
-     5.10. Additional Query Parameters
-     5.11. New Authentication and Authorization Methods
-     5.12. Discovery and Profile Advertisement
-   6.  Extending Data Objects Defined in Other Specifications
+     5.3.  New Operations
+     5.4.  URL Endpoints
+     5.5.  Operation Inputs and Outputs
+     5.6.  External Data Types
+     5.7.  New RPP Result Codes
+     5.8.  Error Object Extension Fields
+     5.9.  Additional Query Parameters
+     5.10. New Authentication and Authorization Methods
+     5.11. Discovery document
+   6.  Extending Data Objects
      6.1.  JSON Schema Composition
      6.2.  Schema Identification
-     6.3.  Client Implementation
+     6.3.  Consumer Implementation
        6.3.1.  Java
      6.4.  Registration
      6.5.  Validation
-   7.  IANA Considerations
-   8.  Internationalization Considerations
-   9.  Privacy Considerations
-   10. Change History
-   11. Normative References
-   Appendix A.  Java Example
+   7.  Extension Specification Format
+   8.  IANA Considerations
+   9.  Internationalization Considerations
+   10. Privacy Considerations
+   11. Change History
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
+   Appendix A.  Example Extension
+     A.1.  Extension Overview
+     A.2.  Changed Data Objects
+       A.2.1.  Domain Name Data Object
+     A.3.  New Data Objects
+     A.4.  JSON Schema
+     A.5.  Examples
+     A.6.  Composition and Validation
+     A.7.  IANA Considerations
+     A.8.  Security Considerations
+     A.9.  Privacy Considerations
+     A.10. Internationalization Considerations
    Acknowledgements
    Authors' Addresses
 
 1.  Introduction
 
-   *TODO*
+   The RESTful Provisioning Protocol (RPP), as defined in
+   [I-D.ietf-rpp-core], [I-D.ietf-rpp-data-objects], and
+   [I-D.ietf-rpp-json], provides a base set of data objects, component
+   objects, and operations for the provisioning of registry data.
+   Deployments may need to add functionality beyond this base set, for
+   example to support policies specific to a registry, a jurisdiction,
+   or a class of registered objects.  RPP is designed to accommodate
+   such needs through extension specifications, so that additional
+   functionality can be introduced without modifying the base
+   specification that defines the object or operation being extended.
+
+   Because independently developed extension specifications may be
+   deployed together, and because RPP relies on JSON Schema, as defined
+   in [I-D.ietf-rpp-json], to validate protocol messages, extensions
+   need to follow a common, predictable pattern.  Without such a
+   pattern, extensions that are individually valid could conflict when
+   combined at a given deployment, or could require ad-hoc, per-
+   combination schema and code to be written for every deployment
+   profile.  This document defines that common pattern.
+
+   This document identifies the set of extension points along which an
+   RPP base specification MAY be extended, including new data objects,
+   new data elements on existing objects, new operations, new operation
+   inputs and outputs, external data types, new RPP result codes, error
+   object extension fields, additional query parameters, and additions
+   to the RPP Discovery document.  For each extension point, this
+   document states the applicable registration requirements.
+
+   This document further discusses considerations for client and server
+   implementations that need to compose, validate, and process RPP
+   messages that may include data contributed by more than one
+   extension.
+
+   This document does not itself define any RPP extension.  It defines
+   the rules that extension specifications, and the deployments that
+   support them, are expected to follow.
 
 2.  Terminology
 
@@ -107,10 +163,65 @@ Table of Contents
    defined in a base specification, without modifying the base
    specification itself.
 
+   Data object - A top-level provisioned resource object that has an
+   independent lifecycle and identity, and defines the operations that
+   can be performed on it, as defined in [I-D.ietf-rpp-data-objects].
+
+   Component object - A reusable data structure that carries data only,
+   has no operations of its own, and is embedded within data objects or
+   other objects, as defined in [I-D.ietf-rpp-data-objects].
+
+   Process object - An object that represents a long-running or multi-
+   step operation initiated on a data object, and whose lifecycle is
+   bound to that data object, as defined in [I-D.ietf-rpp-data-objects].
+
+   Data element - A logical unit of information of an object, identified
+   by a stable name and defined by its cardinality, mutability, data
+   type and constraints, as defined in [I-D.ietf-rpp-data-objects].  In
+   the JSON representation, a data element is represented as a property.
+
+   Transient data element - A data element that is part of the input or
+   output of an operation but is not persisted as part of the state of
+   an object.
+
+   Base object - A data object, component object or process object
+   defined in a base specification, that is changed by one or more
+   extension specifications.
+
+   Consumer - A server or client that generates, processes or validates
+   RPP messages.
+
+   Deployment - A server together with the set of extensions it
+   supports.
+
+   Profile - A named set of protocol features, versions and extensions
+   that defines the capabilities of an RPP server, as defined in
+   [I-D.ietf-rpp-core].
+
+   Discovery document - The JSON document, published by an RPP server at
+   a well-known location, that describes the capabilities of the server,
+   including the extensions it supports, as defined in
+   [I-D.ietf-rpp-core].
+
+   JSON Schema - A vocabulary for describing and validating JSON
+   documents, as defined in [JSON-SCHEMA].  This document uses JSON
+   Schema draft 2020-12.
+
+   rpp:extends - The property of an extension JSON Schema that maps the
+   reference of each base object definition to the local definition in
+   the extension schema that contributes the new properties, as defined
+   in [I-D.ietf-rpp-json].
+
+   Effective schema - The JSON Schema that is composed, for one base
+   object definition, from that definition and the definitions of all
+   extensions that a deployment supports, using the rpp:extends mappings
+   of the extension schemas.  The effective schema has its own $id.  The
+   effective schema is also referred to as the combined schema.
+
    Combined schema - The JSON Schema produced by composing the JSON
    Schema definition of a base object with the JSON Schema contributed
    by every extension specification supported by a given deployment or
-   profile, as defined in [I-D.ietf-rpp-core].
+   profile, as defined in [I-D.ietf-rpp-core].  See effective schema.
 
 3.  Conventions Used in This Document
 
@@ -130,6 +241,9 @@ Table of Contents
    ensure that any new elements do not conflict with existing ones in
    the base specification.
 
+   *TODO: do we recommend to use namespaces, using prefixes, to avoid
+   naming conflicts between properties added by different extensions?*
+
 5.  RPP Extension Points
 
    An extension specification MAY extend RPP along one or more of the
@@ -140,42 +254,20 @@ Table of Contents
 5.1.  New Data Objects
 
    Extensions MAY define entirely new resource, component, or process
-   objects, as described in [I-D.ietf-rpp-data-objects].  New objects
-   MUST be registered in the RPP Data Object Registry
-   [I-D.ietf-rpp-data-objects] and MUST define their own JSON Schema
-   $defs entry with its own $id.  Because no base object definition
-   exists to compose with, the Additive Schema Composition method
-   described below does not apply to this extension point.
+   objects, as described in [I-D.ietf-rpp-data-objects].
 
 5.2.  New Data Elements on Existing Objects
 
    Extensions MAY add new data elements (properties) to a data object,
    component object, or process object defined in a base specification.
-   This is the extension point covered in detail in the "Extending Data
-   Objects Defined in Other Specifications" section below: the extension
-   MUST compose its new properties onto the base object's JSON Schema
-   definition using allOf, and MUST register the addition in the Object
-   and Operation Extension registry defined in
-   [I-D.ietf-rpp-data-objects].
+   This is the extension point covered in detail inSection 6 below.
 
-5.3.  New Associations
-
-   Extensions MAY introduce new associations (Aggregation, Composition,
-   or their Labelled/Dictionary variants) between existing or new
-   objects, as described in [I-D.ietf-rpp-data-objects].  An association
-   is represented as a data element whose Data Type references another
-   object; it MUST follow the same additive schema composition and
-   registration rules as any other new data element.
-
-5.4.  New Operations
+5.3.  New Operations
 
    Extensions MAY define entirely new operations on existing or new data
-   objects.  New operations MUST define their own request and response
-   JSON Schema $defs, following [I-D.ietf-rpp-json], and MUST be
-   registered in the Object and Operation Extension registry defined in
-   [I-D.ietf-rpp-data-objects].
+   objects.
 
-5.5.  URL Endpoints Are Derived, Not a Separate Extension Point
+5.4.  URL Endpoints
 
    RPP endpoint URLs are not an independent extension point.  As defined
    in [I-D.ietf-rpp-core], every endpoint URL and HTTP method is derived
@@ -198,17 +290,12 @@ Table of Contents
    point above, and rely on the derivation rules in [I-D.ietf-rpp-core]
    to determine the resulting endpoint.
 
-5.6.  Extended Operation Inputs and Outputs
+5.5.  Operation Inputs and Outputs
 
-   Extensions MAY add transient data elements to the input or output of
-   an existing operation (e.g. an additional field in a Create request
-   or Read response) without adding a persistent property to the
-   underlying data object.  Such additions MUST follow the same Additive
-   Schema Composition method described below, applied to the operation's
-   request or response $defs entry, as defined in [I-D.ietf-rpp-json],
-   rather than to the object's own canonical schema.
+   Extensions MAY add both transient and persistent data elements to the
+   input or output of an existing operation.
 
-5.7.  External Data Types
+5.6.  External Data Types
 
    Instead of adding properties to an object, an extension MAY reference
    a type defined entirely in an external specification (e.g.
@@ -217,42 +304,44 @@ Table of Contents
    substituting or supplying a whole, independently versioned data type,
    rather than adding fields to an existing RPP-defined object.
 
-5.8.  New RPP Result Codes
+5.7.  New RPP Result Codes
 
    Extensions MAY define new RPP result codes within the reserved result
    code classes, registered in the RPP Result Codes registry defined in
-   [I-D.ietf-rpp-core].
+   [I-D.ietf-rpp-core].  New result codes MUST be registered in the RPP
+   Result Codes registry defined in [I-D.ietf-rpp-core].
 
-5.9.  Error Object Extension Fields
+5.8.  Error Object Extension Fields
 
-   Extensions MAY add extension fields to the Problem Detail error
-   object to convey additional, extension-specific information about the
-   cause of an error, as described in [I-D.ietf-rpp-core].  These fields
-   MUST follow the same additive JSON Schema composition rules as any
-   other new data element.
+   Extensions MAY add new fields to the Problem Detail error object to
+   convey additional, extension-specific information about the cause of
+   an error, as described in [I-D.ietf-rpp-core].
 
-5.10.  Additional Query Parameters
+   *TODO: there is no schema for the Problem Detail error object defined
+   in the base specification, fix this?*
+
+5.9.  Additional Query Parameters
 
    Extensions MAY define additional HTTP query parameters for existing
    operations, for example to further qualify a check or read request,
-   as described in [I-D.ietf-rpp-core].
+   as described in [I-D.ietf-rpp-core].  Any transient parameter for a
+   read, query, update, and delete operation MUST be translated into an
+   HTTP query parameter, named by the operation's parameter identifier.
 
-5.11.  New Authentication and Authorization Methods
+5.10.  New Authentication and Authorization Methods
 
-   Extensions MAY define additional authentication or authorization
-   methods for use with RPP.  Such methods MUST be registered in the RPP
-   Extension registry defined in [I-D.ietf-rpp-core].
+   *TODO: is this an extension point?*
 
-5.12.  Discovery and Profile Advertisement
+5.11.  Discovery document
 
-   Regardless of which of the above extension points it uses, a server
-   MUST advertise support for an extension in the RPP Discovery
-   document's extensions array (name, id, version, url), as defined in
-   [I-D.ietf-rpp-core], and the extension MAY be included in one or more
-   RPP Profiles that bundle a set of supported extensions for a given
-   deployment.
+   New properties added by an extension to the RPP Discovery document
+   MUST be included in the appropriate section of the document,
+   following the structure defined in [I-D.ietf-rpp-core].
 
-6.  Extending Data Objects Defined in Other Specifications
+   *TODO: there is no schema for the Problem Detail error object defined
+   in the base specification, fix this?*
+
+6.  Extending Data Objects
 
    RPP is designed so that extension specifications can add new data
    elements to data objects, component objects, and operations without
@@ -265,8 +354,9 @@ Table of Contents
 
 6.1.  JSON Schema Composition
 
-   For every data object which is modified by an extension
-   specification, the extension specification MUST define a new JSON
+   Every data object defined in a base specification, when modified by
+   an extension specification, must be extended using an extension
+   specification.  The extension specification MUST define a new JSON
    Schema document that composes the base object's schema with the new
    properties using allOf.  The extension specification MUST NOT copy,
    redefine, or otherwise restate the JSON Schema definition of the base
@@ -275,34 +365,42 @@ Table of Contents
    https://www.iana.org/.../domainName.json#/$defs/domainName) in an
    allOf branch, and add its own new properties in a separate branch.
 
-   The extension specification MUST include a JSON schema for every
-   operation that is modified by the extension.
+   An extension schema MUST declare which base object definitions it
+   extends using the rpp:extends property, as defined in
+   [I-D.ietf-rpp-json].  The property maps the fully qualified reference
+   of each base object definition to the local definition, within the
+   extension schema, that contributes the new properties.  This mapping
+   allows an implementation to construct, for a given base object, the
+   effective schema that combines the base definition with every
+   supported extension, without any knowledge of the extensions in
+   advance.
 
 6.2.  Schema Identification
 
    A specification that defines JSON Schema for RPP objects MUST assign
-   a stable, dereferenceable $id to its schema document(s), and MUST NOT
-   change the $id of a published $defs entry.  Extension specifications
-   MUST reference a base object's definition by its fully qualified $id-
-   relative pointer (e.g.
+   a stable $id to its schema document(s).  Extension specifications
+   MUST reference a base object's definition by its $id (e.g.
    https://www.iana.org/.../domainName.json#/$defs/domainName) rather
    than copying the base definition into their own schema.
 
-6.3.  Client Implementation
+6.3.  Consumer Implementation
 
-   A client does not need to generate a distinct set of code classes for
-   every base object and extension combination offered by a particular
-   server.  Because extension schemas are additive, self-contained, and
-   independent of one another, a client implementation SHOULD instead
-   maintain one set of code classes for each base object and a separate
-   set of code classes for each extension it supports, keeping an
-   extension's classes distinct from the base object's classes rather
-   than flattening their properties together.  Composing a base object
-   with whichever extensions apply then becomes a runtime decision,
-   rather than something fixed by code generation for every individual
-   server.
+   *TODO: this section should probably be moved to the rpp-json
+   document*
 
-   A client learns at runtime which extensions a given server supports
+   A consumer, which can be a server or client, does not need to
+   generate a distinct set of code classes for every base object and
+   extension combination offered by a particular server.  Because
+   extension schemas are additive, self-contained, and independent of
+   one another, a consumer implementation SHOULD instead maintain one
+   set of code classes for each base object and a separate set of code
+   classes for each extension it supports, keeping an extension's
+   classes distinct from the base object's classes rather than
+   flattening their properties together.  Composing a base object with
+   whichever extensions apply then becomes a runtime decision, rather
+   than something fixed by code generation for every individual server.
+
+   A consumer learns at runtime which extensions a given server supports
    from the extensions list in that server's RPP Discovery response, as
    defined in [I-D.ietf-rpp-core].  It SHOULD attach, populate, and
    validate extension class instances only for the extensions the server
@@ -311,7 +409,7 @@ Table of Contents
    not support.
 
    Because an extension that is not attached to a given base object
-   instance contributes no properties at all, a client naturally
+   instance contributes no properties at all, a consumer naturally
    serializes only the base object together with the properties of
    whichever extensions are actually in use, without needing to
    distinguish this case from a property that is merely absent or null
@@ -324,25 +422,16 @@ Table of Contents
 
 6.3.1.  Java
 
-   For Java clients, common JSON serialization frameworks such as
-   Jackson support this attach-then-merge model directly: extension
-   instances can be merged into the base object's serialized tree at
-   runtime (e.g. ObjectNode.setAll()), inlined via a nullable field
-   annotated @JsonUnwrapped, or flattened through
-   @JsonAnyGetter/@JsonAnySetter-backed property maps.  In all three
-   cases, an extension that is not attached contributes no properties,
-   and @JsonInclude(Include.NON_NULL) on each extension class
-   independently omits its own unset optional properties.  A property
-   that an extension's schema defines as required can be annotated
-   @JsonProperty(required = true), causing Jackson to reject an incoming
-   JSON instance during deserialization if the property is missing;
-   because this check only applies when the extension class itself is
-   being deserialized, it naturally does not apply to servers or
-   requests where that extension is not in use.  Required-property
-   validation for an extension is otherwise typically out of scope for
-   the JSON library itself and is instead enforced with a Bean
-   Validation framework (e.g. jakarta.validation) or a JSON Schema
-   validator, applied only to attached extension instances.
+   For Java clients, a generic library [RPP-JSON-JAVA-LIB] can implement
+   the schema handling described in this document without any code that
+   is specific to a particular extension.  The library loads the RPP
+   base schema and the extension schemas supported by a server, uses the
+   rpp:extends mappings to compose the effective schema of a base object
+   with allOf, applies the unevaluatedProperties injection described in
+   "Validation" to the composed schema only, and validates JSON
+   instances against the result.  Adding support for a new extension
+   then consists of adding its schema document to the library; no new
+   classes are required.
 
 6.4.  Registration
 
@@ -372,23 +461,80 @@ Table of Contents
    any supported combination of registered extensions validates
    successfully.
 
-7.  IANA Considerations
+7.  Extension Specification Format
+
+   An extension specification SHOULD follow the structure defined in
+   this section, so that all extension specifications are uniform and
+   can be read, reviewed and processed in the same way.
+
+   An extension specification SHOULD contain at least the following
+   sections, in this order:
+
+   1.   Introduction: the purpose of the extension, the base
+        specifications it builds upon, and its motivation.
+   2.   Terminology and Conventions.
+   3.   Extension Overview: the name, the identifier, the version, the
+        RPP version the extension is compatible with, the $id of the
+        JSON Schema document, and the list of base objects that the
+        extension changes.
+   4.   Changed Data Objects: for every base data object, component
+        object, process object or operation that the extension changes,
+        the added data elements, associations and transient operation
+        elements.  Each added data element MUST be defined using the
+        data element attributes defined in [I-D.ietf-rpp-data-objects]
+        (name, identifier, cardinality, mutability, data type,
+        description and constraints).
+   5.   New Data Objects: every data object, component object or process
+        object that the extension introduces, including its object
+        description, data elements and operations.
+   6.   JSON Schema: the single JSON Schema document of the extension.
+   7.   Examples.
+   8.   IANA Considerations.
+   9.   Security Considerations.
+   10.  Privacy Considerations
+   11.  Internationalization Considerations.
+
+   The sections "Changed Data Objects" and "New Data Objects" MUST both
+   be present.  An extension that changes no existing object, or
+   introduces no new object, MUST state "None" in the corresponding
+   section.  At least one of the two sections MUST define content.
+
+   The extension specification MUST define exactly one JSON Schema
+   document, which contains the definitions for all changed and all new
+   objects of the extension.  The document MUST have a top-level $id,
+   MUST declare the changed base objects using rpp:extends as described
+   in "JSON Schema Composition", and MUST NOT contain
+   unevaluatedProperties or additionalProperties set to false, see
+   "Validation".  An extension specification MUST NOT split its schema
+   over multiple documents.
+
+   The extension specification MUST include examples.  For every
+   operation that the extension adds or changes, and for every changed
+   or new object, the specification MUST include at least one valid JSON
+   example of the request or response representation.  Every valid
+   example MUST validate successfully against the effective schema that
+   is composed from the base schema and the JSON Schema document of the
+   extension, as described in Section 6.5.
+
+8.  IANA Considerations
 
    *TODO*
 
-8.  Internationalization Considerations
+9.  Internationalization Considerations
 
    *TODO*
 
-9.  Privacy Considerations
+10.  Privacy Considerations
 
    *TODO*
 
-10.  Change History
+11.  Change History
 
    *TODO*
 
-11.  Normative References
+12.  References
+
+12.1.  Normative References
 
    [I-D.ietf-rpp-core]
               Wullink, M. and P. Kowalik, "RESTful Provisioning Protocol
@@ -421,235 +567,196 @@ Table of Contents
               RFC 3986, DOI 10.17487/RFC3986, January 2005,
               <https://www.rfc-editor.org/info/rfc3986>.
 
-Appendix A.  Java Example
+12.2.  Informative References
 
-   This appendix is informative and illustrates one possible way to
-   implement the attach-then-merge model described in "Client
-   Implementation" using Java and the Jackson library.  The base object
-   and each extension are modeled as separate classes; an extension
-   contributes properties to the serialized output only when an instance
-   of it has been attached, and only for extensions the target server
-   has advertised support for.  The code below compiles against jackson-
-   databind and jackson-annotations.
+   [JSON-SCHEMA]
+              JSON Schema, "JSON Schema: A vocabulary for describing
+              JSON Data", 2020,
+              <https://json-schema.org/draft/2020-12/json-schema-core>.
 
-   import com.fasterxml.jackson.annotation.JsonInclude;
-   import com.fasterxml.jackson.annotation.JsonProperty;
-   import com.fasterxml.jackson.annotation.JsonUnwrapped;
-   import com.fasterxml.jackson.databind.JsonNode;
-   import com.fasterxml.jackson.databind.ObjectMapper;
-   import com.fasterxml.jackson.databind.node.ObjectNode;
+   [RPP-JSON-JAVA-LIB]
+              SIDN Labs, "rpp-json-java-lib: Java library for RPP JSON
+              Schema extensions", 2026,
+              <https://github.com/SIDN/rpp-json-java-lib>.
 
-   import java.util.List;
+Appendix A.  Example Extension
 
-   // Base object class, one per RPP object type.
-   public class DomainName {
+   This appendix is informative.  It shows an extension specification
+   that follows the structure defined in "Extension Specification
+   Format", and it shows how the extension can be validated with a
+   generic Java library.  The example extension adds the property
+   extProperty1 to the Domain Name data object.
 
-       @JsonProperty("@type")
-       private final String type = "domainName";
+A.1.  Extension Overview
 
-       private String name;
+    +============+====================================================+
+    | Field      | Value                                              |
+    +============+====================================================+
+    | Name       | RPP Example Extension Property                     |
+    +------------+----------------------------------------------------+
+    | Identifier | urn:ietf:params:rpp:extension:example-ext-property |
+    +------------+----------------------------------------------------+
+    | Version    | 1.0                                                |
+    +------------+----------------------------------------------------+
+    | RPP        | 1.0                                                |
+    | version    |                                                    |
+    +------------+----------------------------------------------------+
+    | Schema $id | https://rpp.example/schemas/ext-domain-            |
+    |            | extproperty1.json (https://rpp.example/schemas/    |
+    |            | ext-domain-extproperty1.json)                      |
+    +------------+----------------------------------------------------+
+    | Changed    | domainName                                         |
+    | base       |                                                    |
+    | objects    |                                                    |
+    +------------+----------------------------------------------------+
+    | New        | None                                               |
+    | objects    |                                                    |
+    +------------+----------------------------------------------------+
 
-       public String getName() {
-           return name;
+                                  Table 1
+
+A.2.  Changed Data Objects
+
+A.2.1.  Domain Name Data Object
+
+   -  Identifier: domainName
+
+   The following data element is added to the Domain Name Data Object.
+
+   -  Extension Property 1
+      -  Identifier: extProperty1
+      -  Cardinality: 0-1
+      -  Mutability: create-only
+      -  Data Type: String
+      -  Description: An example property that is added to the Domain
+         Name Data Object by the extension.
+      -  Constraints:
+         -  The value MUST contain between 1 and 64 characters.
+         -  The value MUST be provided in the Create operation.
+
+   The Read operation returns extProperty1 when the domain name was
+   created with a value for it.  No other operations are changed.
+
+A.3.  New Data Objects
+
+   None.
+
+A.4.  JSON Schema
+
+   The extension defines a single JSON Schema document.  The document
+   declares, using rpp:extends, that it extends the create and read
+   definitions of the base object, and contributes the new property in a
+   separate definition:
+
+   {
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "$id": "https://rpp.example/schemas/ext-domain-extproperty1.json",
+
+     "rpp:extends": {
+       "https://rpp.example/rpp/schema.json#/$defs/domainObject.create": "#/$defs/ext.domain.create",
+       "https://rpp.example/rpp/schema.json#/$defs/domainObject.read": "#/$defs/ext.domain.read"
+     },
+
+     "$defs": {
+       "ext.domain.create": {
+         "type": "object",
+         "properties": {
+           "extProperty1": { "type": "string", "minLength": 1, "maxLength": 64 }
+         },
+         "required": ["extProperty1"]
+       },
+       "ext.domain.read": {
+         "type": "object",
+         "properties": {
+           "extProperty1": { "type": "string" }
+         }
        }
-
-       public void setName(String name) {
-           this.name = name;
-       }
+     }
    }
 
-   // Extension class, independent of the base object and of other extensions.
-   @JsonInclude(JsonInclude.Include.NON_NULL)
-   public class LaunchExtension {
+A.5.  Examples
 
-       @JsonProperty(required = true)
-       private String phase;
+   The following instance is valid, because extProperty1 is declared by
+   the supported extension:
 
-       private String applicationId;
-
-       public String getPhase() {
-           return phase;
-       }
-
-       public void setPhase(String phase) {
-           this.phase = phase;
-       }
-
-       public String getApplicationId() {
-           return applicationId;
-       }
-
-       public void setApplicationId(String applicationId) {
-           this.applicationId = applicationId;
-       }
+   {
+     "@type": "domainName",
+     "name": "example.example",
+     "registrant": { "@type": "contact", "id": "c-1234" },
+     "nameservers": [
+       { "@type": "host", "hostName": "ns1.example.net" }
+     ],
+     "extProperty1": "some value"
    }
 
-   // Serializes the base object merged with only the attached extension instances.
-   public final class RppSerializer {
+   The following instances are invalid.  The first omits the required
+   extProperty1, the second gives extProperty1 the wrong type, and the
+   third contains extProperty2, which no supported extension declares
+   and which is therefore rejected by the injected unevaluatedProperties
+   keyword:
 
-       private RppSerializer() {
-       }
+   { "@type": "domainName", "name": "example.example" }
 
-       public static JsonNode serialize(ObjectMapper mapper, Object base, List<Object> attachedExtensions) {
-           ObjectNode node = (ObjectNode) mapper.valueToTree(base);
-           for (Object extension : attachedExtensions) {
-               node.setAll((ObjectNode) mapper.valueToTree(extension));
-           }
-           return node;
-       }
+   { "@type": "domainName", "name": "example.example", "extProperty1": 42 }
+
+   {
+     "@type": "domainName",
+     "name": "example.example",
+     "extProperty1": "some value",
+     "extProperty2": "not declared by any supported extension"
    }
 
-   Example usage, attaching an extension only when the target server has
-   advertised support for it:
+   The same base schema and the same instance that uses extProperty1 are
+   rejected by a deployment that does not support the extension, since
+   in that deployment extProperty1 is an undeclared property.  This is
+   the behavior required by "Validation": the set of accepted properties
+   is determined only by the extensions that the deployment supports.
 
-   ObjectMapper mapper = new ObjectMapper();
-   mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+A.6.  Composition and Validation
 
-   DomainName domainName = new DomainName();
-   domainName.setName("example.example");
+   For a deployment that supports the example extension, the effective
+   schema for domainObject.create references the base definition and the
+   extension definition, and has its own $id:
 
-   List<Object> attached = new ArrayList<>();
-   if (serverSupportedExtensions.contains("launch")) {
-       LaunchExtension launch = new LaunchExtension();
-       launch.setPhase("sunrise");
-       attached.add(launch);
+   {
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "$id": "https://rpp.example/rpp/effective/domain.create.json",
+     "$ref": "#/$defs/effective.domainObject.create",
+     "$defs": {
+       "effective.domainObject.create": {
+         "allOf": [
+           { "$ref": "https://rpp.example/rpp/schema.json#/$defs/domainObject.create" },
+           { "$ref": "https://rpp.example/schemas/ext-domain-extproperty1.json#/$defs/ext.domain.create" }
+         ]
+       }
+     }
    }
 
-   JsonNode json = RppSerializer.serialize(mapper, domainName, attached);
+A.7.  IANA Considerations
 
-   Because LaunchExtension is only added to attached when the server
-   supports it, its properties never appear in the output for a server
-   that does not; JsonInclude.Include.NON_NULL independently ensures
-   that any of its own unset optional properties are omitted rather than
-   serialized as null, consistent with Rule 2 in [I-D.ietf-rpp-json].
-   The @JsonProperty(required = true) annotation on phase causes Jackson
-   to reject an incoming LaunchExtension JSON instance during
-   deserialization if phase is missing; this check only runs when a
-   LaunchExtension instance is being deserialized, so it has no effect
-   on servers or requests that do not use the extension.
+   *TODO:*
 
-   Keeping the extension in its own Java class does not imply that it is
-   serialized as a nested JSON object.  When the set of extensions is
-   known at compile time, @JsonUnwrapped achieves the same flat, on-the-
-   wire composition without manual tree merging: the LaunchExtension
-   instance remains a distinct, independently validated class, but its
-   properties are inlined directly into the enclosing object at the same
-   level as name, exactly as required by the JSON Schema allOf
-   composition:
+A.8.  Security Considerations
 
-   import com.fasterxml.jackson.annotation.JsonProperty;
-   import com.fasterxml.jackson.annotation.JsonUnwrapped;
+   *TODO:*
 
-   public class DomainNameWithLaunch {
+A.9.  Privacy Considerations
 
-       @JsonProperty("@type")
-       private final String type = "domainName";
+   *TODO:*
 
-       private String name;
+A.10.  Internationalization Considerations
 
-       // Null when the target server does not support, or the client does
-       // not use, the "launch" extension; its properties are then omitted
-       // entirely rather than nested under a "launch" object.
-       @JsonUnwrapped
-       private LaunchExtension launch;
+   *TODO:*
 
-       public String getName() {
-           return name;
-       }
-
-       public void setName(String name) {
-           this.name = name;
-       }
-
-       public LaunchExtension getLaunch() {
-           return launch;
-       }
-
-       public void setLaunch(LaunchExtension launch) {
-           this.launch = launch;
-       }
-   }
-
-   The following JUnit 5 test verifies that an unattached extension
-   contributes no properties, that an attached extension is merged
-   flatly and omits its own unset properties, and that the
-   @JsonUnwrapped form produces the same flat composition:
-
-   import static org.junit.jupiter.api.Assertions.assertEquals;
-   import static org.junit.jupiter.api.Assertions.assertFalse;
-   import static org.junit.jupiter.api.Assertions.assertThrows;
-   import static org.junit.jupiter.api.Assertions.assertTrue;
-
-   import com.fasterxml.jackson.annotation.JsonInclude;
-   import com.fasterxml.jackson.databind.JsonNode;
-   import com.fasterxml.jackson.databind.ObjectMapper;
-   import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-
-   import java.util.ArrayList;
-   import java.util.Collections;
-   import java.util.List;
-
-   import org.junit.jupiter.api.Test;
-
-   class RppSerializerTest {
-
-       private final ObjectMapper mapper = new ObjectMapper()
-               .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-       @Test
-       void unattachedExtensionContributesNoProperties() {
-           DomainName domainName = new DomainName();
-           domainName.setName("example.example");
-
-           JsonNode json = RppSerializer.serialize(mapper, domainName, Collections.emptyList());
-
-           assertEquals("example.example", json.get("name").asText());
-           assertFalse(json.has("phase"));
-           assertFalse(json.has("applicationId"));
-       }
-
-       @Test
-       void attachedExtensionIsMergedFlatAndOmitsUnsetProperties() {
-           DomainName domainName = new DomainName();
-           domainName.setName("example.example");
-
-           LaunchExtension launch = new LaunchExtension();
-           launch.setPhase("sunrise");
-           // applicationId intentionally left unset (null) and MUST be omitted.
-
-           List<Object> attached = new ArrayList<>();
-           attached.add(launch);
-
-           JsonNode json = RppSerializer.serialize(mapper, domainName, attached);
-
-           assertEquals("example.example", json.get("name").asText());
-           assertEquals("sunrise", json.get("phase").asText());
-           assertFalse(json.has("applicationId"));
-       }
-
-       @Test
-       void jsonUnwrappedProducesTheSameFlatComposition() {
-           DomainNameWithLaunch domainName = new DomainNameWithLaunch();
-           domainName.setName("example.example");
-           domainName.setLaunch(null);
-
-           JsonNode json = mapper.valueToTree(domainName);
-
-           assertTrue(json.has("name"));
-           assertFalse(json.has("launch"));
-           assertFalse(json.has("phase"));
-       }
-
-       @Test
-       void deserializationFailsWhenRequiredExtensionPropertyIsMissing() {
-           String json = "{\"applicationId\":\"abc123\"}";
-
-           assertThrows(MismatchedInputException.class,
-                   () -> mapper.readValue(json, LaunchExtension.class));
-       }
-   }
-
-   ```
+   This example extension, its schema and the examples above can be
+   validated with the generic Java library in the rpp-json-java-lib
+   repository [RPP-JSON-JAVA-LIB].  The library loads the base schema
+   and the extension schemas supported by a deployment, builds effective
+   schemas from the rpp:extends mappings, applies the injection of
+   unevaluatedProperties described in "Validation", and validates JSON
+   instances against the result.  The repository contains this example
+   extension, the example instances and unit tests, and its README
+   describes how to build and run them.
 
 Acknowledgements
 
