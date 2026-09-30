@@ -147,25 +147,25 @@ RPP is designed so that extension specifications can add new data elements to da
 
 ## JSON Schema Composition
 
-For every data object which is modified by an extension specification, the extension specification MUST define a new JSON Schema document that composes the base object's schema with the new properties using `allOf`. The extension specification MUST NOT copy, redefine, or otherwise restate the JSON Schema definition of the base object. Instead, it MUST reference the base object's definition by its fully qualified `$id`-relative pointer (e.g. `https://www.iana.org/.../domainName.json#/$defs/domainName`) in an `allOf` branch, and add its own new properties in a separate branch.
+Every data object defined in a base specification, when modified by an extension specification, must be extended using an extension specification. The extension specification MUST define a new JSON Schema document that composes the base object's schema with the new properties using `allOf`. The extension specification MUST NOT copy, redefine, or otherwise restate the JSON Schema definition of the base object. Instead, it MUST reference the base object's definition by its fully qualified `$id`-relative pointer (e.g. `https://www.iana.org/.../domainName.json#/$defs/domainName`) in an `allOf` branch, and add its own new properties in a separate branch.
 
-The extension specification MUST include a JSON schema for every operation that is modified by the extension.
+An extension schema MUST declare which base object definitions it extends using the `rpp:extends` property, as defined in [@!I-D.ietf-rpp-json]. The property maps the fully qualified reference of each base object definition to the local definition, within the extension schema, that contributes the new properties. This mapping allows an implementation to construct, for a given base object, the effective schema that combines the base definition with every supported extension, without any knowledge of the extensions in advance.
 
 ## Schema Identification
 
-A specification that defines JSON Schema for RPP objects MUST assign a stable, dereferenceable `$id` to its schema document(s), and MUST NOT change the `$id` of a published `$defs` entry. Extension specifications MUST reference a base object's definition by its fully qualified `$id`-relative pointer (e.g. `https://www.iana.org/.../domainName.json#/$defs/domainName`) rather than copying the base definition into their own schema.
+A specification that defines JSON Schema for RPP objects MUST assign a stable `$id` to its schema document(s). Extension specifications MUST reference a base object's definition by its `$id` (e.g. `https://www.iana.org/.../domainName.json#/$defs/domainName`) rather than copying the base definition into their own schema.
 
-## Client Implementation
+## Consumer Implementation
 
-A client does not need to generate a distinct set of code classes for every base object and extension combination offered by a particular server. Because extension schemas are additive, self-contained, and independent of one another, a client implementation SHOULD instead maintain one set of code classes for each base object and a separate set of code classes for each extension it supports, keeping an extension's classes distinct from the base object's classes rather than flattening their properties together. Composing a base object with whichever extensions apply then becomes a runtime decision, rather than something fixed by code generation for every individual server.
+A consumer, which can be a server or client, does not need to generate a distinct set of code classes for every base object and extension combination offered by a particular server. Because extension schemas are additive, self-contained, and independent of one another, a consumer implementation SHOULD instead maintain one set of code classes for each base object and a separate set of code classes for each extension it supports, keeping an extension's classes distinct from the base object's classes rather than flattening their properties together. Composing a base object with whichever extensions apply then becomes a runtime decision, rather than something fixed by code generation for every individual server.
 
-A client learns at runtime which extensions a given server supports from the `extensions` list in that server's RPP Discovery response, as defined in [@!I-D.ietf-rpp-core]. It SHOULD attach, populate, and validate extension class instances only for the extensions the server has advertised as supported, and SHOULD ignore any properties in a response that belong to an extension it does not recognize or does not support.
+A consumer learns at runtime which extensions a given server supports from the `extensions` list in that server's RPP Discovery response, as defined in [@!I-D.ietf-rpp-core]. It SHOULD attach, populate, and validate extension class instances only for the extensions the server has advertised as supported, and SHOULD ignore any properties in a response that belong to an extension it does not recognize or does not support.
 
-Because an extension that is not attached to a given base object instance contributes no properties at all, a client naturally serializes only the base object together with the properties of whichever extensions are actually in use, without needing to distinguish this case from a property that is merely absent or `null` within a supported extension. Attached extensions are merged flat with the base object on the wire, consistent with the schema composition described in "JSON Schema Composition". Within an attached extension, an optional property without a value continues to follow Rule 2 and is omitted from the output rather than represented as `null`.
+Because an extension that is not attached to a given base object instance contributes no properties at all, a consumer naturally serializes only the base object together with the properties of whichever extensions are actually in use, without needing to distinguish this case from a property that is merely absent or `null` within a supported extension. Attached extensions are merged flat with the base object on the wire, consistent with the schema composition described in "JSON Schema Composition". Within an attached extension, an optional property without a value continues to follow Rule 2 and is omitted from the output rather than represented as `null`.
 
 ### Java
 
-For Java clients, common JSON serialization frameworks such as Jackson support this attach-then-merge model directly: extension instances can be merged into the base object's serialized tree at runtime (e.g. `ObjectNode.setAll()`), inlined via a nullable field annotated `@JsonUnwrapped`, or flattened through `@JsonAnyGetter`/`@JsonAnySetter`-backed property maps. In all three cases, an extension that is not attached contributes no properties, and `@JsonInclude(Include.NON_NULL)` on each extension class independently omits its own unset optional properties. A property that an extension's schema defines as required can be annotated `@JsonProperty(required = true)`, causing Jackson to reject an incoming JSON instance during deserialization if the property is missing; because this check only applies when the extension class itself is being deserialized, it naturally does not apply to servers or requests where that extension is not in use. Required-property validation for an extension is otherwise typically out of scope for the JSON library itself and is instead enforced with a Bean Validation framework (e.g. `jakarta.validation`) or a JSON Schema validator, applied only to attached extension instances.
+For Java clients, a generic library can implement the schema handling described in this document without any code that is specific to a particular extension. The library loads the RPP base schema and the extension schemas supported by a server, uses the `rpp:extends` mappings to compose the effective schema of a base object with `allOf`, applies the `unevaluatedProperties` injection described in "Validation" to the composed schema only, and validates JSON instances against the result. Adding support for a new extension then consists of adding its schema document to the library; no new classes are required. The library in (#java-example) is one possible implementation, its source is available in the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB].
 
 ## Registration
 
@@ -195,215 +195,128 @@ Before using a combined schema to validate a JSON instance, implementations MUST
 
 {backmatter}
 
-# Java Example
+# Java Example {#java-example}
 
-This appendix is informative and illustrates one possible way to implement the attach-then-merge model described in "Client Implementation" using Java and the Jackson library. The base object and each extension are modeled as separate classes; an extension contributes properties to the serialized output only when an instance of it has been attached, and only for extensions the target server has advertised support for. The code below compiles against `jackson-databind` and `jackson-annotations`.
+This appendix is informative. It describes a generic Java library that reads the RPP base schema and a set of extension schemas, composes them into the effective schema of a base object as described in "JSON Schema Composition" and "Validation", and validates JSON instances against it. The library contains no code specific to any extension: supporting an additional extension only requires adding its schema document. The complete, buildable source, including unit tests, is available in the `java` directory of the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB]. All paths in this appendix are relative to the root of that repository. It uses the Jackson and networknt `json-schema-validator` libraries.
 
-```java
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+The example extension adds the property `extProperty1` to the Domain Name data object. The extension schema declares, using `rpp:extends`, that it extends the create and read definitions of the base object, and contributes the new property in a separate definition:
 
-import java.util.List;
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rpp.example/schemas/ext-domain-extproperty1.json",
 
-// Base object class, one per RPP object type.
-public class DomainName {
+  "rpp:extends": {
+    "https://rpp.example/rpp/schema.json#/$defs/domainObject.create": "#/$defs/ext.domain.create",
+    "https://rpp.example/rpp/schema.json#/$defs/domainObject.read": "#/$defs/ext.domain.read"
+  },
 
-    @JsonProperty("@type")
-    private final String type = "domainName";
-
-    private String name;
-
-    public String getName() {
-        return name;
+  "$defs": {
+    "ext.domain.create": {
+      "type": "object",
+      "properties": {
+        "extProperty1": { "type": "string", "minLength": 1, "maxLength": 64 }
+      },
+      "required": ["extProperty1"]
+    },
+    "ext.domain.read": {
+      "type": "object",
+      "properties": {
+        "extProperty1": { "type": "string" }
+      }
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
-
-// Extension class, independent of the base object and of other extensions.
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class LaunchExtension {
-
-    @JsonProperty(required = true)
-    private String phase;
-
-    private String applicationId;
-
-    public String getPhase() {
-        return phase;
-    }
-
-    public void setPhase(String phase) {
-        this.phase = phase;
-    }
-
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-}
-
-// Serializes the base object merged with only the attached extension instances.
-public final class RppSerializer {
-
-    private RppSerializer() {
-    }
-
-    public static JsonNode serialize(ObjectMapper mapper, Object base, List<Object> attachedExtensions) {
-        ObjectNode node = (ObjectNode) mapper.valueToTree(base);
-        for (Object extension : attachedExtensions) {
-            node.setAll((ObjectNode) mapper.valueToTree(extension));
-        }
-        return node;
-    }
+  }
 }
 ```
 
-Example usage, attaching an extension only when the target server has advertised support for it:
+The library builds the following effective schema for `domainObject.create`. It references the base definition and the extension definition by their absolute `$id`-relative references, and has its own `$id`:
 
-```java
-ObjectMapper mapper = new ObjectMapper();
-mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-DomainName domainName = new DomainName();
-domainName.setName("example.example");
-
-List<Object> attached = new ArrayList<>();
-if (serverSupportedExtensions.contains("launch")) {
-    LaunchExtension launch = new LaunchExtension();
-    launch.setPhase("sunrise");
-    attached.add(launch);
-}
-
-JsonNode json = RppSerializer.serialize(mapper, domainName, attached);
-```
-
-Because `LaunchExtension` is only added to `attached` when the server supports it, its properties never appear in the output for a server that does not; `JsonInclude.Include.NON_NULL` independently ensures that any of its own unset optional properties are omitted rather than serialized as `null`, consistent with Rule 2 in [@!I-D.ietf-rpp-json]. The `@JsonProperty(required = true)` annotation on `phase` causes Jackson to reject an incoming `LaunchExtension` JSON instance during deserialization if `phase` is missing; this check only runs when a `LaunchExtension` instance is being deserialized, so it has no effect on servers or requests that do not use the extension.
-
-Keeping the extension in its own Java class does not imply that it is serialized as a nested JSON object. When the set of extensions is known at compile time, `@JsonUnwrapped` achieves the same flat, on-the-wire composition without manual tree merging: the `LaunchExtension` instance remains a distinct, independently validated class, but its properties are inlined directly into the enclosing object at the same level as `name`, exactly as required by the JSON Schema `allOf` composition:
-
-```java
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
-public class DomainNameWithLaunch {
-
-    @JsonProperty("@type")
-    private final String type = "domainName";
-
-    private String name;
-
-    // Null when the target server does not support, or the client does
-    // not use, the "launch" extension; its properties are then omitted
-    // entirely rather than nested under a "launch" object.
-    @JsonUnwrapped
-    private LaunchExtension launch;
-
-    public String getName() {
-        return name;
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rpp.example/rpp/effective/domain.create.json",
+  "$ref": "#/$defs/effective.domainObject.create",
+  "$defs": {
+    "effective.domainObject.create": {
+      "allOf": [
+        { "$ref": "https://rpp.example/rpp/schema.json#/$defs/domainObject.create" },
+        { "$ref": "https://rpp.example/schemas/ext-domain-extproperty1.json#/$defs/ext.domain.create" }
+      ]
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LaunchExtension getLaunch() {
-        return launch;
-    }
-
-    public void setLaunch(LaunchExtension launch) {
-        this.launch = launch;
-    }
+  }
 }
 ```
 
-The following JUnit 5 test verifies that an unattached extension contributes no properties, that an attached extension is merged flatly and omits its own unset properties, and that the `@JsonUnwrapped` form produces the same flat composition:
+The library consists of the following classes in the package `nl.sidn.rpp.schema`:
 
-```java
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+* `RppSchemaLibrary` is the entry point. Schema documents are registered by their top-level `$id`, either individually (`addSchema`) or by loading every `*.json` file in a directory (`addSchemasFrom`). A deployment registers the base schema and the extension schemas it supports; the registered set corresponds to the profile of that deployment. The method `effectiveSchema` takes the absolute reference of a base object definition and the `$id` for the effective schema. It finds the extensions of that base object through their `rpp:extends` mappings, resolves each local extension reference against the `$id` of the extension schema, and builds the effective schema document shown above. It then enriches every registered schema and the effective schema with the injected keyword, and creates a validator that resolves all references from the registered set, so nothing is fetched from the network. The method rejects a base schema that has not been loaded and an effective `$id` that equals the `$id` of a loaded schema.
+* `EffectiveSchema` is the result of `effectiveSchema`. It provides the effective schema document without injected keywords (`toJson`), the list of validation errors for a JSON instance (`validate`), and a boolean check (`isValid`). An empty error list means the instance conforms to the base object and to every supported extension.
+* `UnevaluatedPropertiesInjector` implements the injection of `"unevaluatedProperties": false` described in [@!I-D.ietf-rpp-json]. It works on a copy of each schema, so the published schema documents are never modified. The keyword is added to every object-schema node that is a use site: the root, the schemas inside `properties`, `patternProperties` and `items`, and any node carrying a `$ref` or a combining keyword. It is not added to the branches inside `allOf`, `anyOf` and `oneOf`, or to the entries of `$defs`, because there it would reject the properties contributed by the other branches. Nodes that already declare `additionalProperties` or `unevaluatedProperties` are left unchanged.
+* `Main` is a command line example. It loads the schemas from `java/schemas/base` and `java/schemas/extensions`, builds the effective schema for the Domain Name create definition, prints it, and validates every instance in `java/examples`.
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+The unit tests in `RppSchemaLibraryTest` exercise the composition of the effective schema, verify that the published schemas contain no injected keyword, and validate the example instances below, with and without the extension loaded.
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+The example requires a Java 17 or later JDK and Apache Maven. The schema and example directories are resolved relative to the working directory, so the commands MUST be run from the `java` directory of the repository:
 
-import org.junit.jupiter.api.Test;
+```sh
+git clone https://github.com/SIDN/rpp-json-java-lib.git
+cd rpp-json-java-lib/java
 
-class RppSerializerTest {
+# Run the unit tests
+mvn test
 
-    private final ObjectMapper mapper = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+# Run Main: prints the effective schema and validates each instance in examples/
+mvn compile exec:java
 
-    @Test
-    void unattachedExtensionContributesNoProperties() {
-        DomainName domainName = new DomainName();
-        domainName.setName("example.example");
+# Run the unit tests, then Main
+mvn test exec:java
+```
 
-        JsonNode json = RppSerializer.serialize(mapper, domainName, Collections.emptyList());
+Running `Main` prints the effective schema, followed by the validation result for every instance in `java/examples`, for example:
 
-        assertEquals("example.example", json.get("name").asText());
-        assertFalse(json.has("phase"));
-        assertFalse(json.has("applicationId"));
-    }
+```
+domain-create-invalid-undeclared.json: invalid
+  $: property 'extProperty2' is not evaluated and the schema does not allow unevaluated properties
 
-    @Test
-    void attachedExtensionIsMergedFlatAndOmitsUnsetProperties() {
-        DomainName domainName = new DomainName();
-        domainName.setName("example.example");
+domain-create-valid.json: valid
+```
 
-        LaunchExtension launch = new LaunchExtension();
-        launch.setPhase("sunrise");
-        // applicationId intentionally left unset (null) and MUST be omitted.
+The text of the validation messages depends on the default locale of the JVM. To obtain English messages, set the locale for the Maven JVM, for example `MAVEN_OPTS="-Duser.language=en" mvn compile exec:java`.
 
-        List<Object> attached = new ArrayList<>();
-        attached.add(launch);
+The following instance is valid, because `extProperty1` is declared by the supported extension:
 
-        JsonNode json = RppSerializer.serialize(mapper, domainName, attached);
-
-        assertEquals("example.example", json.get("name").asText());
-        assertEquals("sunrise", json.get("phase").asText());
-        assertFalse(json.has("applicationId"));
-    }
-
-    @Test
-    void jsonUnwrappedProducesTheSameFlatComposition() {
-        DomainNameWithLaunch domainName = new DomainNameWithLaunch();
-        domainName.setName("example.example");
-        domainName.setLaunch(null);
-
-        JsonNode json = mapper.valueToTree(domainName);
-
-        assertTrue(json.has("name"));
-        assertFalse(json.has("launch"));
-        assertFalse(json.has("phase"));
-    }
-
-    @Test
-    void deserializationFailsWhenRequiredExtensionPropertyIsMissing() {
-        String json = "{\"applicationId\":\"abc123\"}";
-
-        assertThrows(MismatchedInputException.class,
-                () -> mapper.readValue(json, LaunchExtension.class));
-    }
+```json
+{
+  "@type": "domainName",
+  "name": "example.example",
+  "registrant": { "@type": "contact", "id": "c-1234" },
+  "nameservers": [
+    { "@type": "host", "hostName": "ns1.example.net" }
+  ],
+  "extProperty1": "some value"
 }
 ```
+
+The following instances are invalid. The first omits the required `extProperty1`, the second gives `extProperty1` the wrong type, and the third contains `extProperty2`, which no supported extension declares and which is therefore rejected by the injected `unevaluatedProperties` keyword:
+
+```json
+{ "@type": "domainName", "name": "example.example" }
 ```
+
+```json
+{ "@type": "domainName", "name": "example.example", "extProperty1": 42 }
+```
+
+```json
+{
+  "@type": "domainName",
+  "name": "example.example",
+  "extProperty1": "some value",
+  "extProperty2": "not declared by any supported extension"
+}
+```
+
+The same base schema and the same instance that uses `extProperty1` are rejected by a library instance that has not loaded the extension schema, since in that deployment `extProperty1` is an undeclared property. This is the behavior required by "Validation": the set of accepted properties is determined only by the extensions that the deployment supports.
 
 {numbered="false"}
 # Acknowledgements
@@ -427,5 +340,15 @@ class RppSerializerTest {
       <organization>JSON Schema</organization>
     </author>
     <date year="2020"/>
+  </front>
+</reference>
+
+<reference anchor="RPP-JSON-JAVA-LIB" target="https://github.com/SIDN/rpp-json-java-lib">
+  <front>
+    <title>rpp-json-java-lib: Java library for RPP JSON Schema extensions</title>
+    <author>
+      <organization>SIDN Labs</organization>
+    </author>
+    <date year="2026"/>
   </front>
 </reference>
