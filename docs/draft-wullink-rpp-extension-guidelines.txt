@@ -101,11 +101,11 @@ Table of Contents
      12.1.  Normative References . . . . . . . . . . . . . . . . . .  12
      12.2.  Informative References . . . . . . . . . . . . . . . . .  13
    Appendix A.  Example Extension  . . . . . . . . . . . . . . . . .  13
-     A.1.  Extension Overview  . . . . . . . . . . . . . . . . . . .  13
-     A.2.  Changed Data Objects  . . . . . . . . . . . . . . . . . .  14
-       A.2.1.  Domain Name Data Object . . . . . . . . . . . . . . .  14
-     A.3.  New Data Objects  . . . . . . . . . . . . . . . . . . . .  14
-     A.4.  JSON Schema . . . . . . . . . . . . . . . . . . . . . . .  14
+     A.1.  Introduction  . . . . . . . . . . . . . . . . . . . . . .  14
+     A.2.  Extension Overview  . . . . . . . . . . . . . . . . . . .  14
+     A.3.  Changed Data Objects  . . . . . . . . . . . . . . . . . .  14
+       A.3.1.  Domain Name Data Object . . . . . . . . . . . . . . .  14
+     A.4.  New Data Objects  . . . . . . . . . . . . . . . . . . . .  15
 
 
 
@@ -114,12 +114,13 @@ Wullink & Kowalik          Expires 18 May 2027                  [Page 2]
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-     A.5.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  15
-     A.6.  Composition and Validation  . . . . . . . . . . . . . . .  16
-     A.7.  IANA Considerations . . . . . . . . . . . . . . . . . . .  16
-     A.8.  Security Considerations . . . . . . . . . . . . . . . . .  16
-     A.9.  Privacy Considerations  . . . . . . . . . . . . . . . . .  16
-     A.10. Internationalization Considerations . . . . . . . . . . .  17
+     A.5.  JSON Schema . . . . . . . . . . . . . . . . . . . . . . .  15
+     A.6.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  16
+     A.7.  Composition and Validation  . . . . . . . . . . . . . . .  16
+     A.8.  IANA Considerations . . . . . . . . . . . . . . . . . . .  17
+     A.9.  Security Considerations . . . . . . . . . . . . . . . . .  17
+     A.10. Privacy Considerations  . . . . . . . . . . . . . . . . .  17
+     A.11. Internationalization Considerations . . . . . . . . . . .  17
    Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  17
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  17
 
@@ -161,7 +162,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    This document does not itself define any RPP extension.  It defines
    the rules that extension specifications, and the deployments that
    support them, are expected to follow.
-
 
 
 
@@ -562,32 +562,31 @@ Wullink & Kowalik          Expires 18 May 2027                 [Page 10]
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-   An extension specification SHOULD contain at least the following
-   sections, in this order:
+   An extension specification contains at least the following sections,
+   in this order:
 
    1.   Introduction: the purpose of the extension, the base
         specifications it builds upon, and its motivation.
-   2.   Terminology and Conventions.
-   3.   Extension Overview: the name, the identifier, the version, the
+   2.   Extension Overview: the name, the identifier, the version, the
         RPP version the extension is compatible with, the $id of the
         JSON Schema document, and the list of base objects that the
         extension changes.
-   4.   Changed Data Objects: for every base data object, component
+   3.   Changed Data Objects: for every base data object, component
         object, process object or operation that the extension changes,
         the added data elements, associations and transient operation
         elements.  Each added data element MUST be defined using the
         data element attributes defined in [I-D.ietf-rpp-data-objects]
         (name, identifier, cardinality, mutability, data type,
         description and constraints).
-   5.   New Data Objects: every data object, component object or process
+   4.   New Data Objects: every data object, component object or process
         object that the extension introduces, including its object
         description, data elements and operations.
-   6.   JSON Schema: the single JSON Schema document of the extension.
-   7.   Examples.
-   8.   IANA Considerations.
-   9.   Security Considerations.
-   10.  Privacy Considerations
-   11.  Internationalization Considerations.
+   5.   JSON Schema: the single JSON Schema document of the extension.
+   6.   Examples.
+   7.   IANA Considerations.
+   8.   Security Considerations.
+   9.   Privacy Considerations
+   10.  Internationalization Considerations.
 
    The sections "Changed Data Objects" and "New Data Objects" MUST both
    be present.  An extension that changes no existing object, or
@@ -610,6 +609,7 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    example MUST validate successfully against the effective schema that
    is composed from the base schema and the JSON Schema document of the
    extension, as described in Section 6.5.
+
 
 
 
@@ -681,6 +681,13 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
 12.2.  Informative References
 
+   [I-D.wullink-rpp-extension-guidelines]
+              Wullink, M. and P. Kowalik, "Extension Guidelines for
+              RESTful Provisioning Protocol (RPP)", Work in Progress,
+              Internet-Draft, draft-wullink-rpp-extension-guidelines-00,
+              2026, <https://datatracker.ietf.org/doc/html/draft-
+              wullink-rpp-extension-guidelines-00>.
+
    [JSON-SCHEMA]
               JSON Schema, "JSON Schema: A vocabulary for describing
               JSON Data", 2020,
@@ -699,7 +706,39 @@ Appendix A.  Example Extension
    generic Java library.  The example extension adds the property
    extProperty1 to the Domain Name data object.
 
-A.1.  Extension Overview
+   This example extension, its schema and the examples above can be
+   validated with the generic Java library in the rpp-json-java-lib
+   repository [RPP-JSON-JAVA-LIB].  The library loads the base schema
+   and the extension schemas supported by a deployment, builds effective
+   schemas from the rpp:extends mappings, applies the injection of
+   unevaluatedProperties described in Section 6.5, and validates JSON
+   instances against the result.  The repository contains this example
+   extension, the example instances and unit tests, and its README
+   describes how to build and run them.
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 13]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
+A.1.  Introduction
+
+   This document provides an example of an extension specification that
+   follows the guidelines defined in
+   [I-D.wullink-rpp-extension-guidelines].  The example demonstrates how
+   to add a new property to an existing data object and how to define
+   the corresponding JSON Schema and examples.
+
+A.2.  Extension Overview
 
     +============+====================================================+
     | Field      | Value                                              |
@@ -722,22 +761,14 @@ A.1.  Extension Overview
     | objects    |                                                    |
     +------------+----------------------------------------------------+
     | New        | None                                               |
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 13]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
     | objects    |                                                    |
     +------------+----------------------------------------------------+
 
                                   Table 1
 
-A.2.  Changed Data Objects
+A.3.  Changed Data Objects
 
-A.2.1.  Domain Name Data Object
+A.3.1.  Domain Name Data Object
 
    -  Identifier: domainName
 
@@ -747,6 +778,14 @@ A.2.1.  Domain Name Data Object
       -  Identifier: extProperty1
       -  Cardinality: 0-1
       -  Mutability: create-only
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 14]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
       -  Data Type: String
       -  Description: An example property that is added to the Domain
          Name Data Object by the extension.
@@ -757,34 +796,16 @@ A.2.1.  Domain Name Data Object
    The Read operation returns extProperty1 when the domain name was
    created with a value for it.  No other operations are changed.
 
-A.3.  New Data Objects
+A.4.  New Data Objects
 
    None.
 
-A.4.  JSON Schema
+A.5.  JSON Schema
 
    The extension defines a single JSON Schema document.  The document
    declares, using rpp:extends, that it extends the create and read
    definitions of the base object, and contributes the new property in a
    separate definition:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 14]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
 
    {
      "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -812,7 +833,16 @@ Internet-Draft          RPP Extension Guidelines           November 2026
      }
    }
 
-A.5.  Examples
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 15]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
+A.6.  Examples
 
    The following instance is valid, because extProperty1 is declared by
    the supported extension:
@@ -835,13 +865,6 @@ A.5.  Examples
 
    { "@type": "domainName", "name": "example.example" }
 
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 15]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    { "@type": "domainName", "name": "example.example", "extProperty1": 42 }
 
    {
@@ -857,11 +880,23 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    the behavior required by "Validation": the set of accepted properties
    is determined only by the extensions that the deployment supports.
 
-A.6.  Composition and Validation
+A.7.  Composition and Validation
 
    For a deployment that supports the example extension, the effective
    schema for domainObject.create references the base definition and the
    extension definition, and has its own $id:
+
+
+
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 16]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
 
    {
      "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -877,40 +912,21 @@ A.6.  Composition and Validation
      }
    }
 
-A.7.  IANA Considerations
+A.8.  IANA Considerations
 
    *TODO:*
 
-A.8.  Security Considerations
+A.9.  Security Considerations
 
    *TODO:*
 
-A.9.  Privacy Considerations
+A.10.  Privacy Considerations
 
    *TODO:*
 
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 16]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
-A.10.  Internationalization Considerations
+A.11.  Internationalization Considerations
 
    *TODO:*
-
-   This example extension, its schema and the examples above can be
-   validated with the generic Java library in the rpp-json-java-lib
-   repository [RPP-JSON-JAVA-LIB].  The library loads the base schema
-   and the extension schemas supported by a deployment, builds effective
-   schemas from the rpp:extends mappings, applies the injection of
-   unevaluatedProperties described in "Validation", and validates JSON
-   instances against the result.  The repository contains this example
-   extension, the example instances and unit tests, and its README
-   describes how to build and run them.
 
 Acknowledgements
 
@@ -928,22 +944,6 @@ Authors' Addresses
    DENIC
    Email: pawel.kowalik@denic.de
    URI:   https://denic.de/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

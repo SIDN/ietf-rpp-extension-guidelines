@@ -141,27 +141,33 @@ Extensions MAY add both transient and persistent data elements to the input or o
 
 Instead of adding properties to an object, an extension MAY reference a type defined entirely in an external specification (e.g. `External:RPP-JSContact-Profile:Card`), as described in [@!I-D.ietf-rpp-data-objects]. This is the appropriate mechanism when substituting or supplying a whole, independently versioned data type, rather than adding fields to an existing RPP-defined object.
 
-## New RPP Result Codes
+## Result Codes
 
 Extensions MAY define new RPP result codes within the reserved result code classes, registered in the RPP Result Codes registry defined in [@!I-D.ietf-rpp-core].
 New result codes MUST be registered in the RPP Result Codes registry defined in [@!I-D.ietf-rpp-core].
 
-## Error Object Extension Fields
+## Problem Details
 
 Extensions MAY add new fields to the Problem Detail error object to convey additional, extension-specific information about the cause of an error, as described in [@!I-D.ietf-rpp-core].
 
 **TODO: there is no schema for the Problem Detail error object defined in the base specification, fix this?**
 
-## Additional Query Parameters
+## Query Parameters
 
 Extensions MAY define additional HTTP query parameters for existing operations, for example to further qualify a check or read request, as described in [@!I-D.ietf-rpp-core].
 Any transient parameter for a read, query, update, and delete operation MUST be translated into an HTTP query parameter, named by the operation's parameter identifier.
+
+## HTTP Headers
+
+Extensions MAY define new HTTP headers for existing operations, as described in [@!I-D.ietf-rpp-core]. Any new headers MUST be registered in the appropriate IANA registry.
 
 ## New Authentication and Authorization Methods
 
 **TODO: is this an extension point?**
 
 ## Discovery document
+
+A server that supports one or more extensions MUST publish every supported extension in the `extensions` list of its RPP Discovery document, as defined in [@!I-D.ietf-rpp-core]. Each entry MUST contain the `name`, `id`, `version` and `url` of the extension, using the name, identifier and version defined in the Extension Overview section of the extension specification. A server MUST NOT accept requests that use an extension that is not listed in its Discovery document, and MUST NOT include data of an unlisted extension in its responses.
 
 New properties added by an extension to the RPP Discovery document MUST be included in the appropriate section of the document, following the structure defined in [@!I-D.ietf-rpp-core].
 
@@ -197,7 +203,7 @@ For Java clients, a generic library [@RPP-JSON-JAVA-LIB] can implement the schem
 
 ## Registration
 
-An extension specification that adds properties to an existing object MUST register the added data elements in the Object and Operation Extension registry defined in [@!I-D.ietf-rpp-data-objects]. The registration MUST additionally include a dereferenceable URL to the JSON Schema document defining the `$defs` entry described in the Additive Schema Composition section above, and MUST identify the base object type(s) being extended by their registered identifier.
+An extension specification that adds properties to an existing object MUST register the added data elements in the RPP Data Object Registry defined in [@!I-D.ietf-rpp-data-objects], see (#iana-registries). The registration MUST additionally include a dereferenceable URL to the JSON Schema document defining the `$defs` entry described in the Additive Schema Composition section above, and MUST identify the base object type(s) being extended by their registered identifier.
 
 ## Validation {#validation}
 
@@ -209,25 +215,54 @@ Before using a combined schema to validate a JSON instance, implementations MUST
 
 An extension specification SHOULD follow the structure defined in this section, so that all extension specifications are uniform and can be read, reviewed and processed in the same way.
 
-An extension specification SHOULD contain at least the following sections, in this order:
+An extension specification contains at least the following sections, in this order:
 
 1. Introduction: the purpose of the extension, the base specifications it builds upon, and its motivation.
-2. Terminology and Conventions.
-3. Extension Overview: the name, the identifier, the version, the RPP version the extension is compatible with, the `$id` of the JSON Schema document, and the list of base objects that the extension changes.
-4. Changed Data Objects: for every base data object, component object, process object or operation that the extension changes, the added data elements, associations and transient operation elements. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
-5. New Data Objects: every data object, component object or process object that the extension introduces, including its object description, data elements and operations.
-6. JSON Schema: the single JSON Schema document of the extension.
-7. Examples.
-8. IANA Considerations.
-9. Security Considerations.
-10. Privacy Considerations
-11. Internationalization Considerations.
+2. Extension Overview: the name, the identifier, the version, the RPP version the extension is compatible with, the `$id` of the JSON Schema document, and the list of base objects that the extension changes.
+3. Changed Data Objects: for every base data object, component object, process object or operation that the extension changes, the added data elements, associations and transient operation elements. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
+4. New Data Objects: every data object, component object or process object that the extension introduces, including its object description, data elements and operations.
+5. JSON Schema: the single JSON Schema document of the extension.
+6. Examples.
+7. IANA Considerations: the registrations that the extension requires, as described in (#iana-registries).
+8. Security Considerations.
+9. Privacy Considerations
+10. Internationalization Considerations.
 
 The sections "Changed Data Objects" and "New Data Objects" MUST both be present. An extension that changes no existing object, or introduces no new object, MUST state "None" in the corresponding section. At least one of the two sections MUST define content.
 
 The extension specification MUST define exactly one JSON Schema document, which contains the definitions for all changed and all new objects of the extension. The document MUST have a top-level `$id`, MUST declare the changed base objects using `rpp:extends` as described in "JSON Schema Composition", and MUST NOT contain `unevaluatedProperties` or `additionalProperties` set to `false`, see "Validation". An extension specification MUST NOT split its schema over multiple documents.
 
 The extension specification MUST include examples. For every operation that the extension adds or changes, and for every changed or new object, the specification MUST include at least one valid JSON example of the request or response representation. Every valid example MUST validate successfully against the effective schema that is composed from the base schema and the JSON Schema document of the extension, as described in (#validation).
+
+# IANA Registries for Extensions {#iana-registries}
+
+The RPP base specifications define the IANA registries listed below. When an extension specification is published as an RFC, every new entry that the extension requires MUST be registered in the relevant registry, and the IANA Considerations section of the extension specification MUST request these registrations. An extension specification MUST NOT define its own registry for values that belong in one of these registries. If no suitable registry exists for a value that the extension needs to register, the extension specification MUST request the creation of a new registry in its IANA Considerations section, in the RPP registry group defined in [@!I-D.ietf-rpp-core].
+
+Private extensions, that are not published as an RFC, are not required to register in these registries, but MUST still use identifiers that do not conflict with registered identifiers, as described in [@!I-D.ietf-rpp-data-objects].
+
+| Registry | Defined in | Registration procedure | An extension registers an entry when it |
+|---|---|---|---|
+| RPP Extensions | [@!I-D.ietf-rpp-core] | Expert Review | is published; every standardised extension MUST be registered, with its name, version and specification URL |
+| RPP Data Object Registry | [@!I-D.ietf-rpp-data-objects] | Specification Required | introduces a new data object, component object or process object, adds a data element to an existing object, or defines a new operation or operation parameter |
+| RPP Result Codes | [@!I-D.ietf-rpp-core] | Expert Review | defines a new result code |
+| RPP Profiles | [@!I-D.ietf-rpp-core] | Expert Review | defines a standard profile |
+| RPP User Role Values | [@!I-D.ietf-rpp-data-objects] | Expert Review | defines a new user role |
+| RPP Discovery URLs | [@!I-D.ietf-rpp-core] | Expert Review | not used by extensions; the registry lists the discovery URL of each RPP server |
+| RPP JSON Schema Extensions | [@!I-D.ietf-rpp-json] (proposed) | Expert Review | publishes a JSON Schema document for its changed or new objects, registered with the `$id` of the schema |
+| Link Relation Types | [@!RFC8288], used by [@!I-D.ietf-rpp-core] | as defined in RFC 8288 | defines a new link relation type, in addition to `rpp-process` |
+| Media Types | [@!RFC6838], used by [@!I-D.ietf-rpp-core] | as defined in RFC 6838 | defines a representation format with its own media type, in addition to `application/rpp+json` |
+| IETF URN Sub-namespace, `urn:ietf:params:rpp` | [@!I-D.ietf-rpp-core] | as defined in RFC 3553 | needs an identifier below the RPP URN namespace, for example `urn:ietf:params:rpp:extension:<name>` |
+
+The registrations are used as follows:
+
+* The extension MUST be registered in the RPP Extensions registry. The identifier of the extension in the RPP Discovery document is a URN below the RPP URN sub-namespace.
+* New and changed objects, data elements, operations and operation parameters MUST be registered in the RPP Data Object Registry. Each entry MUST reference the extension specification, so that implementations can distinguish elements of the base specifications from elements defined by extensions.
+* The `@type` value of every new object MUST be the object identifier that is registered in the RPP Data Object Registry, as required by [@!I-D.ietf-rpp-json].
+* New result codes MUST be registered in the RPP Result Codes registry, in the range reserved for extensions.
+
+The RPP data objects also reuse values from registries that are defined outside of RPP, such as the IANA Repository of IDN Practices (IDN tables), the EPP Organization Role Values registry and the EPP Organisation Contact Types registry [@!RFC8543]. An extension that needs a new value from one of these registries MUST use the procedure of that registry.
+
+**TODO: the RPP Extensions registry in [@!I-D.ietf-rpp-core] and the proposed RPP JSON Schema Extensions registry in [@!I-D.ietf-rpp-json] overlap, and the RPP Authorization Method registry that is referred to by [@!I-D.ietf-rpp-json] is not yet defined in [@!I-D.ietf-rpp-core]. The list of registries in this section must be aligned when these documents are updated.**
 
 # IANA Considerations
 
@@ -250,6 +285,12 @@ The extension specification MUST include examples. For every operation that the 
 # Example Extension {#extension-example}
 
 This appendix is informative. It shows an extension specification that follows the structure defined in "Extension Specification Format", and it shows how the extension can be validated with a generic Java library. The example extension adds the property `extProperty1` to the Domain Name data object.
+
+This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB]. The library loads the base schema and the extension schemas supported by a deployment, builds effective schemas from the `rpp:extends` mappings, applies the injection of `unevaluatedProperties` described in (#validation), and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.
+
+## Introduction
+
+This document provides an example of an extension specification that follows the guidelines defined in [@I-D.wullink-rpp-extension-guidelines]. The example demonstrates how to add a new property to an existing data object and how to define the corresponding JSON Schema and examples.
 
 ## Extension Overview
 
@@ -392,8 +433,6 @@ For a deployment that supports the example extension, the effective schema for `
 
 **TODO:**
 
-This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository [@RPP-JSON-JAVA-LIB]. The library loads the base schema and the extension schemas supported by a deployment, builds effective schemas from the `rpp:extends` mappings, applies the injection of `unevaluatedProperties` described in "Validation", and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.
-
 {numbered="false"}
 # Acknowledgements
 
@@ -427,4 +466,18 @@ This example extension, its schema and the examples above can be validated with 
     </author>
     <date year="2026"/>
   </front>
+</reference>
+
+<reference anchor="I-D.wullink-rpp-extension-guidelines">
+  <front>
+    <title>Extension Guidelines for RESTful Provisioning Protocol (RPP)</title>
+    <author initials="M." surname="Wullink" fullname="Maarten Wullink">
+      <organization>SIDN Labs</organization>
+    </author>
+    <author initials="P." surname="Kowalik" fullname="Pawel Kowalik">
+      <organization>DENIC</organization>
+    </author>
+    <date year="2026"/>
+  </front>
+  <seriesInfo name="Internet-Draft" value="draft-wullink-rpp-extension-guidelines-00"/>
 </reference>

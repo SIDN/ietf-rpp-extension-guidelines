@@ -157,11 +157,10 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 
 <section anchor="extension-format"><name>Extension Specification Format</name>
 <t>An extension specification SHOULD follow the structure defined in this section, so that all extension specifications are uniform and can be read, reviewed and processed in the same way.</t>
-<t>An extension specification SHOULD contain at least the following sections, in this order:</t>
+<t>An extension specification contains at least the following sections, in this order:</t>
 
 <ol spacing="compact">
 <li>Introduction: the purpose of the extension, the base specifications it builds upon, and its motivation.</li>
-<li>Terminology and Conventions.</li>
 <li>Extension Overview: the name, the identifier, the version, the RPP version the extension is compatible with, the <tt>$id</tt> of the JSON Schema document, and the list of base objects that the extension changes.</li>
 <li>Changed Data Objects: for every base data object, component object, process object or operation that the extension changes, the added data elements, associations and transient operation elements. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).</li>
 <li>New Data Objects: every data object, component object or process object that the extension introduces, including its object description, data elements and operations.</li>
@@ -205,6 +204,19 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
 </references>
 <references><name>Informative References</name>
+<reference anchor="I-D.wullink-rpp-extension-guidelines" target="">
+  <front>
+    <title>Extension Guidelines for RESTful Provisioning Protocol (RPP)</title>
+    <author fullname="Maarten Wullink" initials="M." surname="Wullink">
+      <organization>SIDN Labs</organization>
+    </author>
+    <author fullname="Pawel Kowalik" initials="P." surname="Kowalik">
+      <organization>DENIC</organization>
+    </author>
+    <date year="2026"></date>
+  </front>
+  <seriesInfo name="Internet-Draft" value="draft-wullink-rpp-extension-guidelines-00"></seriesInfo>
+</reference>
 <reference anchor="JSON-SCHEMA" target="https://json-schema.org/draft/2020-12/json-schema-core">
   <front>
     <title>JSON Schema: A vocabulary for describing JSON Data</title>
@@ -228,6 +240,11 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 
 <section anchor="extension-example"><name>Example Extension</name>
 <t>This appendix is informative. It shows an extension specification that follows the structure defined in &quot;Extension Specification Format&quot;, and it shows how the extension can be validated with a generic Java library. The example extension adds the property <tt>extProperty1</tt> to the Domain Name data object.</t>
+<t>This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository <xref target="RPP-JSON-JAVA-LIB"></xref>. The library loads the base schema and the extension schemas supported by a deployment, builds effective schemas from the <tt>rpp:extends</tt> mappings, applies the injection of <tt>unevaluatedProperties</tt> described in <xref target="validation"></xref>, and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.</t>
+
+<section anchor="introduction-1"><name>Introduction</name>
+<t>This document provides an example of an extension specification that follows the guidelines defined in <xref target="I-D.wullink-rpp-extension-guidelines"></xref>. The example demonstrates how to add a new property to an existing data object and how to define the corresponding JSON Schema and examples.</t>
+</section>
 
 <section anchor="extension-overview"><name>Extension Overview</name>
 <table>
@@ -411,7 +428,6 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 
 <section anchor="internationalization-considerations-1"><name>Internationalization Considerations</name>
 <t><strong>TODO:</strong></t>
-<t>This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository <xref target="RPP-JSON-JAVA-LIB"></xref>. The library loads the base schema and the extension schemas supported by a deployment, builds effective schemas from the <tt>rpp:extends</tt> mappings, applies the injection of <tt>unevaluatedProperties</tt> described in &quot;Validation&quot;, and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.</t>
 </section>
 </section>
 
