@@ -111,7 +111,7 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 
 **TODO: do we recommend to use namespaces, using prefixes, to avoid naming conflicts between properties added by different extensions?**
 
-# RPP Extension Points
+# RPP Extension Points {#rpp-extension-points}
 
 An extension specification MAY extend RPP along one or more of the following independent extension points. Each extension point has its own registration requirements and, where applicable, its own schema-composition method.
 
@@ -255,20 +255,31 @@ An extension specification contains at least the following sections, in this ord
 
 1. Introduction: the purpose of the extension, the base specifications it builds upon, and its motivation.
 2. Extension Overview: the name, the identifier, the version, the RPP version the extension is compatible with, the `$id` of the JSON Schema document, the list of base objects that the extension changes, and the extensions that it requires.
-3. Changed Data Objects: for every base data object, component object, process object or operation that the extension changes, the added data elements, associations and transient operation elements. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
-4. New Data Objects: every data object, component object or process object that the extension introduces, including its object description, data elements and operations.
-5. JSON Schema: the single JSON Schema document of the extension.
-6. Examples.
-7. IANA Considerations: the registrations that the extension requires, as described in (#iana-registries).
-8. Security Considerations.
-9. Privacy Considerations
-10. Internationalization Considerations.
+3. Shared Components: the shared components, such as common data types or utility functions, that the extension defines.
+4. Data Objects: every data object, component object or process object that the extension introduces, including its object description, data elements and operations.
+5. Data Elements: for every base data object, component object or process object that the extension changes, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
+6. Operations: every operation that the extension introduces on a new or existing data object.
+7. URL Endpoints: the endpoint URLs and HTTP methods that result from the new data objects, associations and operations, as derived by the rules in [@!I-D.ietf-rpp-core]. This section is informative, an extension MUST NOT define ad-hoc endpoints.
+8. Operation Inputs and Outputs: for every existing operation that the extension changes, the added transient and persistent data elements of its input or output.
+9. External Data Types: the types, defined in an external specification, that the extension references.
+10. Result Codes: the new result codes that the extension defines.
+11. Problem Details: the fields that the extension adds to the Problem Detail error object.
+12. Query Parameters: the HTTP query parameters that the extension adds to existing operations.
+13. HTTP Headers: the HTTP headers that the extension defines.
+14. Authentication and Authorization Methods: the authentication and authorization methods that the extension defines.
+15. Discovery Document: the properties that the extension adds to the RPP Discovery document, in addition to its entry in the `extensions` list.
+16. JSON Schema: the single JSON Schema document of the extension.
+17. Examples.
+18. IANA Considerations: the registrations that the extension requires, as described in (#iana-registries).
+19. Security Considerations.
+20. Privacy Considerations.
+21. Internationalization Considerations.
 
-The sections "Changed Data Objects" and "New Data Objects" MUST both be present. An extension that changes no existing object, or introduces no new object, MUST state "None" in the corresponding section. At least one of the two sections MUST define content.
+All sections MUST all be present. An extension that does not use an extension point MUST state "None" in the corresponding section.
 
 The extension specification MUST define exactly one JSON Schema document, which contains the definitions for all changed and all new objects of the extension. The document MUST have a top-level `$id`, MUST declare the changed base objects using `rpp:extends` as described in "JSON Schema Composition", and MUST NOT contain `unevaluatedProperties` or `additionalProperties` set to `false`, see "Validation". An extension specification MUST NOT split its schema over multiple documents.
 
-The extension specification MUST include examples. For every operation that the extension adds or changes, and for every changed or new object, the specification MUST include at least one valid JSON example of the request or response representation. Every valid example MUST validate successfully against the effective schema that is composed from the base schema and the JSON Schema document of the extension, as described in (#validation).
+The specification MUST include at least one valid JSON example of the request or response representation. Every valid example MUST validate successfully against the effective schema that is composed from the base schema and the JSON Schema document of the extension, as described in (#validation).
 
 # IANA Registries for Extensions {#iana-registries}
 
@@ -349,7 +360,15 @@ This document provides an example of an extension specification that follows the
 | New objects | None |
 | Requires | None |
 
-## Changed Data Objects
+## Shared Components
+
+None.
+
+## Data Objects
+
+None.
+
+## Data Elements
 
 ### Domain Name Data Object
 
@@ -369,7 +388,43 @@ The following data element is added to the Domain Name Data Object.
 
 The Read operation returns `extProperty1` when the domain name was created with a value for it. No other operations are changed.
 
-## New Data Objects
+## Operations
+
+None.
+
+## URL Endpoints
+
+None. The extension adds no data object, association or operation, so no endpoint is added.
+
+## Operation Inputs and Outputs
+
+None.
+
+## External Data Types
+
+None.
+
+## Result Codes
+
+None.
+
+## Problem Details
+
+None.
+
+## Query Parameters
+
+None.
+
+## HTTP Headers
+
+None.
+
+## Authentication and Authorization Methods
+
+None.
+
+## Discovery Document
 
 None.
 

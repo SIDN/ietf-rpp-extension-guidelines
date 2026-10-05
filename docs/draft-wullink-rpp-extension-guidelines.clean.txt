@@ -100,16 +100,27 @@ Table of Contents
    Appendix A.  Example Extension
      A.1.  Introduction
      A.2.  Extension Overview
-     A.3.  Changed Data Objects
-       A.3.1.  Domain Name Data Object
-     A.4.  New Data Objects
-     A.5.  JSON Schema
-     A.6.  Examples
-     A.7.  Composition and Validation
-     A.8.  IANA Considerations
-     A.9.  Security Considerations
-     A.10. Privacy Considerations
-     A.11. Internationalization Considerations
+     A.3.  Shared Components
+     A.4.  Data Objects
+     A.5.  Data Elements
+       A.5.1.  Domain Name Data Object
+     A.6.  Operations
+     A.7.  URL Endpoints
+     A.8.  Operation Inputs and Outputs
+     A.9.  External Data Types
+     A.10. Result Codes
+     A.11. Problem Details
+     A.12. Query Parameters
+     A.13. HTTP Headers
+     A.14. Authentication and Authorization Methods
+     A.15. Discovery Document
+     A.16. JSON Schema
+     A.17. Examples
+     A.18. Composition and Validation
+     A.19. IANA Considerations
+     A.20. Security Considerations
+     A.21. Privacy Considerations
+     A.22. Internationalization Considerations
    Acknowledgements
    Authors' Addresses
 
@@ -606,28 +617,49 @@ Table of Contents
         RPP version the extension is compatible with, the $id of the
         JSON Schema document, the list of base objects that the
         extension changes, and the extensions that it requires.
-   3.   Changed Data Objects: for every base data object, component
-        object, process object or operation that the extension changes,
-        the added data elements, associations and transient operation
-        elements.  Each added data element MUST be defined using the
-        data element attributes defined in [I-D.ietf-rpp-data-objects]
-        (name, identifier, cardinality, mutability, data type,
-        description and constraints).
-   4.   New Data Objects: every data object, component object or process
+   3.   Shared Components: the shared components, such as common data
+        types or utility functions, that the extension defines.
+   4.   Data Objects: every data object, component object or process
         object that the extension introduces, including its object
         description, data elements and operations.
-   5.   JSON Schema: the single JSON Schema document of the extension.
-   6.   Examples.
-   7.   IANA Considerations: the registrations that the extension
+   5.   Data Elements: for every base data object, component object or
+        process object that the extension changes, the added data
+        elements and associations.  Each added data element MUST be
+        defined using the data element attributes defined in
+        [I-D.ietf-rpp-data-objects] (name, identifier, cardinality,
+        mutability, data type, description and constraints).
+   6.   Operations: every operation that the extension introduces on a
+        new or existing data object.
+   7.   URL Endpoints: the endpoint URLs and HTTP methods that result
+        from the new data objects, associations and operations, as
+        derived by the rules in [I-D.ietf-rpp-core].  This section is
+        informative, an extension MUST NOT define ad-hoc endpoints.
+   8.   Operation Inputs and Outputs: for every existing operation that
+        the extension changes, the added transient and persistent data
+        elements of its input or output.
+   9.   External Data Types: the types, defined in an external
+        specification, that the extension references.
+   10.  Result Codes: the new result codes that the extension defines.
+   11.  Problem Details: the fields that the extension adds to the
+        Problem Detail error object.
+   12.  Query Parameters: the HTTP query parameters that the extension
+        adds to existing operations.
+   13.  HTTP Headers: the HTTP headers that the extension defines.
+   14.  Authentication and Authorization Methods: the authentication and
+        authorization methods that the extension defines.
+   15.  Discovery Document: the properties that the extension adds to
+        the RPP Discovery document, in addition to its entry in the
+        extensions list.
+   16.  JSON Schema: the single JSON Schema document of the extension.
+   17.  Examples.
+   18.  IANA Considerations: the registrations that the extension
         requires, as described in Section 10.
-   8.   Security Considerations.
-   9.   Privacy Considerations
-   10.  Internationalization Considerations.
+   19.  Security Considerations.
+   20.  Privacy Considerations.
+   21.  Internationalization Considerations.
 
-   The sections "Changed Data Objects" and "New Data Objects" MUST both
-   be present.  An extension that changes no existing object, or
-   introduces no new object, MUST state "None" in the corresponding
-   section.  At least one of the two sections MUST define content.
+   All sections MUST all be present.  An extension that does not use an
+   extension point MUST state "None" in the corresponding section.
 
    The extension specification MUST define exactly one JSON Schema
    document, which contains the definitions for all changed and all new
@@ -638,13 +670,11 @@ Table of Contents
    "Validation".  An extension specification MUST NOT split its schema
    over multiple documents.
 
-   The extension specification MUST include examples.  For every
-   operation that the extension adds or changes, and for every changed
-   or new object, the specification MUST include at least one valid JSON
-   example of the request or response representation.  Every valid
-   example MUST validate successfully against the effective schema that
-   is composed from the base schema and the JSON Schema document of the
-   extension, as described in Section 8.6.
+   The specification MUST include at least one valid JSON example of the
+   request or response representation.  Every valid example MUST
+   validate successfully against the effective schema that is composed
+   from the base schema and the JSON Schema document of the extension,
+   as described in Section 8.6.
 
 10.  IANA Registries for Extensions
 
@@ -918,9 +948,17 @@ A.2.  Extension Overview
 
                                   Table 2
 
-A.3.  Changed Data Objects
+A.3.  Shared Components
 
-A.3.1.  Domain Name Data Object
+   None.
+
+A.4.  Data Objects
+
+   None.
+
+A.5.  Data Elements
+
+A.5.1.  Domain Name Data Object
 
    -  Identifier: domainName
 
@@ -940,11 +978,48 @@ A.3.1.  Domain Name Data Object
    The Read operation returns extProperty1 when the domain name was
    created with a value for it.  No other operations are changed.
 
-A.4.  New Data Objects
+A.6.  Operations
 
    None.
 
-A.5.  JSON Schema
+A.7.  URL Endpoints
+
+   None.  The extension adds no data object, association or operation,
+   so no endpoint is added.
+
+A.8.  Operation Inputs and Outputs
+
+   None.
+
+A.9.  External Data Types
+
+   None.
+
+A.10.  Result Codes
+
+   None.
+
+A.11.  Problem Details
+
+   None.
+
+A.12.  Query Parameters
+
+   None.
+
+A.13.  HTTP Headers
+
+   None.
+
+A.14.  Authentication and Authorization Methods
+
+   None.
+
+A.15.  Discovery Document
+
+   None.
+
+A.16.  JSON Schema
 
    The extension defines a single JSON Schema document.  The document
    declares, using rpp:extends, that it extends the create and read
@@ -977,7 +1052,7 @@ A.5.  JSON Schema
      }
    }
 
-A.6.  Examples
+A.17.  Examples
 
    The following instance is valid, because extProperty1 is declared by
    the supported extension:
@@ -1015,7 +1090,7 @@ A.6.  Examples
    the behavior required by "Validation": the set of accepted properties
    is determined only by the extensions that the deployment supports.
 
-A.7.  Composition and Validation
+A.18.  Composition and Validation
 
    For a deployment that supports the example extension, the effective
    schema for domainObject.create references the base definition and the
@@ -1035,19 +1110,19 @@ A.7.  Composition and Validation
      }
    }
 
-A.8.  IANA Considerations
+A.19.  IANA Considerations
 
    *TODO:*
 
-A.9.  Security Considerations
+A.20.  Security Considerations
 
    *TODO:*
 
-A.10.  Privacy Considerations
+A.21.  Privacy Considerations
 
    *TODO:*
 
-A.11.  Internationalization Considerations
+A.22.  Internationalization Considerations
 
    *TODO:*
 
