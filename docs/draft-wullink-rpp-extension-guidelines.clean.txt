@@ -99,26 +99,24 @@ Table of Contents
    Appendix A.  Example Extension
      A.1.  Introduction
      A.2.  Extension Overview
-     A.3.  Updated Data Objects
-       A.3.1.  Domain Name Data Object
-         A.3.1.1.  Data Elements
-         A.3.1.2.  Operations
-     A.4.  New Data Objects
-     A.5.  Endpoints
-     A.6.  External Data Types
-     A.7.  Result Codes
-     A.8.  Problem Details
-     A.9.  HTTP Query Parameters
-     A.10. HTTP Headers
-     A.11. Authentication and Authorization Methods
-     A.12. Discovery Document
-     A.13. JSON Schema
-     A.14. Examples
-       A.14.1.  Composition and Validation
-     A.15. IANA Considerations
-     A.16. Security Considerations
-     A.17. Privacy Considerations
-     A.18. Internationalization Considerations
+     A.3.  External Data Types
+     A.4.  Result Codes
+     A.5.  Problem Details
+     A.6.  HTTP Headers
+     A.7.  Discovery Document
+     A.8.  Updated Data Objects
+       A.8.1.  Domain Name Data Object
+         A.8.1.1.  Data Elements
+         A.8.1.2.  Operations
+     A.9.  New Data Objects
+     A.10. Endpoints
+     A.11. JSON Schema
+     A.12. Examples
+       A.12.1.  Composition and Validation
+     A.13. IANA Considerations
+     A.14. Security Considerations
+     A.15. Privacy Considerations
+     A.16. Internationalization Considerations
    Acknowledgements
    Authors' Addresses
 
@@ -611,49 +609,47 @@ Table of Contents
         RPP version the extension is compatible with, the $id of the
         JSON Schema document, the list of base objects that the
         extension changes.
-   3.   Updated Data Objects: Vvery existing data object, component
-        object or process object that the extension updates 3.1.  Data
+   3.   External Data Types: the types, defined in an external
+        specification, that the extension references.
+   4.   Result Codes: the new result codes that the extension defines.
+   5.   Problem Details: the fields that the extension adds to the
+        Problem Detail error object.
+   6.   HTTP Headers: the HTTP headers that the extension defines.
+   7.   Discovery Document: the properties that the extension adds to
+        the RPP Discovery document, in addition to its entry in the
+        extensions list.
+   8.   Updated Data Objects: Every existing data object, component
+        object or process object that the extension updates 8.1.  Data
         Elements: for every base data object, component object or
         process object that the extension changes, the added data
         elements and associations.  Each added data element MUST be
         defined using the data element attributes defined in
         [I-D.ietf-rpp-data-objects] (name, identifier, cardinality,
-        mutability, data type, description and constraints). 3.2.
+        mutability, data type, description and constraints). 8.2.
         Operations: every operation that the extension introduces.
-   4.   New Data Objects: Every new data object, component object or
+   9.   New Data Objects: Every new data object, component object or
         process object that the extension introduces, must include
         including its object description, data elements and operations.
-        4.1.  Data Elements: for every base data object, component
+        9.1.  Data Elements: for every base data object, component
         object or process object that the extension changes, the added
         data elements and associations.  Each added data element MUST be
         defined using the data element attributes defined in
         [I-D.ietf-rpp-data-objects] (name, identifier, cardinality,
-        mutability, data type, description and constraints). 4.2.
+        mutability, data type, description and constraints). 9.2.
         Operations: every operation that the extension introduces.
-   5.   Endpoints: the endpoint URLs, HTTP methods and query parameters
+   10.  Endpoints: the endpoint URLs, HTTP methods and query parameters
         that result from the new data objects, associations and
         operations, as derived by the rules in [I-D.ietf-rpp-core].
         This section is informative.
-   6.   External Data Types: the types, defined in an external
-        specification, that the extension references.
-   7.   Result Codes: the new result codes that the extension defines.
-   8.   Problem Details: the fields that the extension adds to the
-        Problem Detail error object.
-   9.   HTTP Headers: the HTTP headers that the extension defines.
-   10.  Authentication and Authorization Methods: the authentication and
-        authorization methods that the extension defines.
-   11.  Discovery Document: the properties that the extension adds to
-        the RPP Discovery document, in addition to its entry in the
-        extensions list.
-   12.  JSON Schema: the JSON Schema document of the extension which
+   11.  JSON Schema: the JSON Schema document of the extension which
         defines the structure and constraints of the new and updated
         data objects.
-   13.  Examples.
-   14.  IANA Considerations: the registrations that the extension
+   12.  Examples.
+   13.  IANA Considerations: the registrations that the extension
         requires, as described in Section 10.
-   15.  Security Considerations.
-   16.  Privacy Considerations.
-   17.  Internationalization Considerations.
+   14.  Security Considerations.
+   15.  Privacy Considerations.
+   16.  Internationalization Considerations.
 
    All sections MUST all be present.  An extension that does not use an
    extension point MUST state "None" in the corresponding section.
@@ -915,13 +911,33 @@ A.2.  Extension Overview
 
                                   Table 2
 
-A.3.  Updated Data Objects
+A.3.  External Data Types
 
-A.3.1.  Domain Name Data Object
+   None.
+
+A.4.  Result Codes
+
+   None.
+
+A.5.  Problem Details
+
+   None.
+
+A.6.  HTTP Headers
+
+   None.
+
+A.7.  Discovery Document
+
+   None.
+
+A.8.  Updated Data Objects
+
+A.8.1.  Domain Name Data Object
 
    -  Identifier: domainName
 
-A.3.1.1.  Data Elements
+A.8.1.1.  Data Elements
 
    The following data element is added to the Domain Name Data Object.
 
@@ -939,47 +955,19 @@ A.3.1.1.  Data Elements
    The Read operation returns extProperty1 when the domain name was
    created with a value for it.
 
-A.3.1.2.  Operations
+A.8.1.2.  Operations
 
    None.
 
-A.4.  New Data Objects
+A.9.  New Data Objects
 
    None.
 
-A.5.  Endpoints
+A.10.  Endpoints
 
    None.
 
-A.6.  External Data Types
-
-   None.
-
-A.7.  Result Codes
-
-   None.
-
-A.8.  Problem Details
-
-   None.
-
-A.9.  HTTP Query Parameters
-
-   None.
-
-A.10.  HTTP Headers
-
-   None.
-
-A.11.  Authentication and Authorization Methods
-
-   None.
-
-A.12.  Discovery Document
-
-   None.
-
-A.13.  JSON Schema
+A.11.  JSON Schema
 
    The extension defines a single JSON Schema document.  The document
    declares, using rpp:extends, that it extends the create and read
@@ -1012,7 +1000,7 @@ A.13.  JSON Schema
      }
    }
 
-A.14.  Examples
+A.12.  Examples
 
    The following instance is valid, because extProperty1 is declared by
    the supported extension:
@@ -1050,7 +1038,7 @@ A.14.  Examples
    the behavior required by "Validation": the set of accepted properties
    is determined only by the extensions that the deployment supports.
 
-A.14.1.  Composition and Validation
+A.12.1.  Composition and Validation
 
    For a deployment that supports the example extension, the effective
    schema for domainObject.create references the base definition and the
@@ -1070,19 +1058,19 @@ A.14.1.  Composition and Validation
      }
    }
 
-A.15.  IANA Considerations
+A.13.  IANA Considerations
 
    *TODO:*
 
-A.16.  Security Considerations
+A.14.  Security Considerations
 
    *TODO:*
 
-A.17.  Privacy Considerations
+A.15.  Privacy Considerations
 
    *TODO:*
 
-A.18.  Internationalization Considerations
+A.16.  Internationalization Considerations
 
    *TODO:*
 

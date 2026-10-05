@@ -199,19 +199,18 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 <ol spacing="compact">
 <li>Introduction: the purpose of the extension, the base specifications it builds upon, and its motivation.</li>
 <li>Extension Overview: the name, the identifier, the version, the RPP version the extension is compatible with, the <tt>$id</tt> of the JSON Schema document, the list of base objects that the extension changes.</li>
-<li>Updated Data Objects: Vvery existing data object, component object or process object that the extension updates
-3.1. Data Elements: for every base data object, component object or process object that the extension changes, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).
-3.2. Operations: every operation that the extension introduces.</li>
-<li>New Data Objects: Every new data object, component object or process object that the extension introduces, must include including its object description, data elements and operations.
-4.1. Data Elements: for every base data object, component object or process object that the extension changes, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).
-4.2. Operations: every operation that the extension introduces.</li>
-<li>Endpoints: the endpoint URLs, HTTP methods and query parameters that result from the new data objects, associations and operations, as derived by the rules in <xref target="I-D.ietf-rpp-core"></xref>. This section is informative.</li>
 <li>External Data Types: the types, defined in an external specification, that the extension references.</li>
 <li>Result Codes: the new result codes that the extension defines.</li>
 <li>Problem Details: the fields that the extension adds to the Problem Detail error object.</li>
 <li>HTTP Headers: the HTTP headers that the extension defines.</li>
-<li>Authentication and Authorization Methods: the authentication and authorization methods that the extension defines.</li>
 <li>Discovery Document: the properties that the extension adds to the RPP Discovery document, in addition to its entry in the <tt>extensions</tt> list.</li>
+<li>Updated Data Objects: Every existing data object, component object or process object that the extension updates
+8.1. Data Elements: for every base data object, component object or process object that the extension changes, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).
+8.2. Operations: every operation that the extension introduces.</li>
+<li>New Data Objects: Every new data object, component object or process object that the extension introduces, must include including its object description, data elements and operations.
+9.1. Data Elements: for every base data object, component object or process object that the extension changes, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).
+9.2. Operations: every operation that the extension introduces.</li>
+<li>Endpoints: the endpoint URLs, HTTP methods and query parameters that result from the new data objects, associations and operations, as derived by the rules in <xref target="I-D.ietf-rpp-core"></xref>. This section is informative.</li>
 <li>JSON Schema: the JSON Schema document of the extension which defines the structure and constraints of the new and updated data objects.</li>
 <li>Examples.</li>
 <li>IANA Considerations: the registrations that the extension requires, as described in <xref target="iana-registries"></xref>.</li>
@@ -418,6 +417,26 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 </tbody>
 </table></section>
 
+<section anchor="external-data-types-1"><name>External Data Types</name>
+<t>None.</t>
+</section>
+
+<section anchor="result-codes-1"><name>Result Codes</name>
+<t>None.</t>
+</section>
+
+<section anchor="problem-details-1"><name>Problem Details</name>
+<t>None.</t>
+</section>
+
+<section anchor="http-headers-1"><name>HTTP Headers</name>
+<t>None.</t>
+</section>
+
+<section anchor="discovery-document-1"><name>Discovery Document</name>
+<t>None.</t>
+</section>
+
 <section anchor="updated-data-objects"><name>Updated Data Objects</name>
 
 <section anchor="domain-name-data-object"><name>Domain Name Data Object</name>
@@ -460,34 +479,6 @@ Any transient parameter for a read, query, update, and delete operation MUST be 
 </section>
 
 <section anchor="endpoints-1"><name>Endpoints</name>
-<t>None.</t>
-</section>
-
-<section anchor="external-data-types-1"><name>External Data Types</name>
-<t>None.</t>
-</section>
-
-<section anchor="result-codes-1"><name>Result Codes</name>
-<t>None.</t>
-</section>
-
-<section anchor="problem-details-1"><name>Problem Details</name>
-<t>None.</t>
-</section>
-
-<section anchor="http-query-parameters"><name>HTTP Query Parameters</name>
-<t>None.</t>
-</section>
-
-<section anchor="http-headers-1"><name>HTTP Headers</name>
-<t>None.</t>
-</section>
-
-<section anchor="authentication-and-authorization-methods"><name>Authentication and Authorization Methods</name>
-<t>None.</t>
-</section>
-
-<section anchor="discovery-document-1"><name>Discovery Document</name>
 <t>None.</t>
 </section>
 
