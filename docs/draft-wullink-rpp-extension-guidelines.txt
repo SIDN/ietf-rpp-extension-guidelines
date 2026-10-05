@@ -73,39 +73,39 @@ Table of Contents
    2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   4
    3.  Conventions Used in This Document . . . . . . . . . . . . . .   6
    4.  Restrictions on Extensions  . . . . . . . . . . . . . . . . .   6
-   5.  RPP Extension Points  . . . . . . . . . . . . . . . . . . . .   7
-     5.1.  Shared Components . . . . . . . . . . . . . . . . . . . .   7
+   5.  RPP Extension Points  . . . . . . . . . . . . . . . . . . . .   6
+     5.1.  Components  . . . . . . . . . . . . . . . . . . . . . . .   6
      5.2.  Data Objects  . . . . . . . . . . . . . . . . . . . . . .   7
      5.3.  Data Elements . . . . . . . . . . . . . . . . . . . . . .   7
      5.4.  Operations  . . . . . . . . . . . . . . . . . . . . . . .   7
-     5.5.  URL Endpoints . . . . . . . . . . . . . . . . . . . . . .   7
-     5.6.  Operation Inputs and Outputs  . . . . . . . . . . . . . .   8
+     5.5.  Endpoints . . . . . . . . . . . . . . . . . . . . . . . .   7
+     5.6.  Operation Inputs and Outputs  . . . . . . . . . . . . . .   7
      5.7.  External Data Types . . . . . . . . . . . . . . . . . . .   8
      5.8.  Result Codes  . . . . . . . . . . . . . . . . . . . . . .   8
      5.9.  Problem Details . . . . . . . . . . . . . . . . . . . . .   8
      5.10. Query Parameters  . . . . . . . . . . . . . . . . . . . .   8
-     5.11. HTTP Headers  . . . . . . . . . . . . . . . . . . . . . .   9
-     5.12. New Authentication and Authorization Methods  . . . . . .   9
-     5.13. Discovery document  . . . . . . . . . . . . . . . . . . .   9
+     5.11. HTTP Headers  . . . . . . . . . . . . . . . . . . . . . .   8
+     5.12. Discovery document  . . . . . . . . . . . . . . . . . . .   8
    6.  Selecting an Extension Point  . . . . . . . . . . . . . . . .   9
    7.  Identifying Extensions  . . . . . . . . . . . . . . . . . . .  10
-   8.  Extending Data Objects  . . . . . . . . . . . . . . . . . . .  11
+   8.  Extending Data Objects  . . . . . . . . . . . . . . . . . . .  10
      8.1.  JSON Schema Composition . . . . . . . . . . . . . . . . .  11
      8.2.  Schema Identification . . . . . . . . . . . . . . . . . .  11
-     8.3.  Extension Dependencies  . . . . . . . . . . . . . . . . .  12
+     8.3.  Extension Dependencies  . . . . . . . . . . . . . . . . .  11
      8.4.  Consumer Implementation . . . . . . . . . . . . . . . . .  12
-       8.4.1.  Java  . . . . . . . . . . . . . . . . . . . . . . . .  13
+       8.4.1.  Java  . . . . . . . . . . . . . . . . . . . . . . . .  12
      8.5.  Registration  . . . . . . . . . . . . . . . . . . . . . .  13
      8.6.  Validation  . . . . . . . . . . . . . . . . . . . . . . .  13
-   9.  Extension Specification Format  . . . . . . . . . . . . . . .  14
+   9.  Extension Specification Format  . . . . . . . . . . . . . . .  13
    10. IANA Registries for Extensions  . . . . . . . . . . . . . . .  15
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  18
-   12. Security Considerations . . . . . . . . . . . . . . . . . . .  18
-   13. Internationalization Considerations . . . . . . . . . . . . .  19
-   14. Privacy Considerations  . . . . . . . . . . . . . . . . . . .  19
-   15. Change History  . . . . . . . . . . . . . . . . . . . . . . .  19
-   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  19
-     16.1.  Normative References . . . . . . . . . . . . . . . . . .  19
+   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  17
+   12. Security Considerations . . . . . . . . . . . . . . . . . . .  17
+   13. Internationalization Considerations . . . . . . . . . . . . .  17
+   14. Privacy Considerations  . . . . . . . . . . . . . . . . . . .  17
+   15. Change History  . . . . . . . . . . . . . . . . . . . . . . .  18
+   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  18
+     16.1.  Normative References . . . . . . . . . . . . . . . . . .  18
+     16.2.  Informative References . . . . . . . . . . . . . . . . .  19
 
 
 
@@ -114,33 +114,31 @@ Wullink & Kowalik          Expires 18 May 2027                  [Page 2]
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-     16.2.  Informative References . . . . . . . . . . . . . . . . .  20
-   Appendix A.  Example Extension  . . . . . . . . . . . . . . . . .  21
-     A.1.  Introduction  . . . . . . . . . . . . . . . . . . . . . .  21
-     A.2.  Extension Overview  . . . . . . . . . . . . . . . . . . .  21
-     A.3.  Shared Components . . . . . . . . . . . . . . . . . . . .  22
-     A.4.  Data Objects  . . . . . . . . . . . . . . . . . . . . . .  22
-     A.5.  Data Elements . . . . . . . . . . . . . . . . . . . . . .  22
-       A.5.1.  Domain Name Data Object . . . . . . . . . . . . . . .  22
-     A.6.  Operations  . . . . . . . . . . . . . . . . . . . . . . .  23
-     A.7.  URL Endpoints . . . . . . . . . . . . . . . . . . . . . .  23
-     A.8.  Operation Inputs and Outputs  . . . . . . . . . . . . . .  23
-     A.9.  External Data Types . . . . . . . . . . . . . . . . . . .  23
-     A.10. Result Codes  . . . . . . . . . . . . . . . . . . . . . .  23
-     A.11. Problem Details . . . . . . . . . . . . . . . . . . . . .  23
-     A.12. Query Parameters  . . . . . . . . . . . . . . . . . . . .  23
-     A.13. HTTP Headers  . . . . . . . . . . . . . . . . . . . . . .  23
-     A.14. Authentication and Authorization Methods  . . . . . . . .  23
-     A.15. Discovery Document  . . . . . . . . . . . . . . . . . . .  23
-     A.16. JSON Schema . . . . . . . . . . . . . . . . . . . . . . .  23
-     A.17. Examples  . . . . . . . . . . . . . . . . . . . . . . . .  24
-     A.18. Composition and Validation  . . . . . . . . . . . . . . .  25
-     A.19. IANA Considerations . . . . . . . . . . . . . . . . . . .  25
-     A.20. Security Considerations . . . . . . . . . . . . . . . . .  25
-     A.21. Privacy Considerations  . . . . . . . . . . . . . . . . .  25
-     A.22. Internationalization Considerations . . . . . . . . . . .  26
-   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  26
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  26
+   Appendix A.  Example Extension  . . . . . . . . . . . . . . . . .  19
+     A.1.  Introduction  . . . . . . . . . . . . . . . . . . . . . .  20
+     A.2.  Extension Overview  . . . . . . . . . . . . . . . . . . .  20
+     A.3.  Updated Data Objects  . . . . . . . . . . . . . . . . . .  20
+       A.3.1.  Domain Name Data Object . . . . . . . . . . . . . . .  20
+         A.3.1.1.  Data Elements . . . . . . . . . . . . . . . . . .  20
+         A.3.1.2.  Operations  . . . . . . . . . . . . . . . . . . .  21
+     A.4.  New Data Objects  . . . . . . . . . . . . . . . . . . . .  21
+     A.5.  Endpoints . . . . . . . . . . . . . . . . . . . . . . . .  21
+     A.6.  External Data Types . . . . . . . . . . . . . . . . . . .  21
+     A.7.  Result Codes  . . . . . . . . . . . . . . . . . . . . . .  21
+     A.8.  Problem Details . . . . . . . . . . . . . . . . . . . . .  21
+     A.9.  HTTP Query Parameters . . . . . . . . . . . . . . . . . .  21
+     A.10. HTTP Headers  . . . . . . . . . . . . . . . . . . . . . .  21
+     A.11. Authentication and Authorization Methods  . . . . . . . .  21
+     A.12. Discovery Document  . . . . . . . . . . . . . . . . . . .  22
+     A.13. JSON Schema . . . . . . . . . . . . . . . . . . . . . . .  22
+     A.14. Examples  . . . . . . . . . . . . . . . . . . . . . . . .  22
+       A.14.1.  Composition and Validation . . . . . . . . . . . . .  23
+     A.15. IANA Considerations . . . . . . . . . . . . . . . . . . .  24
+     A.16. Security Considerations . . . . . . . . . . . . . . . . .  24
+     A.17. Privacy Considerations  . . . . . . . . . . . . . . . . .  24
+     A.18. Internationalization Considerations . . . . . . . . . . .  24
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  24
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
 
 1.  Introduction
 
@@ -155,21 +153,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    functionality can be introduced without modifying the base
    specification that defines the object or operation being extended.
 
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                  [Page 3]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    Because independently developed extension specifications may be
    deployed together, and because RPP relies on JSON Schema, as defined
    in [I-D.ietf-rpp-json], to validate protocol messages, extensions
@@ -178,6 +161,14 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    combined at a given deployment, or could require ad-hoc, per-
    combination schema and code to be written for every deployment
    profile.  This document defines that common pattern.
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                  [Page 3]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
 
    This document identifies the set of extension points along which an
    RPP base specification MAY be extended, including new data objects,
@@ -219,17 +210,21 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    Resource - An object having a type, data, and possible relationship
    to other resources, identified by a URL.
 
+   Base specification - The RPP specification, such as
+   [I-D.ietf-rpp-data-objects], [I-D.ietf-rpp-json] or
+   [I-D.ietf-rpp-core], that originally defines a data object, component
+   object, or operation.
+
+
+
+
+
 
 
 Wullink & Kowalik          Expires 18 May 2027                  [Page 4]
 
 Internet-Draft          RPP Extension Guidelines           November 2026
 
-
-   Base specification - The RPP specification, such as
-   [I-D.ietf-rpp-data-objects], [I-D.ietf-rpp-json] or
-   [I-D.ietf-rpp-core], that originally defines a data object, component
-   object, or operation.
 
    Extension specification - A specification that adds new data
    elements, associations, or operations to an object or operation
@@ -271,17 +266,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    that defines the capabilities of an RPP server, as defined in
    [I-D.ietf-rpp-core].
 
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                  [Page 5]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    Discovery document - The JSON document, published by an RPP server at
    a well-known location, that describes the capabilities of the server,
    including the extensions it supports, as defined in
@@ -290,6 +274,13 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    JSON Schema - A vocabulary for describing and validating JSON
    documents, as defined in [JSON-SCHEMA].  This document uses JSON
    Schema draft 2020-12.
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                  [Page 5]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
 
    rpp:extends - The property of an extension JSON Schema that maps the
    reference of each base object definition to the local definition in
@@ -328,8 +319,17 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    *TODO: do we recommend to use namespaces, using prefixes, to avoid
    naming conflicts between properties added by different extensions?*
 
+5.  RPP Extension Points
 
+   An extension specification can extend RPP along one or more of the
+   following independent extension points.  Each extension point may
+   have its own registration requirements.
 
+5.1.  Components
+
+   Extensions may define shared components, such as common data types
+   that can be reused across multiple data objects, operations, or other
+   extension points.
 
 
 
@@ -338,37 +338,23 @@ Wullink & Kowalik          Expires 18 May 2027                  [Page 6]
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-5.  RPP Extension Points
-
-   An extension specification MAY extend RPP along one or more of the
-   following independent extension points.  Each extension point has its
-   own registration requirements and, where applicable, its own schema-
-   composition method.
-
-5.1.  Shared Components
-
-   Extensions MAY define shared components, such as common data types or
-   utility functions, that can be reused across multiple data objects,
-   operations, or other extension points.
-
 5.2.  Data Objects
 
-   Extensions MAY define entirely new resource, component, or process
+   Extensions may define entirely new data object, component, or process
    objects, as described in [I-D.ietf-rpp-data-objects].
 
 5.3.  Data Elements
 
-   Extensions MAY add new data elements (properties) to an existing data
+   Extensions may add new data elements (properties) to an existing data
    object, component object, or process object defined in a base
-   specification.  This is the extension point covered in detail
-   inSection 8 below.
+   specification.
 
 5.4.  Operations
 
-   Extensions MAY define entirely new operations on existing or new data
+   Extensions may define entirely new operations on existing or new data
    objects.
 
-5.5.  URL Endpoints
+5.5.  Endpoints
 
    RPP endpoint URLs are not an independent extension point.  As defined
    in [I-D.ietf-rpp-core], every endpoint URL and HTTP method is derived
@@ -385,6 +371,20 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    -  A new operation automatically obtains its HTTP method and URL path
       once its "Identifier" is registered.
 
+   An extension specification MUST NOT define ad-hoc endpoint URLs or
+   HTTP methods.  It MUST instead register the underlying data object,
+   association, or operation as described in the corresponding extension
+   point above, and rely on the derivation rules in [I-D.ietf-rpp-core]
+   to determine the resulting endpoint.
+
+5.6.  Operation Inputs and Outputs
+
+   Extensions may add both transient and persistent data elements to the
+   input or output of an existing operation.
+
+
+
+
 
 
 
@@ -394,20 +394,9 @@ Wullink & Kowalik          Expires 18 May 2027                  [Page 7]
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-   An extension specification MUST NOT define ad-hoc endpoint URLs or
-   HTTP methods.  It MUST instead register the underlying data object,
-   association, or operation as described in the corresponding extension
-   point above, and rely on the derivation rules in [I-D.ietf-rpp-core]
-   to determine the resulting endpoint.
-
-5.6.  Operation Inputs and Outputs
-
-   Extensions MAY add both transient and persistent data elements to the
-   input or output of an existing operation.
-
 5.7.  External Data Types
 
-   Instead of adding properties to an object, an extension MAY reference
+   Instead of adding properties to an object, an extension may reference
    a type defined entirely in an external specification (e.g.
    External:RPP-JSContact-Profile:Card), as described in
    [I-D.ietf-rpp-data-objects].  This is the appropriate mechanism when
@@ -416,14 +405,14 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
 5.8.  Result Codes
 
-   Extensions MAY define new RPP result codes within the reserved result
+   Extensions may define new RPP result codes within the reserved result
    code classes, registered in the RPP Result Codes registry defined in
    [I-D.ietf-rpp-core].  New result codes MUST be registered in the RPP
    Result Codes registry defined in [I-D.ietf-rpp-core].
 
 5.9.  Problem Details
 
-   Extensions MAY add new fields to the Problem Detail error object to
+   Extensions may add new fields to the Problem Detail error object to
    convey additional, extension-specific information about the cause of
    an error, as described in [I-D.ietf-rpp-core].
 
@@ -432,15 +421,26 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
 5.10.  Query Parameters
 
-   Extensions MAY define additional HTTP query parameters for existing
+   Extensions may define additional HTTP query parameters for existing
    operations, for example to further qualify a check or read request,
    as described in [I-D.ietf-rpp-core].  Any transient parameter for a
    read, query, update, and delete operation MUST be translated into an
    HTTP query parameter, named by the operation's parameter identifier.
 
+5.11.  HTTP Headers
 
+   Extensions may define new HTTP headers for existing operations, as
+   described in [I-D.ietf-rpp-core].  Any new headers MUST be registered
+   in the appropriate IANA registry.
 
+5.12.  Discovery document
 
+   A server that supports one or more extensions MUST publish every
+   supported extension in the extensions list of its RPP Discovery
+   document, as defined in [I-D.ietf-rpp-core].  Each entry MUST contain
+   the name, id, version and url of the extension, using the name,
+   identifier and version defined in the Extension Overview section of
+   the extension specification.
 
 
 
@@ -449,25 +449,6 @@ Wullink & Kowalik          Expires 18 May 2027                  [Page 8]
 
 Internet-Draft          RPP Extension Guidelines           November 2026
 
-
-5.11.  HTTP Headers
-
-   Extensions MAY define new HTTP headers for existing operations, as
-   described in [I-D.ietf-rpp-core].  Any new headers MUST be registered
-   in the appropriate IANA registry.
-
-5.12.  New Authentication and Authorization Methods
-
-   *TODO: is this an extension point?*
-
-5.13.  Discovery document
-
-   A server that supports one or more extensions MUST publish every
-   supported extension in the extensions list of its RPP Discovery
-   document, as defined in [I-D.ietf-rpp-core].  Each entry MUST contain
-   the name, id, version and url of the extension, using the name,
-   identifier and version defined in the Extension Overview section of
-   the extension specification.
 
    A client MUST NOT use an extension that is not listed in the
    Discovery document of the server.  A server MUST reject a request
@@ -486,8 +467,8 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    MUST be included in the appropriate section of the document,
    following the structure defined in [I-D.ietf-rpp-core].
 
-   *TODO: there is no schema for the Problem Detail error object defined
-   in the base specification, fix this?*
+   *TODO: there is no schema for the Discovery document defined in the
+   base specification, fix this?*
 
 6.  Selecting an Extension Point
 
@@ -496,15 +477,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    increasing complexity and of increasing impact on implementations.  A
    designer SHOULD only move to the next form when the answer to the
    question of the current form is "no".
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                  [Page 9]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
 
    1.  Reuse an existing extension point of a base specification.  The
        base specifications define open-ended elements to which new
@@ -524,6 +496,16 @@ Internet-Draft          RPP Extension Guidelines           November 2026
        the question of the previous form was probably answered
        incorrectly.  Question: can the requirement be met by applying
        the uniform interface operations to a new object?
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                  [Page 9]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
    4.  Define a new operation, or a new process object for a long-
        running or multi-step operation.  Question: can the requirement
        be met by new operations on new or existing objects?
@@ -555,13 +537,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
       The identifier of an extension SHOULD NOT contain the version, so
       that the identifier remains stable when the extension is revised.
 
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 10]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    *TODO: the examples in [I-D.ietf-rpp-core] include the version in the
    identifier of an extension in one place and not in another.  This
    must be aligned.*
@@ -576,6 +551,16 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    properties to an object defined in a base specification, so that JSON
    Schema validation, as defined in [I-D.ietf-rpp-json], keeps
    functioning correctly across specifications.
+
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 10]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
 
 8.1.  JSON Schema Composition
 
@@ -608,6 +593,21 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    https://www.iana.org/.../domainName.json#/$defs/domainName) rather
    than copying the base definition into their own schema.
 
+8.3.  Extension Dependencies
+
+   Extensions MUST be independent of one another.  An extension MUST NOT
+   extend, change or otherwise depend on a definition that is introduced
+   by another extension, such as a data object, data element or
+   operation.  The rpp:extends property of an extension schema MUST only
+   reference definitions of base specifications, and an extension MUST
+   NOT require that another extension is supported.
+
+   When the functionality of an existing extension needs to be extended,
+   a new version of that extension MUST be defined instead of a second
+   extension that builds upon the first one.  The new version keeps the
+   identifier of the extension and updates the version, as described in
+   Section 7.  A server publishes the version of the extension that it
+   supports in its Discovery document.
 
 
 
@@ -617,20 +617,6 @@ Wullink & Kowalik          Expires 18 May 2027                 [Page 11]
 
 Internet-Draft          RPP Extension Guidelines           November 2026
 
-
-8.3.  Extension Dependencies
-
-   Extensions SHOULD be independent of one another.  An extension MAY
-   however extend a definition that is introduced by another extension,
-   for example a new data object that is defined by an extension and
-   that is changed by a second extension.  In that case the second
-   extension MUST reference the definition in the schema of the first
-   extension by its $id-relative pointer in its rpp:extends property,
-   and MUST list the first extension in the "Requires" field of its
-   Extension Overview.  A server that supports the second extension MUST
-   also support the first extension, and MUST list both in its Discovery
-   document.  A chain of extensions SHOULD evolve from general to more
-   specific functionality.
 
 8.4.  Consumer Implementation
 
@@ -657,23 +643,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    response that belong to an extension it does not recognize or does
    not support.
 
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 12]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    Because an extension that is not attached to a given base object
    instance contributes no properties at all, a consumer naturally
    serializes only the base object together with the properties of
@@ -697,6 +666,14 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    "Validation" to the composed schema only, and validates JSON
    instances against the result.  Adding support for a new extension
    then consists of adding its schema document to the library; no new
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 12]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
    classes are required.
 
 8.5.  Registration
@@ -722,14 +699,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    object-schema node of the combined schema, following the algorithm
    described in [I-D.ietf-rpp-json].  This injection MUST be performed
    only on the combined, per-deployment schema, and MUST NOT be present
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 13]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    in the schema document published by any individual base or extension
    specification.  This ensures undeclared properties are rejected while
    any supported combination of registered extensions validates
@@ -749,55 +718,58 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    2.   Extension Overview: the name, the identifier, the version, the
         RPP version the extension is compatible with, the $id of the
         JSON Schema document, the list of base objects that the
-        extension changes, and the extensions that it requires.
-   3.   Shared Components: the shared components, such as common data
-        types or utility functions, that the extension defines.
-   4.   Data Objects: every data object, component object or process
-        object that the extension introduces, including its object
-        description, data elements and operations.
-   5.   Data Elements: for every base data object, component object or
-        process object that the extension changes, the added data
-        elements and associations.  Each added data element MUST be
-        defined using the data element attributes defined in
-        [I-D.ietf-rpp-data-objects] (name, identifier, cardinality,
-        mutability, data type, description and constraints).
-   6.   Operations: every operation that the extension introduces on a
-        new or existing data object.
-   7.   URL Endpoints: the endpoint URLs and HTTP methods that result
-        from the new data objects, associations and operations, as
-        derived by the rules in [I-D.ietf-rpp-core].  This section is
-        informative, an extension MUST NOT define ad-hoc endpoints.
-   8.   Operation Inputs and Outputs: for every existing operation that
-        the extension changes, the added transient and persistent data
-        elements of its input or output.
-   9.   External Data Types: the types, defined in an external
-        specification, that the extension references.
-   10.  Result Codes: the new result codes that the extension defines.
-   11.  Problem Details: the fields that the extension adds to the
-        Problem Detail error object.
-   12.  Query Parameters: the HTTP query parameters that the extension
-        adds to existing operations.
-   13.  HTTP Headers: the HTTP headers that the extension defines.
+        extension changes.
+   3.   Updated Data Objects: Vvery existing data object, component
+        object or process object that the extension updates 3.1.  Data
+        Elements: for every base data object, component object or
 
 
 
-Wullink & Kowalik          Expires 18 May 2027                 [Page 14]
+Wullink & Kowalik          Expires 18 May 2027                 [Page 13]
 
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-   14.  Authentication and Authorization Methods: the authentication and
+        process object that the extension changes, the added data
+        elements and associations.  Each added data element MUST be
+        defined using the data element attributes defined in
+        [I-D.ietf-rpp-data-objects] (name, identifier, cardinality,
+        mutability, data type, description and constraints). 3.2.
+        Operations: every operation that the extension introduces.
+   4.   New Data Objects: Every new data object, component object or
+        process object that the extension introduces, must include
+        including its object description, data elements and operations.
+        4.1.  Data Elements: for every base data object, component
+        object or process object that the extension changes, the added
+        data elements and associations.  Each added data element MUST be
+        defined using the data element attributes defined in
+        [I-D.ietf-rpp-data-objects] (name, identifier, cardinality,
+        mutability, data type, description and constraints). 4.2.
+        Operations: every operation that the extension introduces.
+   5.   Endpoints: the endpoint URLs, HTTP methods and query parameters
+        that result from the new data objects, associations and
+        operations, as derived by the rules in [I-D.ietf-rpp-core].
+        This section is informative.
+   6.   External Data Types: the types, defined in an external
+        specification, that the extension references.
+   7.   Result Codes: the new result codes that the extension defines.
+   8.   Problem Details: the fields that the extension adds to the
+        Problem Detail error object.
+   9.   HTTP Headers: the HTTP headers that the extension defines.
+   10.  Authentication and Authorization Methods: the authentication and
         authorization methods that the extension defines.
-   15.  Discovery Document: the properties that the extension adds to
+   11.  Discovery Document: the properties that the extension adds to
         the RPP Discovery document, in addition to its entry in the
         extensions list.
-   16.  JSON Schema: the single JSON Schema document of the extension.
-   17.  Examples.
-   18.  IANA Considerations: the registrations that the extension
+   12.  JSON Schema: the JSON Schema document of the extension which
+        defines the structure and constraints of the new and updated
+        data objects.
+   13.  Examples.
+   14.  IANA Considerations: the registrations that the extension
         requires, as described in Section 10.
-   19.  Security Considerations.
-   20.  Privacy Considerations.
-   21.  Internationalization Considerations.
+   15.  Security Considerations.
+   16.  Privacy Considerations.
+   17.  Internationalization Considerations.
 
    All sections MUST all be present.  An extension that does not use an
    extension point MUST state "None" in the corresponding section.
@@ -806,6 +778,14 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    document, which contains the definitions for all changed and all new
    objects of the extension.  The document MUST have a top-level $id,
    MUST declare the changed base objects using rpp:extends as described
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 14]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
    in "JSON Schema Composition", and MUST NOT contain
    unevaluatedProperties or additionalProperties set to false, see
    "Validation".  An extension specification MUST NOT split its schema
@@ -821,26 +801,15 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
    The RPP base specifications define the IANA registries listed below.
    When an extension specification is published as an RFC, every new
-   entry that the extension requires MUST be registered in the relevant
-   registry, and the IANA Considerations section of the extension
-   specification MUST request these registrations.  An extension
-   specification MUST NOT define its own registry for values that belong
-   in one of these registries.  If no suitable registry exists for a
-   value that the extension needs to register, the extension
-   specification MUST request the creation of a new registry in its IANA
-   Considerations section, in the RPP registry group defined in
-   [I-D.ietf-rpp-core].
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 15]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
+   entry that the a standard track extension requires MUST be registered
+   in the relevant registry, and the IANA Considerations section of the
+   extension specification MUST request these registrations.  An
+   extension specification MUST NOT define its own registry for values
+   that belong in one of these registries.  If no suitable registry
+   exists for a value that the extension needs to register, the
+   extension specification MUST request the creation of a new registry
+   in its IANA Considerations section, in the RPP registry group defined
+   in [I-D.ietf-rpp-core].
 
    Private extensions, that are not published as an RFC, are not
    required to register in these registries, but MUST still use
@@ -868,32 +837,7 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 16]
+Wullink & Kowalik          Expires 18 May 2027                 [Page 15]
 
 Internet-Draft          RPP Extension Guidelines           November 2026
 
@@ -915,20 +859,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    +-------------------+---------------------------+-------------+------------------------------------+
    |RPP Result Codes   |[I-D.ietf-rpp-core]        |Expert Review|defines a new result code           |
    +-------------------+---------------------------+-------------+------------------------------------+
-   |RPP Profiles       |[I-D.ietf-rpp-core]        |Expert Review|defines a standard profile          |
-   +-------------------+---------------------------+-------------+------------------------------------+
-   |RPP User Role      |[I-D.ietf-rpp-data-objects]|Expert Review|defines a new user role             |
-   |Values             |                           |             |                                    |
-   +-------------------+---------------------------+-------------+------------------------------------+
-   |RPP Discovery URLs |[I-D.ietf-rpp-core]        |Expert Review|not used by extensions; the registry|
-   |                   |                           |             |lists the discovery URL of each RPP |
-   |                   |                           |             |server                              |
-   +-------------------+---------------------------+-------------+------------------------------------+
-   |RPP JSON Schema    |[I-D.ietf-rpp-json]        |Expert Review|publishes a JSON Schema document for|
-   |Extensions         |(proposed)                 |             |its changed or new objects,         |
-   |                   |                           |             |registered with the $id of the      |
-   |                   |                           |             |schema                              |
-   +-------------------+---------------------------+-------------+------------------------------------+
    |Link Relation Types|[RFC8288], used by         |as defined in|defines a new link relation type, in|
    |                   |[I-D.ietf-rpp-core]        |RFC 8288     |addition to rpp-process             |
    +-------------------+---------------------------+-------------+------------------------------------+
@@ -945,15 +875,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
    The registrations are used as follows:
 
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 17]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    -  The extension MUST be registered in the RPP Extensions registry.
       The identifier of the extension in the RPP Discovery document is a
       URN below the RPP URN sub-namespace.
@@ -968,19 +889,19 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    -  New result codes MUST be registered in the RPP Result Codes
       registry, in the range reserved for extensions.
 
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 16]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
    The RPP data objects also reuse values from registries that are
    defined outside of RPP, such as the IANA Repository of IDN Practices
-   (IDN tables), the EPP Organization Role Values registry and the EPP
-   Organisation Contact Types registry [RFC8543].  An extension that
-   needs a new value from one of these registries MUST use the procedure
-   of that registry.
-
-   *TODO: the RPP Extensions registry in [I-D.ietf-rpp-core] and the
-   proposed RPP JSON Schema Extensions registry in [I-D.ietf-rpp-json]
-   overlap, and the RPP Authorization Method registry that is referred
-   to by [I-D.ietf-rpp-json] is not yet defined in [I-D.ietf-rpp-core].
-   The list of registries in this section must be aligned when these
-   documents are updated.*
+   (IDN tables).  An extension that needs a new value from one of these
+   registries MUST use the procedure of that registry.
 
 11.  IANA Considerations
 
@@ -1001,14 +922,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    specification MUST describe the security threats that are introduced
    by the extension and the measures to counter them, following the
    guidelines in [RFC3552].
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 18]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
 
    A server MUST apply authentication and authorisation to the data
    elements, operations and other elements that an extension adds, in
@@ -1031,6 +944,16 @@ Internet-Draft          RPP Extension Guidelines           November 2026
 
    *TODO*
 
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 17]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
 15.  Change History
 
    *TODO*
@@ -1052,19 +975,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
               draft-ietf-rpp-data-objects-01, 3 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-rpp-
               data-objects-01>.
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 19]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
 
    [I-D.ietf-rpp-json]
               Wullink, M. and P. Kowalik, "JSON for RESTful Provisioning
@@ -1092,14 +1002,17 @@ Internet-Draft          RPP Extension Guidelines           November 2026
               RFC 6838, DOI 10.17487/RFC6838, January 2013,
               <https://www.rfc-editor.org/info/rfc6838>.
 
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 18]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
    [RFC8288]  Nottingham, M., "Web Linking", RFC 8288,
               DOI 10.17487/RFC8288, October 2017,
               <https://www.rfc-editor.org/info/rfc8288>.
-
-   [RFC8543]  Zhou, L., Kong, N., Yao, J., Gould, J., and G. Zhou,
-              "Extensible Provisioning Protocol (EPP) Organization
-              Mapping", RFC 8543, DOI 10.17487/RFC8543, March 2019,
-              <https://www.rfc-editor.org/info/rfc8543>.
 
 16.2.  Informative References
 
@@ -1114,13 +1027,6 @@ Internet-Draft          RPP Extension Guidelines           November 2026
               JSON Schema, "JSON Schema: A vocabulary for describing
               JSON Data", 2020,
               <https://json-schema.org/draft/2020-12/json-schema-core>.
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 20]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
 
    [RFC3552]  Rescorla, E. and B. Korver, "Guidelines for Writing RFC
               Text on Security Considerations", BCP 72, RFC 3552,
@@ -1150,6 +1056,16 @@ Appendix A.  Example Extension
    extension, the example instances and unit tests, and its README
    describes how to build and run them.
 
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 19]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
 A.1.  Introduction
 
    This document provides an example of an extension specification that
@@ -1170,14 +1086,6 @@ A.2.  Extension Overview
     | Version    | 1.0                                                |
     +------------+----------------------------------------------------+
     | RPP        | 1.0                                                |
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 21]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
     | version    |                                                    |
     +------------+----------------------------------------------------+
     | Schema $id | https://rpp.example/schemas/ext-domain-            |
@@ -1191,29 +1099,29 @@ Internet-Draft          RPP Extension Guidelines           November 2026
     | New        | None                                               |
     | objects    |                                                    |
     +------------+----------------------------------------------------+
-    | Requires   | None                                               |
-    +------------+----------------------------------------------------+
 
                                   Table 2
 
-A.3.  Shared Components
+A.3.  Updated Data Objects
 
-   None.
-
-A.4.  Data Objects
-
-   None.
-
-A.5.  Data Elements
-
-A.5.1.  Domain Name Data Object
+A.3.1.  Domain Name Data Object
 
    -  Identifier: domainName
+
+A.3.1.1.  Data Elements
 
    The following data element is added to the Domain Name Data Object.
 
    -  Extension Property 1
       -  Identifier: extProperty1
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 20]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
+
       -  Cardinality: 0-1
       -  Mutability: create-only
       -  Data Type: String
@@ -1224,71 +1132,62 @@ A.5.1.  Domain Name Data Object
          -  The value MUST be provided in the Create operation.
 
    The Read operation returns extProperty1 when the domain name was
-   created with a value for it.  No other operations are changed.
+   created with a value for it.
+
+A.3.1.2.  Operations
+
+   None.
+
+A.4.  New Data Objects
+
+   None.
+
+A.5.  Endpoints
+
+   None.
+
+A.6.  External Data Types
+
+   None.
+
+A.7.  Result Codes
+
+   None.
+
+A.8.  Problem Details
+
+   None.
+
+A.9.  HTTP Query Parameters
+
+   None.
+
+A.10.  HTTP Headers
+
+   None.
+
+A.11.  Authentication and Authorization Methods
+
+   None.
 
 
 
 
-Wullink & Kowalik          Expires 18 May 2027                 [Page 22]
+Wullink & Kowalik          Expires 18 May 2027                 [Page 21]
 
 Internet-Draft          RPP Extension Guidelines           November 2026
 
 
-A.6.  Operations
+A.12.  Discovery Document
 
    None.
 
-A.7.  URL Endpoints
-
-   None.  The extension adds no data object, association or operation,
-   so no endpoint is added.
-
-A.8.  Operation Inputs and Outputs
-
-   None.
-
-A.9.  External Data Types
-
-   None.
-
-A.10.  Result Codes
-
-   None.
-
-A.11.  Problem Details
-
-   None.
-
-A.12.  Query Parameters
-
-   None.
-
-A.13.  HTTP Headers
-
-   None.
-
-A.14.  Authentication and Authorization Methods
-
-   None.
-
-A.15.  Discovery Document
-
-   None.
-
-A.16.  JSON Schema
+A.13.  JSON Schema
 
    The extension defines a single JSON Schema document.  The document
    declares, using rpp:extends, that it extends the create and read
    definitions of the base object, and contributes the new property in a
    separate definition:
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 23]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
 
    {
      "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1316,10 +1215,24 @@ Internet-Draft          RPP Extension Guidelines           November 2026
      }
    }
 
-A.17.  Examples
+A.14.  Examples
 
    The following instance is valid, because extProperty1 is declared by
    the supported extension:
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 22]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
 
    {
      "@type": "domainName",
@@ -1339,13 +1252,6 @@ A.17.  Examples
 
    { "@type": "domainName", "name": "example.example" }
 
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 24]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
    { "@type": "domainName", "name": "example.example", "extProperty1": 42 }
 
    {
@@ -1361,11 +1267,28 @@ Internet-Draft          RPP Extension Guidelines           November 2026
    the behavior required by "Validation": the set of accepted properties
    is determined only by the extensions that the deployment supports.
 
-A.18.  Composition and Validation
+A.14.1.  Composition and Validation
 
    For a deployment that supports the example extension, the effective
    schema for domainObject.create references the base definition and the
    extension definition, and has its own $id:
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Kowalik          Expires 18 May 2027                 [Page 23]
+
+Internet-Draft          RPP Extension Guidelines           November 2026
+
 
    {
      "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1381,28 +1304,19 @@ A.18.  Composition and Validation
      }
    }
 
-A.19.  IANA Considerations
+A.15.  IANA Considerations
 
    *TODO:*
 
-A.20.  Security Considerations
+A.16.  Security Considerations
 
    *TODO:*
 
-A.21.  Privacy Considerations
+A.17.  Privacy Considerations
 
    *TODO:*
 
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 25]
-
-Internet-Draft          RPP Extension Guidelines           November 2026
-
-
-A.22.  Internationalization Considerations
+A.18.  Internationalization Considerations
 
    *TODO:*
 
@@ -1427,30 +1341,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Kowalik          Expires 18 May 2027                 [Page 26]
+Wullink & Kowalik          Expires 18 May 2027                 [Page 24]
