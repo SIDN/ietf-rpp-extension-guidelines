@@ -11,8 +11,12 @@
 </postal><email>pawel.kowalik@denic.de</email>
 <uri>https://denic.de/</uri>
 </address></author><date year="2026" month="November" day="2"></date>
-<area>Internet</area>
-<workgroup>Network Working Group</workgroup>
+<area>Applications and Real-Time</area>
+<workgroup>RESTful Provisioning Protocol</workgroup>
+<keyword>RPP</keyword>
+<keyword>RESTful Provisioning Protocol</keyword>
+<keyword>extension</keyword>
+<keyword>guidelines</keyword>
 
 <abstract>
 <t>The RESTful Provisioning Protocol (RPP) defines a base set of data objects, component objects, and operations for provisioning objects. This document defines guidelines and a normative mechanism for extension specifications that add data elements, associations, operations, result codes, or other functionality, without modifying the base specifications itself.</t>
@@ -36,11 +40,10 @@
 <t>In this document the following terminology is used.</t>
 <t>URL - A Uniform Resource Locator as defined in <xref target="RFC3986"></xref>.</t>
 <t>Terms of the RPP data model, such as Data Object, Component Object, Process Object, Common Data Type, data element, cardinality, mutability, Identifier, Unique Identifier, Input Data Element, Parameter, Visibility, Direct Access, Input, Output, Reference, Owner Data Object, and This Object, are used as defined in <xref target="I-D.ietf-rpp-data-objects"></xref>.</t>
-<t>Consumer - A server or client that generates, processes or validates RPP messages.</t>
-<t>Discovery document - The JSON document, published by an RPP server at a well-known location, that describes the capabilities of the server, including the extensions it supports, as defined in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+<t>Discovery document - The JSON document, published by an RPP server at a well-known location, that describes the capabilities of the server, including the extensions it supports, as defined in <xref target="I-D.ietf-rpp-data-objects"></xref>.</t>
 <t>JSON Schema - A vocabulary for describing and validating JSON documents, as defined in <xref target="JSON-SCHEMA"></xref>. This document uses JSON Schema draft 2020-12.</t>
 <t>Extension Mapper (<tt>rpp:extends</tt>) - The property of an extension JSON Schema that maps the reference of an existing object definition to the local definition in the extension schema that contributes the new properties, as defined in <xref target="I-D.ietf-rpp-json"></xref>.</t>
-<t>Effective schema - The JSON Schema that is composed, for one base object definition, from that definition and the definitions of all extensions that a deployment supports, using the <tt>rpp:extends</tt> mappings of the extension schemas. The effective schema has its own <tt>$id</tt>. The effective schema is also referred to as the combined schema.</t>
+<t>Effective Schema - The Effective Schema as defined in <xref target="I-D.ietf-rpp-json"></xref>.</t>
 </section>
 
 <section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
@@ -49,43 +52,42 @@
 </section>
 
 <section anchor="restrictions-on-extensions"><name>Restrictions on Extensions</name>
-<t>An extension MUST NOT remove, redefine, or otherwise alter the semantics of a property defined by the RPP base specification.
-An extension MUST only add new properties or associations, and MUST ensure that any new elements do not conflict with existing ones in the base specification.</t>
+<t>An extension MUST NOT remove, redefine, or otherwise alter the semantics of a property defined by the RPP base specification.</t>
 </section>
 
 <section anchor="rpp-extension-points"><name>RPP Extension Points</name>
-<t>An extension specification can extend RPP along one or more of the following independent extension points. Each extension point may have its own registration requirements.</t>
+<t>An extension specification MAY extend RPP along one or more of the following independent extension points. Each extension point may have its own registration requirements.</t>
 
 <section anchor="component-objects"><name>Component Objects</name>
-<t>Extensions may define shared components that can be reused across multiple data objects, operations, or other extension points.</t>
+<t>Extensions MAY define shared components that can be reused across multiple data objects, operations, or other extension points.</t>
 </section>
 
 <section anchor="data-objects"><name>Data Objects</name>
-<t>Extensions may define entirely new data objects or extend an existing data object defined in the base specification or in another extension specification.</t>
+<t>Extensions MAY define entirely new data objects or extend an existing data object defined in the base specification or in another extension specification.</t>
 </section>
 
 <section anchor="process-objects"><name>Process Objects</name>
-<t>Extensions may define entirely new process objects or extend existing ones defined in the base specification or in another extension specification.</t>
+<t>Extensions MAY define entirely new process objects or extend existing ones defined in the base specification or in another extension specification.</t>
 
 <section anchor="input-data"><name>Input Data</name>
-<t>Extensions may define new input data elements for an existing or new process object; these input data elements MUST be mapped to corresponding JSON Schema properties.</t>
+<t>Extensions MAY define new Input Data Elements for an existing or new process object.</t>
 </section>
 </section>
 
 <section anchor="data-elements"><name>Data Elements</name>
-<t>Extensions may add new data elements (properties) to an existing data object, component object, or process object defined in a base specification.</t>
+<t>Extensions MAY add new data elements (properties) to an existing data object, component object, or process object defined in a base specification.</t>
 </section>
 
 <section anchor="operations"><name>Operations</name>
-<t>Extensions may define entirely new operations on existing or new data objects, or extend existing operations with additional inputs, outputs, or behaviour.</t>
+<t>Extensions MAY define entirely new operations on existing or new data objects, or extend existing operations with additional inputs, outputs, or behaviour.</t>
 
 <section anchor="inputs-and-outputs"><name>Inputs and Outputs</name>
-<t>Extensions may define both input and output data elements for operations; parameters are restricted to operation inputs only.</t>
+<t>Extensions MAY define both input and output data elements for operations; parameters are restricted to operation inputs only.</t>
 </section>
 </section>
 
 <section anchor="external-data-types"><name>External Data Types</name>
-<t>Instead of adding properties to an object, an extension may reference a type defined entirely in an external specification (e.g. <tt>External:RPP-JSContact-Profile:Card</tt>), as described in <xref target="I-D.ietf-rpp-data-objects"></xref>. This is the appropriate mechanism when substituting or supplying a whole, independently versioned data type, rather than adding fields to an existing RPP-defined object.</t>
+<t>Instead of adding properties to an object, an extension MAY reference a type defined entirely in an external specification (e.g. <tt>External:RPP-JSContact-Profile:Card</tt>), as described in <xref target="I-D.ietf-rpp-data-objects"></xref>. This is the appropriate mechanism when substituting or supplying a whole, independently versioned data type, rather than adding fields to an existing RPP-defined object.</t>
 </section>
 
 <section anchor="http-endpoints"><name>HTTP Endpoints</name>
@@ -103,15 +105,19 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 </section>
 
 <section anchor="http-headers"><name>HTTP Headers</name>
-<t>Extensions may define new HTTP headers for existing operations, as described in <xref target="I-D.ietf-rpp-core"></xref>. Any new headers MUST be registered in the appropriate IANA registry.</t>
+<t>Extensions MAY define new HTTP headers for existing operations, as described in <xref target="I-D.ietf-rpp-core"></xref>. Any new headers MUST be registered in the appropriate IANA registry.</t>
 </section>
 
 <section anchor="result-codes"><name>Result Codes</name>
-<t>Extensions may define new RPP result codes within the reserved result code classes. New result codes MUST be registered in the RPP Result Codes registry defined in <xref target="I-D.ietf-rpp-core"></xref> and the extension specification MUST include a mapping of the new result codes to their corresponding HTTP status codes.</t>
+<t>Extensions MAY define new RPP result codes within the reserved result code classes. New result codes MUST be registered in the RPP Result Codes registry defined in <xref target="I-D.ietf-rpp-core"></xref> and the extension specification MUST include a mapping of the new result codes to their corresponding HTTP status codes.</t>
 </section>
 
 <section anchor="problem-details"><name>Problem Details</name>
-<t>Extensions may add new fields to the Problem Detail error object to convey additional, extension-specific information about the cause of an error, as described in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+<t>Extensions MAY add new fields to the Problem Detail error object to convey additional, extension-specific information about the cause of an error, as described in <xref target="I-D.ietf-rpp-core"></xref>.</t>
+</section>
+
+<section anchor="iana-registrations"><name>IANA Registrations</name>
+<t>Extensions MAY define new IANA registries or add new entries to existing registries as required by the extension specification. The extension specification MUST clearly indicate any such IANA considerations.</t>
 </section>
 
 <section anchor="discovery"><name>Discovery</name>
@@ -122,27 +128,29 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 </section>
 
 <section anchor="selecting-extension-point"><name>Selecting an Extension Point</name>
-<t>An extension designer MUST use the simplest extension point that fulfils the requirement. The forms below are listed in order of increasing complexity and of increasing impact on implementations. A designer SHOULD only move to the next form when the answer to the question of the current form is &quot;no&quot;.</t>
+<t>An extension SHOULD use the simplest extension point, as listed in <xref target="rpp-extension-points"></xref>, that fulfils the requirement. A more complex extension point increases the impact on implementations and the risk of conflicts between extensions.</t>
+<t>The forms below are listed in order of increasing complexity and of increasing impact on implementations.</t>
 
 <ol spacing="compact">
-<li>Reuse an existing extension point of a base specification. The base specifications define open-ended elements to which new values can be added without adding new properties, for example the method of the authorisation information object, the labels of status objects, the labels of labelled and dictionary associations (such as the roles of the contacts of a domain name), and the keys of dictionary data types. Question: can the requirement be met by new values of such an element?</li>
-<li>Add data elements to an existing object, or add transient data elements to the input or output of an existing operation, as described in <xref target="extending-json-schema"></xref>. Question: can the requirement be met by adding to an existing object or operation?</li>
-<li>Define a new data object. A new data object SHOULD differ significantly from existing objects. If a new object replicates a significant number of the data elements of an existing object, the question of the previous form was probably answered incorrectly. Question: can the requirement be met by applying the uniform interface operations to a new object?</li>
-<li>Define a new operation, or a new process object for a long-running or multi-step operation. Question: can the requirement be met by new operations on new or existing objects?</li>
-<li>Add protocol-level elements, such as new HTTP headers, query parameters, result codes, Problem Detail fields or Discovery document properties. These elements apply independent of an object, and have the largest impact on implementations.</li>
+<li>Reuse an existing extension point of a base specification. The base specifications define open-ended elements to which new values can be added without adding new properties, for example the labels of status objects. In such cases, the new values MUST be listed in the IANA Considerations section of the extension specification.</li>
+<li>Add data elements to an existing object, or add  input or output parameters to an existing operation, as described in <xref target="extending-json-schema"></xref>.</li>
+<li>Define a new operation, or a new process object for a long-running or multi-step operation.</li>
+<li>Define a new data object. A new data object SHOULD NOT replicate a significant number of the data elements of an existing object.</li>
+<li>Add protocol-level elements, such as new HTTP headers, query parameters, result codes, Problem Detail fields or Discovery document properties. These elements apply independently of any object and can have a larger impact on implementations.</li>
 </ol>
-<t>Before defining an extension, a designer SHOULD check the IANA RPP Extensions registry, the RPP Data Object Registry and the published extension specifications for an existing extension that provides the same function, and SHOULD reuse it. Multiple extensions that realise the same function fragment the ecosystem, and SHOULD be avoided.</t>
+<t>Before defining an extension, a designer SHOULD check the IANA RPP Extensions registry, the RPP Data Object Registry and the published extension specifications for an existing extension that provides the same function, and SHOULD reuse it. Multiple extensions that provide the same function fragment the ecosystem and SHOULD be avoided.</t>
+<t>An extension may use multiple extension points to fulfil its requirements, but it SHOULD still aim to use the simplest combination that achieves the desired functionality.</t>
 </section>
 
 <section anchor="identifying-extensions"><name>Identifying Extensions</name>
-<t>Every extension must have a unique identifier, which is published in the <tt>id</tt> field of the extension entry in the Discovery document.</t>
+<t>Every extension must have a unique identifier, which is published using the <tt>id</tt> property of the extensions listed in the Discovery document. Standardised extensions MUST use as globally unique identifier a URN as specified below. Private extensions MUST use a URL as specified below and MUST be unique in the scope of a RPP deployment.</t>
+<t>The identifier value should follow the rules as described below.</t>
 
 <ul spacing="compact">
-<li>The identifier of a standardised extension MUST be a URN, using the URN sub-namespace defined in <xref target="I-D.ietf-rpp-core"></xref>, of the form <tt>urn:ietf:params:rpp:extension:&lt;name&gt;</tt>, and MUST be registered as described in <xref target="iana-registries"></xref>.</li>
-<li>The identifier of a private extension MUST be a globally unique URI, MUST NOT use the RPP URN sub-namespace, and SHOULD be based on a domain name that is controlled by the party that defines the extension.</li>
-<li>The version of an extension is published in the <tt>version</tt> field. The identifier of an extension SHOULD NOT contain the version, so that the identifier remains stable when the extension is revised.</li>
+<li>The identifier of a standardised extension MUST be a URN, using the URN sub-namespace defined in <xref target="I-D.ietf-rpp-core"></xref>, of the form <tt>urn:ietf:params:rpp:extension:&lt;name&gt;</tt>, and MUST be registered in the IANA RPP Extensions registry.</li>
+<li>The identifier of a private extension MUST be a URL using the reverse domain name notation, for example <tt>example.rpp.myextension</tt>.</li>
+<li>The version of an extension is published in the <tt>version</tt> property of the Extension Component Object. The identifier of an extension SHOULD NOT contain the version.</li>
 </ul>
-<t><strong>TODO: check if guidance is consistent with core spec. This must be aligned.</strong></t>
 </section>
 
 <section anchor="extending-json-schema"><name>JSON Schema</name>
@@ -150,7 +158,7 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 
 <section anchor="composition"><name>Composition</name>
 <t>Every data object defined in a base specification, when modified by an extension specification, must be extended using an extension specification. The extension specification MUST define a new JSON Schema document that composes the base object's schema with the new properties using <tt>allOf</tt>. The extension specification MUST NOT copy, redefine, or otherwise restate the JSON Schema definition of the base object. Instead, it MUST reference the base object's definition by its fully qualified <tt>$id</tt>-relative pointer (e.g. <tt>https://www.iana.org/.../domainName.json#/$defs/domainName</tt>) in an <tt>allOf</tt> branch, and add its own new properties in a separate branch.</t>
-<t>An extension schema MUST declare which base object definitions it extends using the Extension Mapper (<tt>rpp:extends</tt>) property, as defined in <xref target="I-D.ietf-rpp-json"></xref>. The property maps the fully qualified reference of each base object definition to the local definition, within the extension schema, that contributes the new properties. This mapping allows an implementation to construct, for a given base object, the effective schema that combines the base definition with every supported extension, without any knowledge of the extensions in advance.</t>
+<t>An extension schema MUST declare which base object definitions it extends using the Extension Mapper (<tt>rpp:extends</tt>) property, as defined in <xref target="I-D.ietf-rpp-json"></xref>. The property maps the fully qualified reference of each base object definition to the local definition, within the extension schema, that contributes the new properties. This mapping allows an implementation to construct, for a given base object, the Effective Schema that combines the base definition with every supported extension, without any knowledge of the extensions in advance.</t>
 </section>
 
 <section anchor="identification"><name>Identification</name>
@@ -181,39 +189,52 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 
 <section anchor="extension-format"><name>Extension Specification Format</name>
 <t>An extension specification SHOULD follow the structure defined in this section, so that all extension specifications are uniform and can be read, reviewed and processed in the same way.</t>
-<t>An extension specification contains at least the following sections, in this order:</t>
+<t>An extension specification contains the following sections, in this order:</t>
 
 <ol spacing="compact">
-<li>Introduction: the purpose of the extension, the base specifications it builds upon, and its motivation.</li>
-<li>Extension Overview: the name, the identifier, the version, the minimum RPP version the extension is compatible with, the <tt>$id</tt> of the JSON Schema document, the core RPP data objects updated by the extension, and the new data objects defined by the extension.</li>
+<li>Introduction: the purpose of the extension, the base specifications that it builds upon, and its motivation.</li>
+<li>Extension Overview: the name, the identifier, the version, the minimum RPP version with which the extension is compatible, the <tt>$id</tt> of the JSON Schema document, the base objects that the extension updates, and the new objects that the extension defines.</li>
 <li>External Data Types: the types, defined in an external specification, that the extension references.</li>
-<li>Result Codes: Any new result codes that the extension defines.</li>
+<li>Result Codes: the new result codes that the extension defines.</li>
 <li>Problem Details: the fields that the extension adds to the Problem Detail error object.</li>
 <li>HTTP Headers: the HTTP headers that the extension defines.</li>
 <li>Discovery Document: the properties that the extension adds to the RPP Discovery document, in addition to its entry in the <tt>extensions</tt> list.</li>
-<li><t>Updated Data Objects: Every existing data object, component object or process object that the extension updates.</t>
+<li><t>Updated Data Objects: the existing data objects and component objects that the extension updates.</t>
 
 <ol spacing="compact">
-<li>Data Elements: for every base data object, component object or process object that the extension changes, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).</li>
-<li>Operations: every operation that the extension introduces.</li>
+<li>Data Elements: the data elements and associations that the extension adds to each updated object.</li>
+<li>Operations: the operations that the extension adds to each updated object.</li>
 </ol></li>
-<li><t>New Data Objects: Every new data object, component object or process object that the extension introduces, including its object description, data elements and operations.</t>
+<li><t>New Data Objects: the data objects and component objects that the extension defines, including the description of each object.</t>
 
 <ol spacing="compact">
-<li>Data Elements: for every new data object, component object or process object, the data elements and associations. Each added data element MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref> (name, identifier, cardinality, mutability, data type, description and constraints).</li>
-<li>Operations: every operation that the extension introduces.</li>
+<li>Data Elements: the data elements and associations of each new object.</li>
+<li>Operations: the operations of each new object.</li>
+</ol></li>
+<li><t>Updated Process Objects: the existing process objects that the extension updates.</t>
+
+<ol spacing="compact">
+<li>Data Elements: the data elements and associations that the extension adds to each updated process object.</li>
+<li>Operations: the operations and operation parameters that the extension adds to each updated process object.</li>
+</ol></li>
+<li><t>New Process Objects: the process objects that the extension defines.</t>
+
+<ol spacing="compact">
+<li>Data Elements: the data elements and associations of each new process object.</li>
+<li>Operations: the operations of each new process object, including their input and output parameters.</li>
 </ol></li>
 <li>Endpoints: the endpoint URLs, HTTP methods and query parameters that result from the new data objects, associations and operations, as derived by the rules in <xref target="I-D.ietf-rpp-core"></xref>. This section is informative.</li>
-<li>JSON Schema: the JSON Schema document of the extension which defines the structure and constraints of the new and updated data objects.</li>
-<li>Examples.</li>
-<li>IANA Considerations: the registrations that the extension requires, as described in <xref target="iana-registries"></xref>.</li>
+<li>JSON Schema: the JSON Schema document of the extension, which defines the structure and constraints of the new and updated objects.</li>
+<li>Examples: valid and invalid examples of the new and updated objects.</li>
+<li>IANA Considerations: the values that the extension registers in the RPP IANA registries, and the new registries that the extension requests in the RPP registry group, as described in <xref target="iana-registries"></xref>.</li>
 <li>Security Considerations.</li>
-<li>Privacy Considerations.</li>
-<li>Internationalization Considerations.</li>
+<li>Privacy Considerations (optional).</li>
+<li>Internationalization Considerations (optional).</li>
 </ol>
-<t>All sections MUST be present. An extension that does not use an extension point MUST state &quot;None&quot; in the corresponding section.</t>
+<t>Every data element that is listed in a Data Elements section MUST be defined using the data element attributes defined in <xref target="I-D.ietf-rpp-data-objects"></xref>: name, identifier, cardinality, mutability, data type, description and constraints.</t>
+<t>An extension specification that follows this structure MUST include every section that is not marked as optional. A section that does not apply to the extension MUST contain the text &quot;None&quot;.</t>
 <t>The extension specification MUST define exactly one JSON Schema document, which contains the definitions for all changed and all new objects of the extension. The document MUST have a top-level <tt>$id</tt>, MUST declare the changed base objects using the Extension Mapper (<tt>rpp:extends</tt>) as described in &quot;JSON Schema Composition&quot;, and MUST NOT contain <tt>unevaluatedProperties</tt> or <tt>additionalProperties</tt> set to <tt>false</tt>, see &quot;Validation&quot;. An extension specification MUST NOT split its schema over multiple documents.</t>
-<t>The specification MUST include at least one valid JSON example of the request or response representation. Every valid example MUST validate successfully against the effective schema that is composed from the base schema and the JSON Schema document of the extension, as described in <xref target="validation"></xref>.</t>
+<t>The specification MUST include at least one JSON example of a request or response representation for each operation impacted by the extension. Every example MUST validate successfully against the Effective Schema that is composed from the base schema and the JSON Schema document defined by the extension, as described in <xref target="validation"></xref>.</t>
 </section>
 
 <section anchor="iana-registries"><name>IANA Registrations</name>
@@ -357,10 +378,10 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 
 <section anchor="extension-example"><name>Example Extension</name>
 <t>This appendix is informative. It shows an extension specification that follows the structure defined in &quot;Extension Specification Format&quot;, and it shows how the extension can be validated with a generic Java library. The example extension adds the property <tt>extProperty1</tt> to the Domain Name data object.</t>
-<t>This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository <xref target="RPP-JSON-JAVA-LIB"></xref>. The library loads the base schema and the extension schemas supported by a deployment, builds effective schemas from the <tt>rpp:extends</tt> mappings, applies the injection of <tt>unevaluatedProperties</tt> described in <xref target="validation"></xref>, and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.</t>
+<t>This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository <xref target="RPP-JSON-JAVA-LIB"></xref>. The library loads the base schema and the extension schemas supported by a deployment, builds Effective Schemas from the <tt>rpp:extends</tt> mappings, applies the injection of <tt>unevaluatedProperties</tt> described in <xref target="validation"></xref>, and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.</t>
 
 <section anchor="introduction-1"><name>Introduction</name>
-<t>This document provides an example of an extension specification that follows the guidelines defined in <xref target="I-D.wullink-rpp-extension-guidelines"></xref>. The example demonstrates how to add a new property to an existing data object and how to define the corresponding JSON Schema and examples.</t>
+<t>This document provides an example of an extension specification, following the guidelines defined in <xref target="I-D.wullink-rpp-extension-guidelines"></xref>. The example demonstrates how to add a new property to an existing data object and how to define the corresponding JSON Schema and examples.</t>
 </section>
 
 <section anchor="extension-overview"><name>Extension Overview</name>
@@ -471,6 +492,14 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 <t>None.</t>
 </section>
 
+<section anchor="updated-process-objects"><name>Updated Process Objects</name>
+<t>None.</t>
+</section>
+
+<section anchor="new-process-objects"><name>New Process Objects</name>
+<t>None.</t>
+</section>
+
 <section anchor="endpoints"><name>Endpoints</name>
 <t>None.</t>
 </section>
@@ -542,7 +571,7 @@ An extension MUST only add new properties or associations, and MUST ensure that 
 <t>The same instance that uses <tt>extProperty1</tt> is rejected by a deployment that does not support the extension, since in that deployment <tt>extProperty1</tt> is an undeclared property. This is the behaviour required by &quot;Validation&quot;: the set of accepted properties is determined only by the extensions that the deployment supports.</t>
 
 <section anchor="composition-and-validation"><name>Composition and Validation</name>
-<t>For a deployment that supports the example extension, the effective schema for <tt>domainName.create</tt> references the base definition and the extension definition, and has its own <tt>$id</tt>:</t>
+<t>For a deployment that supports the example extension, the Effective Schema for <tt>domainName.create</tt> references the base definition and the extension definition, and has its own <tt>$id</tt>:</t>
 
 <sourcecode type="json"><![CDATA[{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
