@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Guidelines for Extending the RESTful Provisioning Protocol (RPP)</title>
+<meta content="Maarten Wullink" name="author">
+<meta content="Pawel Kowalik" name="author">
+<meta content="
+       The RESTful Provisioning Protocol (RPP) defines a base set of data objects, component objects, and operations for provisioning objects. This document defines guidelines and a normative mechanism for extension specifications that add data elements, associations, operations, result codes, or other functionality, without modifying the base specifications itself. 
+    " name="description">
+<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="RPP" name="keyword">
+<meta content="RESTful Provisioning Protocol" name="keyword">
+<meta content="extension" name="keyword">
+<meta content="guidelines" name="keyword">
+<meta content="draft-wullink-rpp-extension-guidelines-00" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.34.0
+    Python 3.14.8
+    ConfigArgParse 1.7.5
+    google-i18n-address 3.1.1
+    intervaltree 3.2.1
+    Jinja2 3.1.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
+    pycountry 26.2.16
+    PyYAML 6.0.3
+    requests 2.34.2
+    wcwidth 0.8.1
+    weasyprint 69.0
+-->
+<link href="draft-wullink-rpp-extension-guidelines.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necessary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://static.ietf.org/fonts/noto-sans/import.css'); /* Sans-serif */
+@import url('https://static.ietf.org/fonts/noto-serif/import.css'); /* Serif (print) */
+@import url('https://static.ietf.org/fonts/roboto-mono/import.css'); /* Monospace */
+
+:root {
+  --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'Noto Serif', 'Times', 'Times New Roman', serif;
+  --font-mono: 'Roboto Mono', Courier, 'Courier New', monospace;
+}
+
+@viewport {
+  zoom: 1.0;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  overflow-wrap: break-word;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+@media print {
+  svg {
+    max-height: 850px;
+    max-width: 660px;
+  }
+}
+svg[font-family~="serif" i], svg [font-family~="serif" i] {
+  font-family: var(--font-serif);
+}
+svg[font-family~="sans-serif" i], svg [font-family~="sans-serif" i] {
+  font-family: var(--font-sans);
+}
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  display: table;
+  border: none;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.ulBare, li.ulBare {
+  margin-left: 0em !important;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre {
+  background-color: #f9f9f9;
+  font-family: var(--font-mono);
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+blockquote > *:last-child {
+  margin-bottom: 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+.xref {
+  overflow-wrap: normal;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+/* Fix PDF info block run off issue */
+@media print {
+  #identifiers dd {
+    max-width: 100%;
+  }
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.refSubseries {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: var(--font-sans);
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  .breakable pre {
+    break-inside: auto;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The following is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+.sourcecode pre,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .artwork > pre,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: upper-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background slightly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr {
+  break-inside: avoid;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: auto;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottom margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code, dt tt, dt code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the compact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > blockquote:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div.sourcecode:first-child,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type:only-child {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">RPP Extension Guidelines</td>
+<td class="right">November 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Wullink &amp; Kowalik</td>
+<td class="center">Expires 6 May 2027</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">RESTful Provisioning Protocol</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-wullink-rpp-extension-guidelines-00</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-11-02" class="published">2 November 2026</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Best Current Practice</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2027-05-06">6 May 2027</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">M. Wullink</div>
+<div class="org">SIDN Labs</div>
+</div>
+<div class="author">
+      <div class="author-name">P. Kowalik</div>
+<div class="org">DENIC</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Guidelines for Extending the RESTful Provisioning Protocol (RPP)</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">The RESTful Provisioning Protocol (RPP) defines a base set of data objects, component objects, and operations for provisioning objects. This document defines guidelines and a normative mechanism for extension specifications that add data elements, associations, operations, result codes, or other functionality, without modifying the base specifications itself.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 6 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2026 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1" class="keepWithNext"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-conventions-used-in-this-do" class="internal xref">Conventions Used in This Document</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-restrictions-on-extensions" class="internal xref">Restrictions on Extensions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-rpp-extension-points" class="internal xref">RPP Extension Points</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-component-objects" class="internal xref">Component Objects</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-data-objects" class="internal xref">Data Objects</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-process-objects" class="internal xref">Process Objects</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3.2.1">
+                    <p id="section-toc.1-1.5.2.3.2.1.1"><a href="#section-5.3.1" class="auto internal xref">5.3.1</a>.  <a href="#name-input-data" class="internal xref">Input Data</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-data-elements" class="internal xref">Data Elements</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
+                <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-operations" class="internal xref">Operations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5.2.1">
+                    <p id="section-toc.1-1.5.2.5.2.1.1"><a href="#section-5.5.1" class="auto internal xref">5.5.1</a>.  <a href="#name-inputs-and-outputs" class="internal xref">Inputs and Outputs</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.6">
+                <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-external-data-types" class="internal xref">External Data Types</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-http-endpoints" class="internal xref">HTTP Endpoints</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
+                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-http-query-parameters" class="internal xref">HTTP Query Parameters</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.9">
+                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-http-headers" class="internal xref">HTTP Headers</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10">
+                <p id="section-toc.1-1.5.2.10.1"><a href="#section-5.10" class="auto internal xref">5.10</a>. <a href="#name-result-codes" class="internal xref">Result Codes</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.11">
+                <p id="section-toc.1-1.5.2.11.1"><a href="#section-5.11" class="auto internal xref">5.11</a>. <a href="#name-problem-details" class="internal xref">Problem Details</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.12">
+                <p id="section-toc.1-1.5.2.12.1"><a href="#section-5.12" class="auto internal xref">5.12</a>. <a href="#name-iana-registrations" class="internal xref">IANA Registrations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.13">
+                <p id="section-toc.1-1.5.2.13.1"><a href="#section-5.13" class="auto internal xref">5.13</a>. <a href="#name-discovery" class="internal xref">Discovery</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-selecting-an-extension-poin" class="internal xref">Selecting an Extension Point</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-identifying-extensions" class="internal xref">Identifying Extensions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-json-schema" class="internal xref">JSON Schema</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-composition" class="internal xref">Composition</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-identification" class="internal xref">Identification</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-independence-of-extensions" class="internal xref">Independence of Extensions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-consumer-implementation" class="internal xref">Consumer Implementation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#section-8.5" class="auto internal xref">8.5</a>.  <a href="#name-registration" class="internal xref">Registration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.6">
+                <p id="section-toc.1-1.8.2.6.1"><a href="#section-8.6" class="auto internal xref">8.6</a>.  <a href="#name-validation" class="internal xref">Validation</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-extension-specification-for" class="internal xref">Extension Specification Format</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-registrations-2" class="internal xref">IANA Registrations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-internationalization-consid" class="internal xref">Internationalization Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-privacy-considerations" class="internal xref">Privacy Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#section-15" class="auto internal xref">15</a>. <a href="#name-change-history" class="internal xref">Change History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#section-16" class="auto internal xref">16</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.1">
+                <p id="section-toc.1-1.16.2.1.1"><a href="#section-16.1" class="auto internal xref">16.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.2">
+                <p id="section-toc.1-1.16.2.2.1"><a href="#section-16.2" class="auto internal xref">16.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
+            <p id="section-toc.1-1.17.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-example-extension" class="internal xref">Example Extension</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.1">
+                <p id="section-toc.1-1.17.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-introduction-2" class="internal xref">Introduction</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.2">
+                <p id="section-toc.1-1.17.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-extension-overview" class="internal xref">Extension Overview</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.3">
+                <p id="section-toc.1-1.17.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-external-data-types-2" class="internal xref">External Data Types</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.4">
+                <p id="section-toc.1-1.17.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-result-codes-2" class="internal xref">Result Codes</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.5">
+                <p id="section-toc.1-1.17.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-problem-details-2" class="internal xref">Problem Details</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.6">
+                <p id="section-toc.1-1.17.2.6.1"><a href="#appendix-A.6" class="auto internal xref">A.6</a>.  <a href="#name-http-headers-2" class="internal xref">HTTP Headers</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.7">
+                <p id="section-toc.1-1.17.2.7.1"><a href="#appendix-A.7" class="auto internal xref">A.7</a>.  <a href="#name-discovery-document" class="internal xref">Discovery Document</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.8">
+                <p id="section-toc.1-1.17.2.8.1"><a href="#appendix-A.8" class="auto internal xref">A.8</a>.  <a href="#name-updated-data-objects" class="internal xref">Updated Data Objects</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.8.2.1">
+                    <p id="section-toc.1-1.17.2.8.2.1.1"><a href="#appendix-A.8.1" class="auto internal xref">A.8.1</a>.  <a href="#name-domain-name-data-object" class="internal xref">Domain Name Data Object</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.8.2.1.2.1">
+                        <p id="section-toc.1-1.17.2.8.2.1.2.1.1"><a href="#appendix-A.8.1.1" class="auto internal xref">A.8.1.1</a>.  <a href="#name-data-elements-2" class="internal xref">Data Elements</a></p>
+</li>
+                      <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.8.2.1.2.2">
+                        <p id="section-toc.1-1.17.2.8.2.1.2.2.1"><a href="#appendix-A.8.1.2" class="auto internal xref">A.8.1.2</a>.  <a href="#name-operations-2" class="internal xref">Operations</a></p>
+</li>
+                    </ul>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.9">
+                <p id="section-toc.1-1.17.2.9.1"><a href="#appendix-A.9" class="auto internal xref">A.9</a>.  <a href="#name-new-data-objects" class="internal xref">New Data Objects</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.10">
+                <p id="section-toc.1-1.17.2.10.1"><a href="#appendix-A.10" class="auto internal xref">A.10</a>. <a href="#name-updated-process-objects" class="internal xref">Updated Process Objects</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.11">
+                <p id="section-toc.1-1.17.2.11.1"><a href="#appendix-A.11" class="auto internal xref">A.11</a>. <a href="#name-new-process-objects" class="internal xref">New Process Objects</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.12">
+                <p id="section-toc.1-1.17.2.12.1"><a href="#appendix-A.12" class="auto internal xref">A.12</a>. <a href="#name-endpoints" class="internal xref">Endpoints</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.13">
+                <p id="section-toc.1-1.17.2.13.1"><a href="#appendix-A.13" class="auto internal xref">A.13</a>. <a href="#name-json-schema-2" class="internal xref">JSON Schema</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.14">
+                <p id="section-toc.1-1.17.2.14.1"><a href="#appendix-A.14" class="auto internal xref">A.14</a>. <a href="#name-examples" class="internal xref">Examples</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.14.2.1">
+                    <p id="section-toc.1-1.17.2.14.2.1.1"><a href="#appendix-A.14.1" class="auto internal xref">A.14.1</a>.  <a href="#name-composition-and-validation" class="internal xref">Composition and Validation</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.15">
+                <p id="section-toc.1-1.17.2.15.1"><a href="#appendix-A.15" class="auto internal xref">A.15</a>. <a href="#name-iana-considerations-2" class="internal xref">IANA Considerations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.16">
+                <p id="section-toc.1-1.17.2.16.1"><a href="#appendix-A.16" class="auto internal xref">A.16</a>. <a href="#name-security-considerations-2" class="internal xref">Security Considerations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.17">
+                <p id="section-toc.1-1.17.2.17.1"><a href="#appendix-A.17" class="auto internal xref">A.17</a>. <a href="#name-privacy-considerations-2" class="internal xref">Privacy Considerations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.18">
+                <p id="section-toc.1-1.17.2.18.1"><a href="#appendix-A.18" class="auto internal xref">A.18</a>. <a href="#name-internationalization-conside" class="internal xref">Internationalization Considerations</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18">
+            <p id="section-toc.1-1.18.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19">
+            <p id="section-toc.1-1.19.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">The RESTful Provisioning Protocol (RPP), as defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>, and <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>, provides a base set of data objects, component objects, and operations for the provisioning of registry data. Deployments may need to add functionality beyond this base set, for example to support policies specific to a registry, a jurisdiction, or a class of registered objects. RPP is designed to accommodate such needs through extension specifications, so that additional functionality can be introduced without modifying the base specification that defines the object or operation being extended.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Because independently developed extension specifications may be deployed together, and because RPP relies on JSON Schema, as defined in <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>, to validate protocol messages, extensions need to follow a common, predictable pattern. Without such a pattern, extensions that are individually valid could conflict when combined at a given deployment, or could require ad-hoc, per-combination schema and code to be written for every deployment profile. This document defines that common pattern.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">This document identifies the set of extension points along which an RPP base specification MAY be extended, including new data objects, new data elements on existing objects, new operations, new operation inputs and outputs, external data types, new RPP result codes, error object extension fields, additional query parameters, and additions to the RPP Discovery document. For each extension point, this document states the applicable registration requirements.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This document further discusses considerations for client and server implementations that need to compose, validate, and process RPP messages that may include data contributed by more than one extension.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">An extension specification MAY be published as an Internet-Draft and RFC when the extension requires coordination, interoperability and broad distribution. The intended status of such a document depends on what is extended and on the amount of general interest in the extension. An extension that is intended for a closed environment or a limited audience does not need to be published, and MAY be documented in a form that is appropriate for its audience. Such a private extension SHOULD still follow the structure and the rules in this document, so that it can be combined with other extensions at a deployment.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">This document does not itself define any RPP extension. It defines the rules that extension specifications, and the deployments that support them, are expected to follow.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-7"><strong>TODO: Make sure there is no normative language in the sections below that should be moved to the core specifications</strong><a href="#section-1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-2">
+      <h2 id="name-terminology">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+      </h2>
+<p id="section-2-1">In this document the following terminology is used.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">URL - A Uniform Resource Locator as defined in <span>[<a href="#RFC3986" class="cite xref">RFC3986</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">Terms of the RPP data model, such as Data Object, Component Object, Process Object, Common Data Type, data element, cardinality, mutability, Identifier, Unique Identifier, Input Data Element, Parameter, Visibility, Direct Access, Input, Output, Reference, Owner Data Object, and This Object, are used as defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-4">Discovery document - The JSON document, published by an RPP server at a well-known location, that describes the capabilities of the server, including the extensions it supports, as defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<p id="section-2-5">JSON Schema - A vocabulary for describing and validating JSON documents, as defined in <span>[<a href="#JSON-SCHEMA" class="cite xref">JSON-SCHEMA</a>]</span>. This document uses JSON Schema draft 2020-12.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<p id="section-2-6">Extension Mapper (<code>rpp:extends</code>) - The property of an extension JSON Schema that maps the reference of an existing object definition to the local definition in the extension schema that contributes the new properties, as defined in <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>.<a href="#section-2-6" class="pilcrow">¶</a></p>
+<p id="section-2-7">Effective Schema - The Effective Schema as defined in <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>.<a href="#section-2-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="conventions-used-in-this-document">
+<section id="section-3">
+      <h2 id="name-conventions-used-in-this-do">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-conventions-used-in-this-do" class="section-name selfRef">Conventions Used in This Document</a>
+      </h2>
+<p id="section-3-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">In examples, indentation and white space are provided only to illustrate element relationships and are not REQUIRED features of the protocol.<a href="#section-3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="restrictions-on-extensions">
+<section id="section-4">
+      <h2 id="name-restrictions-on-extensions">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-restrictions-on-extensions" class="section-name selfRef">Restrictions on Extensions</a>
+      </h2>
+<p id="section-4-1">An extension MUST NOT remove, redefine, or otherwise alter the semantics of a property defined by the RPP base specification.<a href="#section-4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rpp-extension-points">
+<section id="section-5">
+      <h2 id="name-rpp-extension-points">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-rpp-extension-points" class="section-name selfRef">RPP Extension Points</a>
+      </h2>
+<p id="section-5-1">An extension specification MAY extend RPP along one or more of the following independent extension points. Each extension point may have its own registration requirements.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<div id="component-objects">
+<section id="section-5.1">
+        <h3 id="name-component-objects">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-component-objects" class="section-name selfRef">Component Objects</a>
+        </h3>
+<p id="section-5.1-1">Extensions MAY define shared components that can be reused across multiple data objects, operations, or other extension points.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="data-objects">
+<section id="section-5.2">
+        <h3 id="name-data-objects">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-data-objects" class="section-name selfRef">Data Objects</a>
+        </h3>
+<p id="section-5.2-1">Extensions MAY define entirely new data objects or extend an existing data object defined in the base specification or in another extension specification.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="process-objects">
+<section id="section-5.3">
+        <h3 id="name-process-objects">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-process-objects" class="section-name selfRef">Process Objects</a>
+        </h3>
+<p id="section-5.3-1">Extensions MAY define entirely new process objects or extend existing ones defined in the base specification or in another extension specification.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<div id="input-data">
+<section id="section-5.3.1">
+          <h4 id="name-input-data">
+<a href="#section-5.3.1" class="section-number selfRef">5.3.1. </a><a href="#name-input-data" class="section-name selfRef">Input Data</a>
+          </h4>
+<p id="section-5.3.1-1">Extensions MAY define new Input Data Elements for an existing or new process object.<a href="#section-5.3.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="data-elements">
+<section id="section-5.4">
+        <h3 id="name-data-elements">
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-data-elements" class="section-name selfRef">Data Elements</a>
+        </h3>
+<p id="section-5.4-1">Extensions MAY add new data elements (properties) to an existing data object, component object, or process object defined in a base specification.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="operations">
+<section id="section-5.5">
+        <h3 id="name-operations">
+<a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-operations" class="section-name selfRef">Operations</a>
+        </h3>
+<p id="section-5.5-1">Extensions MAY define entirely new operations on existing or new data objects, or extend existing operations with additional inputs, outputs, or behaviour.<a href="#section-5.5-1" class="pilcrow">¶</a></p>
+<div id="inputs-and-outputs">
+<section id="section-5.5.1">
+          <h4 id="name-inputs-and-outputs">
+<a href="#section-5.5.1" class="section-number selfRef">5.5.1. </a><a href="#name-inputs-and-outputs" class="section-name selfRef">Inputs and Outputs</a>
+          </h4>
+<p id="section-5.5.1-1">Extensions MAY define both input and output data elements for operations; parameters are restricted to operation inputs only.<a href="#section-5.5.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="external-data-types">
+<section id="section-5.6">
+        <h3 id="name-external-data-types">
+<a href="#section-5.6" class="section-number selfRef">5.6. </a><a href="#name-external-data-types" class="section-name selfRef">External Data Types</a>
+        </h3>
+<p id="section-5.6-1">Instead of adding properties to an object, an extension MAY reference a type defined entirely in an external specification (e.g. <code>External:RPP-JSContact-Profile:Card</code>), as described in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>. This is the appropriate mechanism when substituting or supplying a whole, independently versioned data type, rather than adding fields to an existing RPP-defined object.<a href="#section-5.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="http-endpoints">
+<section id="section-5.7">
+        <h3 id="name-http-endpoints">
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-http-endpoints" class="section-name selfRef">HTTP Endpoints</a>
+        </h3>
+<p id="section-5.7-1">As defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, every endpoint URL and HTTP method is derived mechanically from a Data Object's properties; no endpoint is defined independently of a corresponding Data Object. Consequently:<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-5.7-2.1">A new Data Object automatically obtains a collection endpoint once its <code>"Identifier"</code> is registered.<a href="#section-5.7-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-5.7-2.2">A new association with Direct Access set to <code>true</code> automatically obtains a sub-resource path, derived recursively from the parent resource's path.<a href="#section-5.7-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-5.7-2.3">A new operation automatically obtains its HTTP method and URL path once its <code>"Identifier"</code> is registered.<a href="#section-5.7-2.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+<div id="http-query-parameters">
+<section id="section-5.8">
+        <h3 id="name-http-query-parameters">
+<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-http-query-parameters" class="section-name selfRef">HTTP Query Parameters</a>
+        </h3>
+<p id="section-5.8-1">As defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, every HTTP query parameter is derived mechanically from an operation parameter; no HTTP query parameter is defined independently of a corresponding operation parameter. Consequently, any transient parameter for a read, query, update, and delete operation MUST be translated into an HTTP query parameter, named by the operation's parameter identifier.<a href="#section-5.8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="http-headers">
+<section id="section-5.9">
+        <h3 id="name-http-headers">
+<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-http-headers" class="section-name selfRef">HTTP Headers</a>
+        </h3>
+<p id="section-5.9-1">Extensions MAY define new HTTP headers for existing operations, as described in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>. Any new headers MUST be registered in the appropriate IANA registry.<a href="#section-5.9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="result-codes">
+<section id="section-5.10">
+        <h3 id="name-result-codes">
+<a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-result-codes" class="section-name selfRef">Result Codes</a>
+        </h3>
+<p id="section-5.10-1">Extensions MAY define new RPP result codes within the reserved result code classes. New result codes MUST be registered in the RPP Result Codes registry defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span> and the extension specification MUST include a mapping of the new result codes to their corresponding HTTP status codes.<a href="#section-5.10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="problem-details">
+<section id="section-5.11">
+        <h3 id="name-problem-details">
+<a href="#section-5.11" class="section-number selfRef">5.11. </a><a href="#name-problem-details" class="section-name selfRef">Problem Details</a>
+        </h3>
+<p id="section-5.11-1">Extensions MAY add new fields to the Problem Detail error object to convey additional, extension-specific information about the cause of an error, as described in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>.<a href="#section-5.11-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-registrations">
+<section id="section-5.12">
+        <h3 id="name-iana-registrations">
+<a href="#section-5.12" class="section-number selfRef">5.12. </a><a href="#name-iana-registrations" class="section-name selfRef">IANA Registrations</a>
+        </h3>
+<p id="section-5.12-1">Extensions MAY define new IANA registries or add new entries to existing registries as required by the extension specification. The extension specification MUST clearly indicate any such IANA considerations.<a href="#section-5.12-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="discovery">
+<section id="section-5.13">
+        <h3 id="name-discovery">
+<a href="#section-5.13" class="section-number selfRef">5.13. </a><a href="#name-discovery" class="section-name selfRef">Discovery</a>
+        </h3>
+<p id="section-5.13-1">A server that supports one or more extensions MUST publish every supported extension in the <code>extensions</code> list of its RPP Discovery document, as defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>. Each entry MUST contain the <code>name</code>, <code>id</code>, <code>version</code> and <code>url</code> of the extension, using the name, identifier and version defined in the Extension Overview section of the extension specification.<a href="#section-5.13-1" class="pilcrow">¶</a></p>
+<p id="section-5.13-2">A client MUST NOT use an extension that is not listed in the Discovery document of the server. A server MUST reject a request that uses an extension that is not listed in its Discovery document with the RPP result code 02103 (Unimplemented extension) defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, and MUST NOT include data of an unlisted extension in its responses. A server MAY restrict the use of a listed extension to specific clients, based on the identity and the authorisations of the client. The Discovery document is available without authentication, so a client can find extensions listed that it is not authorised to use. A server MUST reject a request from an unauthorised client for such an extension with an authorisation error.<a href="#section-5.13-2" class="pilcrow">¶</a></p>
+<p id="section-5.13-3">New properties added by an extension to the RPP Discovery document MUST be included in the appropriate section of the document, following the structure defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>.<a href="#section-5.13-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="selecting-extension-point">
+<section id="section-6">
+      <h2 id="name-selecting-an-extension-poin">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-selecting-an-extension-poin" class="section-name selfRef">Selecting an Extension Point</a>
+      </h2>
+<p id="section-6-1">An extension SHOULD use the simplest extension point, as listed in <a href="#rpp-extension-points" class="auto internal xref">Section 5</a>, that fulfils the requirement. A more complex extension point increases the impact on implementations and the risk of conflicts between extensions.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">The forms below are listed in order of increasing complexity and of increasing impact on implementations.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-6-3">
+<li id="section-6-3.1">Reuse an existing extension point of a base specification. The base specifications define open-ended elements to which new values can be added without adding new properties, for example the labels of status objects. In such cases, the new values MUST be listed in the IANA Considerations section of the extension specification.<a href="#section-6-3.1" class="pilcrow">¶</a>
+</li>
+        <li id="section-6-3.2">Add data elements to an existing object, or add  input or output parameters to an existing operation, as described in <a href="#extending-json-schema" class="auto internal xref">Section 8</a>.<a href="#section-6-3.2" class="pilcrow">¶</a>
+</li>
+        <li id="section-6-3.3">Define a new operation, or a new process object for a long-running or multi-step operation.<a href="#section-6-3.3" class="pilcrow">¶</a>
+</li>
+        <li id="section-6-3.4">Define a new data object. A new data object SHOULD NOT replicate a significant number of the data elements of an existing object.<a href="#section-6-3.4" class="pilcrow">¶</a>
+</li>
+        <li id="section-6-3.5">Add protocol-level elements, such as new HTTP headers, query parameters, result codes, Problem Detail fields or Discovery document properties. These elements apply independently of any object and can have a larger impact on implementations.<a href="#section-6-3.5" class="pilcrow">¶</a>
+</li>
+      </ol>
+<p id="section-6-4">Before defining an extension, a designer SHOULD check the IANA RPP Extensions registry, the RPP Data Object Registry and the published extension specifications for an existing extension that provides the same function, and SHOULD reuse it. Multiple extensions that provide the same function fragment the ecosystem and SHOULD be avoided.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-5">An extension may use multiple extension points to fulfil its requirements, but it SHOULD still aim to use the simplest combination that achieves the desired functionality.<a href="#section-6-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="identifying-extensions">
+<section id="section-7">
+      <h2 id="name-identifying-extensions">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-identifying-extensions" class="section-name selfRef">Identifying Extensions</a>
+      </h2>
+<p id="section-7-1">Every extension must have a unique identifier, which is published using the <code>id</code> property of the extensions listed in the Discovery document. Standardised extensions MUST use as globally unique identifier a URN as specified below. Private extensions MUST use a URL as specified below and MUST be unique in the scope of a RPP deployment.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">The identifier value should follow the rules as described below.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-7-3.1">The identifier of a standardised extension MUST be a URN, using the URN sub-namespace defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, of the form <code>urn:ietf:params:rpp:extension:&lt;name&gt;</code>, and MUST be registered in the IANA RPP Extensions registry.<a href="#section-7-3.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-7-3.2">The identifier of a private extension MUST be a URL using the reverse domain name notation, for example <code>example.rpp.myextension</code>.<a href="#section-7-3.2" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-7-3.3">The version of an extension is published in the <code>version</code> property of the Extension Component Object. The identifier of an extension SHOULD NOT contain the version.<a href="#section-7-3.3" class="pilcrow">¶</a>
+</li>
+      </ul>
+</section>
+</div>
+<div id="extending-json-schema">
+<section id="section-8">
+      <h2 id="name-json-schema">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-json-schema" class="section-name selfRef">JSON Schema</a>
+      </h2>
+<p id="section-8-1">This section defines the normative method an extension specification MUST follow when it extends the JSON Schema defined in a base specification. JSON Schema validation, as defined in <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>, MUST keep functioning correctly when combining the base schema with additional schemas defined by one or more new extensions.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<div id="composition">
+<section id="section-8.1">
+        <h3 id="name-composition">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-composition" class="section-name selfRef">Composition</a>
+        </h3>
+<p id="section-8.1-1">Every data object defined in a base specification, when modified by an extension specification, must be extended using an extension specification. The extension specification MUST define a new JSON Schema document that composes the base object's schema with the new properties using <code>allOf</code>. The extension specification MUST NOT copy, redefine, or otherwise restate the JSON Schema definition of the base object. Instead, it MUST reference the base object's definition by its fully qualified <code>$id</code>-relative pointer (e.g. <code>https://www.iana.org/.../domainName.json#/$defs/domainName</code>) in an <code>allOf</code> branch, and add its own new properties in a separate branch.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">An extension schema MUST declare which base object definitions it extends using the Extension Mapper (<code>rpp:extends</code>) property, as defined in <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>. The property maps the fully qualified reference of each base object definition to the local definition, within the extension schema, that contributes the new properties. This mapping allows an implementation to construct, for a given base object, the Effective Schema that combines the base definition with every supported extension, without any knowledge of the extensions in advance.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="identification">
+<section id="section-8.2">
+        <h3 id="name-identification">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-identification" class="section-name selfRef">Identification</a>
+        </h3>
+<p id="section-8.2-1">A specification that defines JSON Schema for RPP objects MUST assign a stable <code>$id</code> to its schema document(s). Extension specifications MUST reference a base object's definition by its <code>$id</code> (e.g. <code>https://www.iana.org/.../domainName.json#/$defs/domainName</code>) rather than copying the base definition into their own schema.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="independence-of-extensions">
+<section id="section-8.3">
+        <h3 id="name-independence-of-extensions">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-independence-of-extensions" class="section-name selfRef">Independence of Extensions</a>
+        </h3>
+<p id="section-8.3-1">Extensions MUST be independent of one another. An extension MUST NOT extend, change or otherwise depend on a definition that is introduced by another extension, such as a data object, data element or operation. The Extension Mapper (<code>rpp:extends</code>) property of an extension schema MUST only reference definitions of base specifications, and an extension MUST NOT require that another extension is supported.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-2">When the functionality of an existing extension needs to be extended, a new version of that extension MUST be defined instead of a second extension that builds upon the first one. The new version keeps the identifier of the extension and updates the <code>version</code>, as described in <a href="#identifying-extensions" class="auto internal xref">Section 7</a>. A server publishes the version of the extension that it supports in its Discovery document.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="consumer-implementation">
+<section id="section-8.4">
+        <h3 id="name-consumer-implementation">
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-consumer-implementation" class="section-name selfRef">Consumer Implementation</a>
+        </h3>
+<p id="section-8.4-1">A consumer, which can be a server or client, does not need to generate a distinct set of code classes for every base object and extension combination offered by a particular server. Because extension schemas are additive, self-contained, and independent of one another, a consumer implementation SHOULD instead maintain one set of code classes for each base object and a separate set of code classes for each extension it supports, keeping an extension's classes distinct from the base object's classes rather than flattening their properties together. Composing a base object with whichever extensions apply then becomes a runtime decision, rather than something fixed by code generation for every individual server.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">A consumer learns at runtime which extensions a given server supports from the <code>extensions</code> list in that server's RPP Discovery response, as defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>. It SHOULD attach, populate, and validate extension class instances only for the extensions the server has advertised as supported, and SHOULD ignore any properties in a response that belong to an extension it does not recognise or does not support.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-3">Because an extension that is not attached to a given base object instance contributes no properties at all, a consumer naturally serialises only the base object together with the properties of whichever extensions are actually in use, without needing to distinguish this case from a property that is merely absent or <code>null</code> within a supported extension. Attached extensions are merged flat with the base object on the wire, consistent with the schema composition described in "JSON Schema Composition". Within an attached extension, an optional property without a value continues to follow Rule 2 and is omitted from the output rather than represented as <code>null</code>.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="registration">
+<section id="section-8.5">
+        <h3 id="name-registration">
+<a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-registration" class="section-name selfRef">Registration</a>
+        </h3>
+<p id="section-8.5-1">A standardised extension specification MUST be registered in the RPP Extensions registry defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, see <a href="#iana-registries" class="auto internal xref">Section 10</a>. The registration MUST contain the values of the Extension Overview section of the extension specification, see <a href="#extension-format" class="auto internal xref">Section 9</a>: the name, the identifier, the version, the RPP version, the <code>$id</code> of the JSON Schema document, the changed base objects and the new objects. The identifier of the extension in the RPP Discovery document is a URN below the RPP URN sub-namespace. The registration MUST include a dereferenceable URL to the JSON Schema document.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
+<p id="section-8.5-2"><strong>TODO:</strong> The registration registry in rpp-data-objects needs to be updated to support what is described here.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="validation">
+<section id="section-8.6">
+        <h3 id="name-validation">
+<a href="#section-8.6" class="section-number selfRef">8.6. </a><a href="#name-validation" class="section-name selfRef">Validation</a>
+        </h3>
+<p id="section-8.6-1">A deployment that supports a specific combination of extensions (a profile, as defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>) MUST build, for every extended object type, a combined schema consisting of the base object's definition and the <code>allOf</code> branch contributed by every supported extension registered for that object type.<a href="#section-8.6-1" class="pilcrow">¶</a></p>
+<p id="section-8.6-2">Before using a combined schema to validate a JSON instance, implementations MUST inject <code>"unevaluatedProperties": false</code> at every object-schema node of the combined schema, following the algorithm described in <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>. This injection MUST be performed only on the combined, per-deployment schema, and MUST NOT be present in the schema document published by any individual base or extension specification. This ensures undeclared properties are rejected while any supported combination of registered extensions validates successfully.<a href="#section-8.6-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="extension-format">
+<section id="section-9">
+      <h2 id="name-extension-specification-for">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-extension-specification-for" class="section-name selfRef">Extension Specification Format</a>
+      </h2>
+<p id="section-9-1">An extension specification SHOULD follow the structure defined in this section, so that all extension specifications are uniform and can be read, reviewed and processed in the same way.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">An extension specification contains the following sections, in this order:<a href="#section-9-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-9-3">
+<li id="section-9-3.1">Introduction: the purpose of the extension, the base specifications that it builds upon, and its motivation.<a href="#section-9-3.1" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.2">Extension Overview: the name, the identifier, the version, the minimum RPP version with which the extension is compatible, the <code>$id</code> of the JSON Schema document, the base objects that the extension updates, and the new objects that the extension defines.<a href="#section-9-3.2" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.3">External Data Types: the types, defined in an external specification, that the extension references.<a href="#section-9-3.3" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.4">Result Codes: the new result codes that the extension defines.<a href="#section-9-3.4" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.5">Problem Details: the fields that the extension adds to the Problem Detail error object.<a href="#section-9-3.5" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.6">HTTP Headers: the HTTP headers that the extension defines.<a href="#section-9-3.6" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.7">Discovery Document: the properties that the extension adds to the RPP Discovery document, in addition to its entry in the <code>extensions</code> list.<a href="#section-9-3.7" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.8">
+          <p id="section-9-3.8.1">Updated Data Objects: the existing data objects and component objects that the extension updates.<a href="#section-9-3.8.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-9-3.8.2">
+<li id="section-9-3.8.2.1">Data Elements: the data elements and associations that the extension adds to each updated object.<a href="#section-9-3.8.2.1" class="pilcrow">¶</a>
+</li>
+            <li id="section-9-3.8.2.2">Operations: the operations that the extension adds to each updated object.<a href="#section-9-3.8.2.2" class="pilcrow">¶</a>
+</li>
+          </ol>
+</li>
+        <li id="section-9-3.9">
+          <p id="section-9-3.9.1">New Data Objects: the data objects and component objects that the extension defines, including the description of each object.<a href="#section-9-3.9.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-9-3.9.2">
+<li id="section-9-3.9.2.1">Data Elements: the data elements and associations of each new object.<a href="#section-9-3.9.2.1" class="pilcrow">¶</a>
+</li>
+            <li id="section-9-3.9.2.2">Operations: the operations of each new object.<a href="#section-9-3.9.2.2" class="pilcrow">¶</a>
+</li>
+          </ol>
+</li>
+        <li id="section-9-3.10">
+          <p id="section-9-3.10.1">Updated Process Objects: the existing process objects that the extension updates.<a href="#section-9-3.10.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-9-3.10.2">
+<li id="section-9-3.10.2.1">Data Elements: the data elements and associations that the extension adds to each updated process object.<a href="#section-9-3.10.2.1" class="pilcrow">¶</a>
+</li>
+            <li id="section-9-3.10.2.2">Operations: the operations and operation parameters that the extension adds to each updated process object.<a href="#section-9-3.10.2.2" class="pilcrow">¶</a>
+</li>
+          </ol>
+</li>
+        <li id="section-9-3.11">
+          <p id="section-9-3.11.1">New Process Objects: the process objects that the extension defines.<a href="#section-9-3.11.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-9-3.11.2">
+<li id="section-9-3.11.2.1">Data Elements: the data elements and associations of each new process object.<a href="#section-9-3.11.2.1" class="pilcrow">¶</a>
+</li>
+            <li id="section-9-3.11.2.2">Operations: the operations of each new process object, including their input and output parameters.<a href="#section-9-3.11.2.2" class="pilcrow">¶</a>
+</li>
+          </ol>
+</li>
+        <li id="section-9-3.12">Endpoints: the endpoint URLs, HTTP methods and query parameters that result from the new data objects, associations and operations, as derived by the rules in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>. This section is informative.<a href="#section-9-3.12" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.13">JSON Schema: the JSON Schema document of the extension, which defines the structure and constraints of the new and updated objects.<a href="#section-9-3.13" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.14">Examples: valid and invalid examples of the new and updated objects.<a href="#section-9-3.14" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.15">IANA Considerations: the values that the extension registers in the RPP IANA registries, and the new registries that the extension requests in the RPP registry group, as described in <a href="#iana-registries" class="auto internal xref">Section 10</a>.<a href="#section-9-3.15" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.16">Security Considerations.<a href="#section-9-3.16" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.17">Privacy Considerations (optional).<a href="#section-9-3.17" class="pilcrow">¶</a>
+</li>
+        <li id="section-9-3.18">Internationalization Considerations (optional).<a href="#section-9-3.18" class="pilcrow">¶</a>
+</li>
+      </ol>
+<p id="section-9-4">Every data element that is listed in a Data Elements section MUST be defined using the data element attributes defined in <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>: name, identifier, cardinality, mutability, data type, description and constraints.<a href="#section-9-4" class="pilcrow">¶</a></p>
+<p id="section-9-5">An extension specification that follows this structure MUST include every section that is not marked as optional. A section that does not apply to the extension MUST contain the text "None".<a href="#section-9-5" class="pilcrow">¶</a></p>
+<p id="section-9-6">The extension specification MUST define exactly one JSON Schema document, which contains the definitions for all changed and all new objects of the extension. The document MUST have a top-level <code>$id</code>, MUST declare the changed base objects using the Extension Mapper (<code>rpp:extends</code>) as described in "JSON Schema Composition", and MUST NOT contain <code>unevaluatedProperties</code> or <code>additionalProperties</code> set to <code>false</code>, see "Validation". An extension specification MUST NOT split its schema over multiple documents.<a href="#section-9-6" class="pilcrow">¶</a></p>
+<p id="section-9-7">The specification MUST include at least one JSON example of a request or response representation for each operation impacted by the extension. Every example MUST validate successfully against the Effective Schema that is composed from the base schema and the JSON Schema document defined by the extension, as described in <a href="#validation" class="auto internal xref">Section 8.6</a>.<a href="#section-9-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-registries">
+<section id="section-10">
+      <h2 id="name-iana-registrations-2">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-registrations-2" class="section-name selfRef">IANA Registrations</a>
+      </h2>
+<p id="section-10-1">RPP defines the IANA registries listed below. When an extension specification is intended to be published as a standard track extension, the new extension MUST be registered in the relevant registries. The IANA Considerations section of the extension specification MUST request these registrations. An extension specification MUST NOT define its own registry for values that belong in one of the already defined registries. If no suitable registry exists for a value that the extension needs to register, the extension specification MUST request the creation of a new registry in its IANA Considerations section, in the RPP registry group defined in <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-10-2">Private extensions are not required to use these IANA registries, but should consider reusing currently registered values where possible. They MUST still use identifiers that do not conflict with already registered identifiers.<a href="#section-10-2" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+        <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Registry</th>
+            <th class="text-left" rowspan="1" colspan="1">Defined in</th>
+            <th class="text-left" rowspan="1" colspan="1">Registration procedure</th>
+            <th class="text-left" rowspan="1" colspan="1">An extension registers an entry when it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">RPP Extensions</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Expert Review</td>
+            <td class="text-left" rowspan="1" colspan="1">is published; every standardised extension MUST be registered, with its name, version and specification URL</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">RPP Data Object Registry</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Specification Required</td>
+            <td class="text-left" rowspan="1" colspan="1">introduces a new data object, component object or process object, adds a data element to an existing object, or defines a new operation or operation parameter</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">RPP Result Codes</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Expert Review</td>
+            <td class="text-left" rowspan="1" colspan="1">defines a new result code</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Link Relation Types</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#RFC8288" class="cite xref">RFC8288</a>]</span>, used by <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">as defined in RFC 8288</td>
+            <td class="text-left" rowspan="1" colspan="1">defines a new link relation type, in addition to <code>rpp-process</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Media Types</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#RFC6838" class="cite xref">RFC6838</a>]</span>, used by <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">as defined in RFC 6838</td>
+            <td class="text-left" rowspan="1" colspan="1">defines a representation format with its own media type, in addition to <code>application/rpp+json</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">IETF URN Sub-namespace, <code>urn:ietf:params:rpp</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">as defined in RFC 3553</td>
+            <td class="text-left" rowspan="1" colspan="1">needs an identifier below the RPP URN namespace, for example <code>urn:ietf:params:rpp:extension:&lt;name&gt;</code>
+</td>
+          </tr>
+        </tbody>
+      </table>
+<p id="section-10-4">The registrations are used as follows:<a href="#section-10-4" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-10-5.1">The extension MUST be registered in the RPP Extensions registry. The identifier of the extension in the RPP Discovery document is a URN below the RPP URN sub-namespace.<a href="#section-10-5.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-10-5.2">New and changed objects, data elements, operations and operation parameters MUST be registered in the RPP Data Object Registry. Each entry MUST reference the extension specification, so that implementations can distinguish elements of the base specifications from elements defined by extensions.<a href="#section-10-5.2" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-10-5.3">The <code>@type</code> value of every new object MUST be the object identifier that is registered in the RPP Data Object Registry, as required by <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>.<a href="#section-10-5.3" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-10-5.4">New result codes MUST be registered in the RPP Result Codes registry, in the range reserved for extensions.<a href="#section-10-5.4" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-10-6">The RPP data objects also reuse values from registries that are defined outside of RPP, such as the IANA Repository of IDN Practices (IDN tables). An extension that needs a new value from one of these registries MUST use the procedure of that registry.<a href="#section-10-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-11">
+      <h2 id="name-iana-considerations">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-11-1"><strong>TODO</strong><a href="#section-11-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-12">
+      <h2 id="name-security-considerations">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-12-1">An extension inherits the security services of the protocol structure that it extends. For example, an extension of a data object inherits the authentication, authorisation and confidentiality services that apply to that object. An extension MAY specify additional security services, such as additional authorisation checks. An extension MUST NOT mandate the removal of a security service that is available for the protocol structure that it extends.<a href="#section-12-1" class="pilcrow">¶</a></p>
+<p id="section-12-2">An extension is subject to the same security requirements as the base specifications. The Security Considerations section of an extension specification MUST describe the security threats that are introduced by the extension and the measures to counter them, following the guidelines in <span>[<a href="#RFC3552" class="cite xref">RFC3552</a>]</span>.<a href="#section-12-2" class="pilcrow">¶</a></p>
+<p id="section-12-3">A server MUST apply authentication and authorisation to the data elements, operations and other elements that an extension adds, in the same way as for the elements of the base specifications. A server MUST reject undeclared properties, as described in <a href="#validation" class="auto internal xref">Section 8.6</a>, and MUST reject the use of extensions that it does not support, as described in the Discovery document extension point.<a href="#section-12-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="internationalization-considerations">
+<section id="section-13">
+      <h2 id="name-internationalization-consid">
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-internationalization-consid" class="section-name selfRef">Internationalization Considerations</a>
+      </h2>
+<p id="section-13-1">An extension MUST observe the Internationalization Considerations of the base specifications <span>[<a href="#I-D.ietf-rpp-core" class="cite xref">I-D.ietf-rpp-core</a>]</span>, <span>[<a href="#I-D.ietf-rpp-data-objects" class="cite xref">I-D.ietf-rpp-data-objects</a>]</span> and <span>[<a href="#I-D.ietf-rpp-json" class="cite xref">I-D.ietf-rpp-json</a>]</span>, and the IETF policy on character sets and languages described in <span>[<a href="#RFC2277" class="cite xref">RFC2277</a>]</span>. Human-readable text that an extension adds to a request or a response MUST be capable of being expressed in the language that is negotiated between the client and the server.<a href="#section-13-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="privacy-considerations">
+<section id="section-14">
+      <h2 id="name-privacy-considerations">
+<a href="#section-14" class="section-number selfRef">14. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
+      </h2>
+<p id="section-14-1"><strong>TODO</strong><a href="#section-14-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="change-history">
+<section id="section-15">
+      <h2 id="name-change-history">
+<a href="#section-15" class="section-number selfRef">15. </a><a href="#name-change-history" class="section-name selfRef">Change History</a>
+      </h2>
+<p id="section-15-1"><strong>TODO</strong><a href="#section-15-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-16">
+      <h2 id="name-references">
+<a href="#section-16" class="section-number selfRef">16. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-16.1">
+        <h3 id="name-normative-references">
+<a href="#section-16.1" class="section-number selfRef">16.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-rpp-core">[I-D.ietf-rpp-core]</dt>
+        <dd>
+<span class="refAuthor">Wullink, M.</span> and <span class="refAuthor">P. Kowalik</span>, <span class="refTitle">"RESTful Provisioning Protocol (RPP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rpp-core-00</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rpp-core-00">https://datatracker.ietf.org/doc/html/draft-ietf-rpp-core-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-rpp-data-objects">[I-D.ietf-rpp-data-objects]</dt>
+        <dd>
+<span class="refAuthor">Kowalik, P.</span> and <span class="refAuthor">M. Wullink</span>, <span class="refTitle">"RESTful Provisioning Protocol (RPP) Data Objects"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rpp-data-objects-01</span>, <time datetime="2026-07-03" class="refDate">3 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rpp-data-objects-01">https://datatracker.ietf.org/doc/html/draft-ietf-rpp-data-objects-01</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-rpp-json">[I-D.ietf-rpp-json]</dt>
+        <dd>
+<span class="refAuthor">Wullink, M.</span> and <span class="refAuthor">P. Kowalik</span>, <span class="refTitle">"JSON for RESTful Provisioning Protocol (RPP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rpp-json-00</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rpp-json-00">https://datatracker.ietf.org/doc/html/draft-ietf-rpp-json-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2277">[RFC2277]</dt>
+        <dd>
+<span class="refAuthor">Alvestrand, H.</span>, <span class="refTitle">"IETF Policy on Character Sets and Languages"</span>, <span class="seriesInfo">BCP 18</span>, <span class="seriesInfo">RFC 2277</span>, <span class="seriesInfo">DOI 10.17487/RFC2277</span>, <time datetime="1998-01" class="refDate">January 1998</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2277">https://www.rfc-editor.org/info/rfc2277</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3986">[RFC3986]</dt>
+        <dd>
+<span class="refAuthor">Berners-Lee, T.</span>, <span class="refAuthor">Fielding, R.</span>, and <span class="refAuthor">L. Masinter</span>, <span class="refTitle">"Uniform Resource Identifier (URI): Generic Syntax"</span>, <span class="seriesInfo">STD 66</span>, <span class="seriesInfo">RFC 3986</span>, <span class="seriesInfo">DOI 10.17487/RFC3986</span>, <time datetime="2005-01" class="refDate">January 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3986">https://www.rfc-editor.org/info/rfc3986</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6838">[RFC6838]</dt>
+        <dd>
+<span class="refAuthor">Freed, N.</span>, <span class="refAuthor">Klensin, J.</span>, and <span class="refAuthor">T. Hansen</span>, <span class="refTitle">"Media Type Specifications and Registration Procedures"</span>, <span class="seriesInfo">BCP 13</span>, <span class="seriesInfo">RFC 6838</span>, <span class="seriesInfo">DOI 10.17487/RFC6838</span>, <time datetime="2013-01" class="refDate">January 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6838">https://www.rfc-editor.org/info/rfc6838</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8288">[RFC8288]</dt>
+      <dd>
+<span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Web Linking"</span>, <span class="seriesInfo">RFC 8288</span>, <span class="seriesInfo">DOI 10.17487/RFC8288</span>, <time datetime="2017-10" class="refDate">October 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8288">https://www.rfc-editor.org/info/rfc8288</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<section id="section-16.2">
+        <h3 id="name-informative-references">
+<a href="#section-16.2" class="section-number selfRef">16.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.wullink-rpp-extension-guidelines">[I-D.wullink-rpp-extension-guidelines]</dt>
+        <dd>
+<span class="refAuthor">Wullink, M.</span> and <span class="refAuthor">P. Kowalik</span>, <span class="refTitle">"Guidelines for Extending the RESTful Provisioning Protocol (RPP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-wullink-rpp-extension-guidelines-00</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-wullink-rpp-extension-guidelines-00">https://datatracker.ietf.org/doc/html/draft-wullink-rpp-extension-guidelines-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="JSON-SCHEMA">[JSON-SCHEMA]</dt>
+        <dd>
+<span class="refAuthor">JSON Schema</span>, <span class="refTitle">"JSON Schema: A vocabulary for describing JSON Data"</span>, <time datetime="2020" class="refDate">2020</time>, <span>&lt;<a href="https://json-schema.org/draft/2020-12/json-schema-core">https://json-schema.org/draft/2020-12/json-schema-core</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3552">[RFC3552]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">B. Korver</span>, <span class="refTitle">"Guidelines for Writing RFC Text on Security Considerations"</span>, <span class="seriesInfo">BCP 72</span>, <span class="seriesInfo">RFC 3552</span>, <span class="seriesInfo">DOI 10.17487/RFC3552</span>, <time datetime="2003-07" class="refDate">July 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3552">https://www.rfc-editor.org/info/rfc3552</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RPP-JSON-JAVA-LIB">[RPP-JSON-JAVA-LIB]</dt>
+      <dd>
+<span class="refAuthor">SIDN Labs</span>, <span class="refTitle">"rpp-json-java-lib: Java library for RPP JSON Schema extensions"</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://github.com/SIDN/rpp-json-java-lib">https://github.com/SIDN/rpp-json-java-lib</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</section>
+<div id="extension-example">
+<section id="appendix-A">
+      <h2 id="name-example-extension">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-example-extension" class="section-name selfRef">Example Extension</a>
+      </h2>
+<p id="appendix-A-1">This appendix is informative. It shows an extension specification that follows the structure defined in "Extension Specification Format", and it shows how the extension can be validated with a generic Java library. The example extension adds the property <code>extProperty1</code> to the Domain Name data object.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">This example extension, its schema and the examples above can be validated with the generic Java library in the rpp-json-java-lib repository <span>[<a href="#RPP-JSON-JAVA-LIB" class="cite xref">RPP-JSON-JAVA-LIB</a>]</span>. The library loads the base schema and the extension schemas supported by a deployment, builds Effective Schemas from the <code>rpp:extends</code> mappings, applies the injection of <code>unevaluatedProperties</code> described in <a href="#validation" class="auto internal xref">Section 8.6</a>, and validates JSON instances against the result. The repository contains this example extension, the example instances and unit tests, and its README describes how to build and run them.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<div id="introduction-1">
+<section id="appendix-A.1">
+        <h3 id="name-introduction-2">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-introduction-2" class="section-name selfRef">Introduction</a>
+        </h3>
+<p id="appendix-A.1-1">This document provides an example of an extension specification, following the guidelines defined in <span>[<a href="#I-D.wullink-rpp-extension-guidelines" class="cite xref">I-D.wullink-rpp-extension-guidelines</a>]</span>. The example demonstrates how to add a new property to an existing data object and how to define the corresponding JSON Schema and examples.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="extension-overview">
+<section id="appendix-A.2">
+        <h3 id="name-extension-overview">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-extension-overview" class="section-name selfRef">Extension Overview</a>
+        </h3>
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field</th>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Name</td>
+              <td class="text-left" rowspan="1" colspan="1">RPP Example Extension Property</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">urn:ietf:params:rpp:extension:example-ext-property</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Version</td>
+              <td class="text-left" rowspan="1" colspan="1">1.0</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">RPP version</td>
+              <td class="text-left" rowspan="1" colspan="1">1.0</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Schema <code>$id</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <a href="https://rpp.example/schemas/ext-domain-extproperty1.json">https://rpp.example/schemas/ext-domain-extproperty1.json</a>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Changed base objects</td>
+              <td class="text-left" rowspan="1" colspan="1">domainName</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">New objects</td>
+              <td class="text-left" rowspan="1" colspan="1">None</td>
+            </tr>
+          </tbody>
+        </table>
+</section>
+</div>
+<div id="external-data-types-1">
+<section id="appendix-A.3">
+        <h3 id="name-external-data-types-2">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-external-data-types-2" class="section-name selfRef">External Data Types</a>
+        </h3>
+<p id="appendix-A.3-1">None.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="result-codes-1">
+<section id="appendix-A.4">
+        <h3 id="name-result-codes-2">
+<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-result-codes-2" class="section-name selfRef">Result Codes</a>
+        </h3>
+<p id="appendix-A.4-1">None.<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="problem-details-1">
+<section id="appendix-A.5">
+        <h3 id="name-problem-details-2">
+<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-problem-details-2" class="section-name selfRef">Problem Details</a>
+        </h3>
+<p id="appendix-A.5-1">None.<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="http-headers-1">
+<section id="appendix-A.6">
+        <h3 id="name-http-headers-2">
+<a href="#appendix-A.6" class="section-number selfRef">A.6. </a><a href="#name-http-headers-2" class="section-name selfRef">HTTP Headers</a>
+        </h3>
+<p id="appendix-A.6-1">None.<a href="#appendix-A.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="discovery-document">
+<section id="appendix-A.7">
+        <h3 id="name-discovery-document">
+<a href="#appendix-A.7" class="section-number selfRef">A.7. </a><a href="#name-discovery-document" class="section-name selfRef">Discovery Document</a>
+        </h3>
+<p id="appendix-A.7-1">None.<a href="#appendix-A.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="updated-data-objects">
+<section id="appendix-A.8">
+        <h3 id="name-updated-data-objects">
+<a href="#appendix-A.8" class="section-number selfRef">A.8. </a><a href="#name-updated-data-objects" class="section-name selfRef">Updated Data Objects</a>
+        </h3>
+<div id="domain-name-data-object">
+<section id="appendix-A.8.1">
+          <h4 id="name-domain-name-data-object">
+<a href="#appendix-A.8.1" class="section-number selfRef">A.8.1. </a><a href="#name-domain-name-data-object" class="section-name selfRef">Domain Name Data Object</a>
+          </h4>
+<ul class="compact">
+<li class="compact" id="appendix-A.8.1-1.1">Identifier: domainName<a href="#appendix-A.8.1-1.1" class="pilcrow">¶</a>
+</li>
+          </ul>
+<div id="data-elements-1">
+<section id="appendix-A.8.1.1">
+            <h5 id="name-data-elements-2">
+<a href="#appendix-A.8.1.1" class="section-number selfRef">A.8.1.1. </a><a href="#name-data-elements-2" class="section-name selfRef">Data Elements</a>
+            </h5>
+<p id="appendix-A.8.1.1-1">The following data element is added to the Domain Name Data Object.<a href="#appendix-A.8.1.1-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="appendix-A.8.1.1-2.1">
+                <p id="appendix-A.8.1.1-2.1.1">Extension Property 1<a href="#appendix-A.8.1.1-2.1.1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="appendix-A.8.1.1-2.1.2.1">Identifier: extProperty1<a href="#appendix-A.8.1.1-2.1.2.1" class="pilcrow">¶</a>
+</li>
+                  <li class="compact" id="appendix-A.8.1.1-2.1.2.2">Cardinality: 1<a href="#appendix-A.8.1.1-2.1.2.2" class="pilcrow">¶</a>
+</li>
+                  <li class="compact" id="appendix-A.8.1.1-2.1.2.3">Mutability: create-only<a href="#appendix-A.8.1.1-2.1.2.3" class="pilcrow">¶</a>
+</li>
+                  <li class="compact" id="appendix-A.8.1.1-2.1.2.4">Data Type: String<a href="#appendix-A.8.1.1-2.1.2.4" class="pilcrow">¶</a>
+</li>
+                  <li class="compact" id="appendix-A.8.1.1-2.1.2.5">Description: An example property that is added to the Domain Name Data Object by the extension.<a href="#appendix-A.8.1.1-2.1.2.5" class="pilcrow">¶</a>
+</li>
+                  <li class="compact" id="appendix-A.8.1.1-2.1.2.6">
+                    <p id="appendix-A.8.1.1-2.1.2.6.1">Constraints:<a href="#appendix-A.8.1.1-2.1.2.6.1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="appendix-A.8.1.1-2.1.2.6.2.1">The value MUST contain between 1 and 64 characters.<a href="#appendix-A.8.1.1-2.1.2.6.2.1" class="pilcrow">¶</a>
+</li>
+                      <li class="compact" id="appendix-A.8.1.1-2.1.2.6.2.2">The value MUST be provided in the Create operation.<a href="#appendix-A.8.1.1-2.1.2.6.2.2" class="pilcrow">¶</a>
+</li>
+                    </ul>
+</li>
+                </ul>
+</li>
+            </ul>
+<p id="appendix-A.8.1.1-3">The Read operation returns <code>extProperty1</code> when the domain name was created with a value for it.<a href="#appendix-A.8.1.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="operations-1">
+<section id="appendix-A.8.1.2">
+            <h5 id="name-operations-2">
+<a href="#appendix-A.8.1.2" class="section-number selfRef">A.8.1.2. </a><a href="#name-operations-2" class="section-name selfRef">Operations</a>
+            </h5>
+<p id="appendix-A.8.1.2-1">None.<a href="#appendix-A.8.1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="new-data-objects">
+<section id="appendix-A.9">
+        <h3 id="name-new-data-objects">
+<a href="#appendix-A.9" class="section-number selfRef">A.9. </a><a href="#name-new-data-objects" class="section-name selfRef">New Data Objects</a>
+        </h3>
+<p id="appendix-A.9-1">None.<a href="#appendix-A.9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="updated-process-objects">
+<section id="appendix-A.10">
+        <h3 id="name-updated-process-objects">
+<a href="#appendix-A.10" class="section-number selfRef">A.10. </a><a href="#name-updated-process-objects" class="section-name selfRef">Updated Process Objects</a>
+        </h3>
+<p id="appendix-A.10-1">None.<a href="#appendix-A.10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="new-process-objects">
+<section id="appendix-A.11">
+        <h3 id="name-new-process-objects">
+<a href="#appendix-A.11" class="section-number selfRef">A.11. </a><a href="#name-new-process-objects" class="section-name selfRef">New Process Objects</a>
+        </h3>
+<p id="appendix-A.11-1">None.<a href="#appendix-A.11-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="endpoints">
+<section id="appendix-A.12">
+        <h3 id="name-endpoints">
+<a href="#appendix-A.12" class="section-number selfRef">A.12. </a><a href="#name-endpoints" class="section-name selfRef">Endpoints</a>
+        </h3>
+<p id="appendix-A.12-1">None.<a href="#appendix-A.12-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="json-schema">
+<section id="appendix-A.13">
+        <h3 id="name-json-schema-2">
+<a href="#appendix-A.13" class="section-number selfRef">A.13. </a><a href="#name-json-schema-2" class="section-name selfRef">JSON Schema</a>
+        </h3>
+<p id="appendix-A.13-1">The extension defines a single JSON Schema document. The document declares, using the Extension Mapper (<code>rpp:extends</code>) property, that it extends the create and read definitions of the base object, and contributes the new property in a separate definition:<a href="#appendix-A.13-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.13-2">
+<pre>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rpp.example/schemas/ext-domain-extproperty1.json",
+
+  "rpp:extends": {
+    "https://rpp.example/rpp/schema.json#/$defs/domainName.create": "#/$defs/ext.domainName.create",
+    "https://rpp.example/rpp/schema.json#/$defs/domainName.read": "#/$defs/ext.domainName.read"
+  },
+
+  "$defs": {
+    "ext.domainName.create": {
+      "type": "object",
+      "properties": {
+        "extProperty1": { "type": "string", "minLength": 1, "maxLength": 64 }
+      },
+      "required": ["extProperty1"]
+    },
+    "ext.domainName.read": {
+      "type": "object",
+      "properties": {
+        "extProperty1": { "type": "string" }
+      }
+    }
+  }
+}
+
+</pre><a href="#appendix-A.13-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="examples">
+<section id="appendix-A.14">
+        <h3 id="name-examples">
+<a href="#appendix-A.14" class="section-number selfRef">A.14. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+        </h3>
+<p id="appendix-A.14-1">The following instance is valid, because <code>extProperty1</code> is declared by the supported extension:<a href="#appendix-A.14-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.14-2">
+<pre>{
+  "@type": "domainName",
+  "name": "example.example",
+  "registrant": { "@type": "contact", "id": "c-1234" },
+  "nameservers": [
+    { "@type": "host", "hostName": "ns1.example.net" }
+  ],
+  "extProperty1": "some value"
+}
+
+</pre><a href="#appendix-A.14-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.14-3">The following instances are invalid. The first omits the required <code>extProperty1</code>, the second gives <code>extProperty1</code> the wrong type, and the third contains <code>extProperty2</code>, which no supported extension declares and which is therefore rejected by the injected <code>unevaluatedProperties</code> keyword:<a href="#appendix-A.14-3" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.14-4">
+<pre>{ "@type": "domainName", "name": "example.example" }
+
+</pre><a href="#appendix-A.14-4" class="pilcrow">¶</a>
+</div>
+<div class="lang-json sourcecode" id="appendix-A.14-5">
+<pre>{ "@type": "domainName", "name": "example.example", "extProperty1": 42 }
+
+</pre><a href="#appendix-A.14-5" class="pilcrow">¶</a>
+</div>
+<div class="lang-json sourcecode" id="appendix-A.14-6">
+<pre>{
+  "@type": "domainName",
+  "name": "example.example",
+  "extProperty1": "some value",
+  "extProperty2": "not declared by any supported extension"
+}
+
+</pre><a href="#appendix-A.14-6" class="pilcrow">¶</a>
+</div>
+<p id="appendix-A.14-7">The same instance that uses <code>extProperty1</code> is rejected by a deployment that does not support the extension, since in that deployment <code>extProperty1</code> is an undeclared property. This is the behaviour required by "Validation": the set of accepted properties is determined only by the extensions that the deployment supports.<a href="#appendix-A.14-7" class="pilcrow">¶</a></p>
+<div id="composition-and-validation">
+<section id="appendix-A.14.1">
+          <h4 id="name-composition-and-validation">
+<a href="#appendix-A.14.1" class="section-number selfRef">A.14.1. </a><a href="#name-composition-and-validation" class="section-name selfRef">Composition and Validation</a>
+          </h4>
+<p id="appendix-A.14.1-1">For a deployment that supports the example extension, the Effective Schema for <code>domainName.create</code> references the base definition and the extension definition, and has its own <code>$id</code>:<a href="#appendix-A.14.1-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="appendix-A.14.1-2">
+<pre>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rpp.example/rpp/effective/domain.create.json",
+  "$ref": "#/$defs/effective.domainName.create",
+  "$defs": {
+    "effective.domainName.create": {
+      "allOf": [
+        { "$ref": "https://rpp.example/rpp/schema.json#/$defs/domainName.create" },
+        { "$ref": "https://rpp.example/schemas/ext-domain-extproperty1.json#/$defs/ext.domainName.create" }
+      ]
+    }
+  }
+}
+
+</pre><a href="#appendix-A.14.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="iana-considerations-1">
+<section id="appendix-A.15">
+        <h3 id="name-iana-considerations-2">
+<a href="#appendix-A.15" class="section-number selfRef">A.15. </a><a href="#name-iana-considerations-2" class="section-name selfRef">IANA Considerations</a>
+        </h3>
+<p id="appendix-A.15-1"><strong>TODO:</strong><a href="#appendix-A.15-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations-1">
+<section id="appendix-A.16">
+        <h3 id="name-security-considerations-2">
+<a href="#appendix-A.16" class="section-number selfRef">A.16. </a><a href="#name-security-considerations-2" class="section-name selfRef">Security Considerations</a>
+        </h3>
+<p id="appendix-A.16-1"><strong>TODO:</strong><a href="#appendix-A.16-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="privacy-considerations-1">
+<section id="appendix-A.17">
+        <h3 id="name-privacy-considerations-2">
+<a href="#appendix-A.17" class="section-number selfRef">A.17. </a><a href="#name-privacy-considerations-2" class="section-name selfRef">Privacy Considerations</a>
+        </h3>
+<p id="appendix-A.17-1"><strong>TODO:</strong><a href="#appendix-A.17-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="internationalization-considerations-1">
+<section id="appendix-A.18">
+        <h3 id="name-internationalization-conside">
+<a href="#appendix-A.18" class="section-number selfRef">A.18. </a><a href="#name-internationalization-conside" class="section-name selfRef">Internationalization Considerations</a>
+        </h3>
+<p id="appendix-A.18-1"><strong>TODO:</strong><a href="#appendix-A.18-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgements">
+<section id="appendix-B">
+      <h2 id="name-acknowledgements">
+<a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      </h2>
+<p id="appendix-B-1"><strong>TODO</strong><a href="#appendix-B-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Maarten Wullink</span></div>
+<div dir="auto" class="left"><span class="org">SIDN Labs</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:maarten.wullink@sidn.nl" class="email">maarten.wullink@sidn.nl</a>
+</div>
+<div class="url">
+<span>URI:</span>
+<a href="https://sidn.nl/" class="url">https://sidn.nl/</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Pawel Kowalik</span></div>
+<div dir="auto" class="left"><span class="org">DENIC</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:pawel.kowalik@denic.de" class="email">pawel.kowalik@denic.de</a>
+</div>
+<div class="url">
+<span>URI:</span>
+<a href="https://denic.de/" class="url">https://denic.de/</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
