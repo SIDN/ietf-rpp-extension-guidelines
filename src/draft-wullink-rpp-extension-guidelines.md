@@ -163,12 +163,12 @@ New properties added by an extension to the RPP Discovery document MUST be inclu
 
 An extension SHOULD use the simplest extension point, as listed in (#rpp-extension-points), that fulfils the requirement. A more complex extension point increases the impact on implementations and the risk of conflicts between extensions.
 
-The forms below are listed in order of increasing complexity and of increasing impact on implementations. A designer SHOULD only move to the next form when the answer to the question of the current form is "no".
+The forms below are listed in order of increasing complexity and of increasing impact on implementations. 
 
-1. Reuse an existing extension point of a base specification. The base specifications define open-ended elements to which new values can be added without adding new properties, for example the labels of status objects. Question: can the requirement be met by new values of such an element? If so, the new values MUST be listed in the IANA Considerations section of the extension specification.
-2. Add data elements to an existing object, or add  input or output parameters to an existing operation, as described in (#extending-json-schema). Question: can the requirement be met by adding data elements or parameters?
-3. Define a new data object. A new data object SHOULD NOT replicate a significant number of the data elements of an existing object. Question: can the requirement be met by defining a new data object?
-4. Define a new operation, or a new process object for a long-running or multi-step operation. Question: can the requirement be met by new operations on new or existing objects?
+1. Reuse an existing extension point of a base specification. The base specifications define open-ended elements to which new values can be added without adding new properties, for example the labels of status objects. In such cases, the new values MUST be listed in the IANA Considerations section of the extension specification.
+2. Add data elements to an existing object, or add  input or output parameters to an existing operation, as described in (#extending-json-schema).
+3. Define a new data object. A new data object SHOULD NOT replicate a significant number of the data elements of an existing object.
+4. Define a new operation, or a new process object for a long-running or multi-step operation.
 5. Add protocol-level elements, such as new HTTP headers, query parameters, result codes, Problem Detail fields or Discovery document properties. These elements apply independently of any object and can have a larger impact on implementations.
 
 Before defining an extension, a designer SHOULD check the IANA RPP Extensions registry, the RPP Data Object Registry and the published extension specifications for an existing extension that provides the same function, and SHOULD reuse it. Multiple extensions that provide the same function fragment the ecosystem and SHOULD be avoided.
