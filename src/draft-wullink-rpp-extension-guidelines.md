@@ -236,13 +236,19 @@ An extension specification contains at least the following sections, in this ord
 9. New Data Objects: Every new data object, component object or process object that the extension introduces, including its object description, data elements and operations.
    1. Data Elements: for every new data object, component object or process object, the data elements and associations. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
    2. Operations: every operation that the extension introduces.
-10. Endpoints: the endpoint URLs, HTTP methods and query parameters that result from the new data objects, associations and operations, as derived by the rules in [@!I-D.ietf-rpp-core]. This section is informative.
-11. JSON Schema: the JSON Schema document of the extension which defines the structure and constraints of the new and updated data objects.
-12. Examples.
-13. IANA Considerations: the registrations that the extension requires, as described in (#iana-registries).
-14. Security Considerations.
-15. Privacy Considerations.
-16. Internationalization Considerations.
+10. Updated Process Objects: Every existing process object that the extension updates.
+    1. Data Elements: for every updated process object, the added data elements and associations. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
+    2. Operations: every operation or operation parameter that the extension introduces.
+11. New Process Objects: Every new process object that the extension introduces.
+    1. Data Elements: for every new process object, the data elements and associations. Each added data element MUST be defined using the data element attributes defined in [@!I-D.ietf-rpp-data-objects] (name, identifier, cardinality, mutability, data type, description and constraints).
+    2. Operations: every operation that the extension introduces for the new process object including input and output parameters.
+12. Endpoints: the endpoint URLs, HTTP methods and query parameters that result from the new data objects, associations and operations, as derived by the rules in [@!I-D.ietf-rpp-core]. This section is informative.
+13. JSON Schema: the JSON Schema document of the extension which defines the structure and constraints of the new and updated data objects.
+14. Examples.
+15. IANA Considerations: the registrations that the extension requires, as described in (#iana-registries).
+16. Security Considerations.
+17. Privacy Considerations.
+18. Internationalization Considerations.
 
 All sections MUST be present. An extension that does not use an extension point MUST state "None" in the corresponding section.
 
@@ -369,6 +375,14 @@ The Read operation returns `extProperty1` when the domain name was created with 
 None.
 
 ## New Data Objects
+
+None.
+
+## Updated Process Objects
+
+None.
+
+## New Process Objects
 
 None.
 
