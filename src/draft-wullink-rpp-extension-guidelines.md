@@ -177,13 +177,13 @@ An extension may use multiple extension points to fulfil its requirements, but i
 
 # Identifying Extensions {#identifying-extensions}
 
-Every extension must have a unique identifier, which is published in the `id` field of the extension entry in the Discovery document.
+Every extension must have a unique identifier, which is published using the `id` property of the extensions listed in the Discovery document. Standardised extensions MUST use as globally unique identifier a URN as specified below. Private extensions MUST use a URL as specified below and MUST be unique in the scope of a RPP deployment.
 
-* The identifier of a standardised extension MUST be a URN, using the URN sub-namespace defined in [@!I-D.ietf-rpp-core], of the form `urn:ietf:params:rpp:extension:<name>`, and MUST be registered as described in (#iana-registries).
-* The identifier of a private extension MUST be a globally unique URI, MUST NOT use the RPP URN sub-namespace, and SHOULD be based on a domain name that is controlled by the party that defines the extension.
-* The version of an extension is published in the `version` field. The identifier of an extension SHOULD NOT contain the version, so that the identifier remains stable when the extension is revised.
+The identifier value should follow the rules as described below.
 
-**TODO: check if guidance is consistent with core spec. This must be aligned.**
+* The identifier of a standardised extension MUST be a URN, using the URN sub-namespace defined in [@!I-D.ietf-rpp-core], of the form `urn:ietf:params:rpp:extension:<name>`, and MUST be registered in the IANA RPP Extensions registry.
+* The identifier of a private extension MUST be a URL using the reverse domain name notation, for example `example.rpp.myextension`.
+* The version of an extension is published in the `version` property of the Extension Component Object. The identifier of an extension SHOULD NOT contain the version.
 
 # JSON Schema {#extending-json-schema}
 
