@@ -1,10 +1,10 @@
 %%%
 title = "Guidelines for Extending the RESTful Provisioning Protocol (RPP)"
 abbrev = "RPP Extension Guidelines"
-area = "Internet"
-workgroup = "Network Working Group"
+area = "Applications and Real-Time"
+workgroup = "RESTful Provisioning Protocol"
 submissiontype = "IETF"
-keyword = [""]
+keyword = ["RPP", "RESTful Provisioning Protocol", "extension", "guidelines"]
 TocDepth = 4
 date = 2026-11-02
 
